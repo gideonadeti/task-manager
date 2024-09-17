@@ -6,11 +6,16 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 
 import "./index.css";
 import Root from "./routes/Root";
+import SignUp from "./routes/SignUp";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
+  },
+  {
+    path: "/auth/sign-up",
+    element: <SignUp />,
   },
 ]);
 
