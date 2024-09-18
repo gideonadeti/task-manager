@@ -32,14 +32,6 @@ export default function SignUp() {
 
       const { data } = await axios.post("/auth/sign-up", formValues);
 
-      if (data.errors) {
-        setMessage("");
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-
-        return setErrs(data.errors);
-      }
-
       const { message, accessToken, refreshToken } = data;
 
       setMessage(message);
