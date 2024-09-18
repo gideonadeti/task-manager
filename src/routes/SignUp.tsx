@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { Link } from "react-router-dom";
 
 import { FormValues } from "../lib/types";
 import { PasswordInput } from "../components/PasswordInput";
@@ -169,6 +170,10 @@ export default function SignUp() {
           {loading ? "Signing Up..." : "Sign Up"}
         </button>
       </form>
+
+      <p className="my-2 text-center">
+        Already have an account? <Link to="/auth/sign-in">Sign in</Link>
+      </p>
 
       <div className="d-flex align-items-center mb-3">
         <hr className="flex-grow-1" />

@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { Link } from "react-router-dom";
 
 import { FormValues } from "../lib/types";
 import { PasswordInput } from "../components/PasswordInput";
@@ -50,7 +51,7 @@ export default function SignIn() {
           return setErrs([
             {
               message:
-                "An error occurred during sign-up. Please try again later.",
+                "An error occurred during sign-in. Please try again later.",
             },
           ]);
         }
@@ -64,7 +65,7 @@ export default function SignIn() {
         setErrs([
           {
             message:
-              "An error occurred during sign-up. Please try again later.",
+              "An error occurred during sign-in. Please try again later.",
           },
         ]);
       }
@@ -137,6 +138,10 @@ export default function SignIn() {
           {loading ? "Signing In..." : "Sign In"}
         </button>
       </form>
+
+      <p className="my-2 text-center">
+        Don't have an account? <Link to="/auth/sign-up">Sign up</Link>
+      </p>
 
       <div className="d-flex align-items-center mb-3">
         <hr className="flex-grow-1" />
