@@ -30,7 +30,7 @@ export default function SignUp() {
       setMessage("");
       setErrs([]);
 
-      const { data } = await axios.post("auth/sign-up", formValues);
+      const { data } = await axios.post("/auth/sign-up", formValues);
 
       if (data.errors) {
         setMessage("");
