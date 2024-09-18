@@ -11,7 +11,7 @@ interface Error {
   message: string;
 }
 
-export default function SignUp() {
+export default function SignIn() {
   const {
     register,
     handleSubmit,
@@ -30,7 +30,7 @@ export default function SignUp() {
       setMessage("");
       setErrs([]);
 
-      const { data } = await axios.post("/auth/sign-up", formValues);
+      const { data } = await axios.post("/auth/sign-in", formValues);
 
       const { message, accessToken, refreshToken } = data;
 
@@ -41,7 +41,7 @@ export default function SignUp() {
 
       setTimeout(() => {
         navigate("/");
-      }, 1500);
+      }, 2000);
     } catch (error) {
       console.error(error);
 
@@ -78,7 +78,7 @@ export default function SignUp() {
       className="container mt-5 border p-3 rounded shadow-sm"
       style={{ maxWidth: "420px" }}
     >
-      <h2 className="text-center">Sign Up</h2>
+      <h2 className="text-center">Sign In</h2>
       {errs.length > 0 && (
         <div className="alert alert-danger">
           <ul>
@@ -97,38 +97,6 @@ export default function SignUp() {
         </div>
       )}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="row g-3 mb-3">
-          <div className="col">
-            <label htmlFor="firstName" className="form-label">
-              First name
-            </label>
-            <input
-              type="text"
-              id="firstName"
-              className={`form-control ${errors.firstName ? "is-invalid" : ""}`}
-              {...register("firstName", { required: "First name is required" })}
-              autoFocus
-            />
-            {errors.firstName && (
-              <div className="invalid-feedback">{errors.firstName.message}</div>
-            )}
-          </div>
-          <div className="col">
-            <label htmlFor="lastName" className="form-label">
-              Last name
-            </label>
-            <input
-              type="text"
-              id="lastName"
-              className={`form-control ${errors.lastName ? "is-invalid" : ""}`}
-              {...register("lastName", { required: "Last name is required" })}
-            />
-            {errors.lastName && (
-              <div className="invalid-feedback">{errors.lastName.message}</div>
-            )}
-          </div>
-        </div>
-
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
             Email
@@ -166,7 +134,7 @@ export default function SignUp() {
           className="btn btn-primary w-100 mb-3"
           disabled={loading}
         >
-          {loading ? "Signing Up..." : "Sign Up"}
+          {loading ? "Signing In..." : "Sign In"}
         </button>
       </form>
 

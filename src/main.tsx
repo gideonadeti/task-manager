@@ -7,6 +7,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./index.css";
 import Root from "./routes/Root";
 import SignUp from "./routes/SignUp";
+import SignIn from "./routes/SignIn";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ export const router = createBrowserRouter([
   {
     path: "/auth/sign-up",
     element: <SignUp />,
+  },
+  {
+    path: "/auth/sign-in",
+    element: <SignIn />,
   },
 ]);
 

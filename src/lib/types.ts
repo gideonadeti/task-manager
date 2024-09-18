@@ -1,4 +1,4 @@
-export interface SignUpFormValues extends User {
+export interface FormValues extends User {
   password: string;
 }
 
