@@ -5,9 +5,11 @@ import { User } from "../lib/types";
 export function Header({ user }: { user: User | null }) {
   return (
     <header>
-      <nav className="navbar fixed-top bg-white border-bottom border-1">
+      <nav className="navbar bg-white shadow-sm">
         <div className="container">
-          <h1 className="navbar-brand">Task Manager</h1>
+          <Link to="/">
+            <h1 className="navbar-brand">Task Manager</h1>
+          </Link>
           {user && (
             <Link to={"/"} className="text-reset">
               <div className="d-flex gap-2 align-items-center">
