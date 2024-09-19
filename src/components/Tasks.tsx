@@ -2,9 +2,13 @@ import { tasks } from "../lib/tasks";
 import { Task } from "./Task";
 import { AddTaskButton } from "./AddTaskButton";
 
-export function Tasks() {
+export function Tasks({ showSidebar }: { showSidebar: boolean }) {
   return (
-    <div className="px-5 py-5 mb-5 overflow-y-auto flex-grow-1">
+    <div
+      className={`px-5 pt-5 vh-100 overflow-y-auto tasks ${
+        !showSidebar ? "expand" : ""
+      }`}
+    >
       <h3>Inbox</h3>
       <div className="my-3 list-group list-group-flush">
         {tasks.map((task) => (

@@ -1,9 +1,15 @@
+/* Importing Google Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Playfair+Display&display=swap");
 
+/* Root Variables */
 :root {
   --hover-color: #e2e6ea;
+  --transition-duration: 0.3s;
+  --font-size-small: 0.84rem;
+  --sidebar-width: 270px;
 }
 
+/* Typography */
 body {
   font-family: "Inter", sans-serif;
 }
@@ -18,47 +24,73 @@ h6 {
   margin-bottom: 0;
 }
 
-a {
-  text-decoration: none;
-}
-
+p,
 ul {
   margin-bottom: 0;
 }
 
+/* Links */
+a {
+  text-decoration: none;
+}
+
+/* Bootstrap Icon Sizing */
 [class*="bi"] {
   font-size: 1.25rem;
 }
 
-p {
-  margin-bottom: 0;
-}
-
+/* Hover Effects */
 .hover-style:hover {
   background-color: var(--hover-color);
   cursor: pointer;
 }
 
+/* Active Effects */
 .active-style {
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-duration) ease;
 }
 
 .active-style:active {
   transform: scale(0.95);
 }
 
+/* Sidebar */
 .sidebar {
-  width: 270px;
+  width: var(--sidebar-width);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transition: transform var(--transition-duration) ease;
 }
 
-.pointer-style {
-  cursor: pointer;
+.sidebar-toggler {
+  position: absolute;
+  top: 0;
+  right: 1.5rem;
+  transition: transform var(--transition-duration) ease;
 }
 
+/* Hide Sidebar */
+.hide-sidebar {
+  transform: translateX(-100%);
+}
+
+/* Content Layout */
+.tasks {
+  margin-left: var(--sidebar-width);
+  padding-bottom: 5rem;
+  transition: margin-left var(--transition-duration) ease;
+}
+
+.expand {
+  margin-left: 0;
+}
+
+/* Text & Labels */
 .description,
 .due-date,
 .priority {
-  font-size: 0.84rem;
+  font-size: var(--font-size-small);
 }
 
 .due-date,
@@ -67,10 +99,11 @@ p {
   border-radius: 4px;
 }
 
-.task-details.completed {
-  text-decoration: line-through;
-}
-
 .max-content {
   width: max-content;
+}
+
+/* Miscellaneous */
+.pointer-style {
+  cursor: pointer;
 }
