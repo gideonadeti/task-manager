@@ -41,7 +41,7 @@ export function Task({ task }: { task: TaskProps }) {
       <Link to={`/tasks/taskId`} className="text-reset">
         <h5>{task.title}</h5>
         <p className="description">{task.description}</p>
-        <div className="d-flex gap-2">
+        <div className="d-flex gap-2 py-1">
           <p className="due-date bg-primary-subtle">
             Due Date: {formatDueDate(task.dueDate)}
           </p>
