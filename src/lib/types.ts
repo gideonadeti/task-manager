@@ -23,3 +23,11 @@ export interface DefaultTaskGroupProps {
   groupName: string;
   to: string;
 }
+
+export interface TaskProps {
+  title: string;
+  description: string;
+  dueDate: Date;
+  priority: "Low" | "Medium" | "High";
+  completed: boolean;
+}

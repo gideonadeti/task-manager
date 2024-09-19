@@ -50,3 +50,23 @@ p {
 .sidebar {
   width: 270px;
 }
+
+.pointer-style {
+  cursor: pointer;
+}
+
+.description,
+.due-date,
+.priority {
+  font-size: 0.84rem;
+}
+
+.due-date,
+.priority {
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.task-details.completed {
+  text-decoration: line-through;
+}
