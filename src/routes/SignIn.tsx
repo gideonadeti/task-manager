@@ -113,6 +113,8 @@ export default function SignIn() {
                 message: "Enter a valid email",
               },
             })}
+            autoComplete="email"
+            autoFocus
           />
           {errors.email && (
             <div className="invalid-feedback">{errors.email.message}</div>
@@ -124,7 +126,7 @@ export default function SignIn() {
             Password
           </label>
           <PasswordInput
-            autoComplete="new-password"
+            autoComplete="current-password"
             register={register}
             error={errors.password}
           />

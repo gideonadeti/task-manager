@@ -36,4 +36,10 @@ export interface TaskProps {
 export interface ErrorPageProps {
   statusText?: string;
   message?: string;
-};
+}
+
+export interface UserStore {
+  user: User | null;
+  setUser: (newUser: User) => void;
+  clearUser: () => void;
+}

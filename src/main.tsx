@@ -9,20 +9,24 @@ import Root from "./routes/Root";
 import SignUp from "./routes/SignUp";
 import SignIn from "./routes/SignIn";
 import ErrorPage from "./components/ErrorPage";
+import Index from "./routes/Index";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
     errorElement: <ErrorPage />,
-  },
-  {
-    path: "/auth/sign-up",
-    element: <SignUp />,
-  },
-  {
-    path: "/auth/sign-in",
-    element: <SignIn />,
+    children: [
+      { index: true, element: <Index /> },
+      {
+        path: "/auth/sign-up",
+        element: <SignUp />,
+      },
+      {
+        path: "/auth/sign-in",
+        element: <SignIn />,
+      },
+    ],
   },
 ]);
 
