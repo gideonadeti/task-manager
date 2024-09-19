@@ -11,6 +11,7 @@ export interface User {
 }
 
 export interface ClickableElementProps {
+  className?: string;
   children: ReactNode;
 }
 

@@ -1,5 +1,6 @@
 import { tasks } from "../lib/tasks";
 import { Task } from "./Task";
+import { AddTaskButton } from "./AddTaskButton";
 
 export function Tasks() {
   return (
@@ -10,6 +11,7 @@ export function Tasks() {
           <Task task={task} />
         ))}
       </div>
+      <AddTaskButton className="max-content" />
     </div>
   );
 }

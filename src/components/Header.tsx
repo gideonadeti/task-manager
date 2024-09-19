@@ -4,7 +4,7 @@ import { User } from "../lib/types";
 
 export function Header({ user }: { user: User | null }) {
   return (
-    <header>
+    <header className="z-1">
       <nav className="navbar bg-white shadow-sm">
         <div className="container">
           <Link to="/">

@@ -70,3 +70,7 @@ p {
 .task-details.completed {
   text-decoration: line-through;
 }
+
+.max-content {
+  width: max-content;
+}
