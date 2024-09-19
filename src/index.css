@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Playfair+Display&display=swap");
 
+:root {
+  --hover-color: #e2e6ea;
+}
+
 body {
   font-family: "Inter", sans-serif;
 }
@@ -11,6 +15,7 @@ h4,
 h5,
 h6 {
   font-family: "Playfair Display", serif;
+  margin-bottom: 0;
 }
 
 a {
@@ -19,4 +24,29 @@ a {
 
 ul {
   margin-bottom: 0;
+}
+
+[class*="bi"] {
+  font-size: 1.25rem;
+}
+
+p {
+  margin-bottom: 0;
+}
+
+.hover-style:hover {
+  background-color: var(--hover-color);
+  cursor: pointer;
+}
+
+.active-style {
+  transition: transform 0.3s ease;
+}
+
+.active-style:active {
+  transform: scale(0.95);
+}
+
+.sidebar {
+  width: 270px;
 }

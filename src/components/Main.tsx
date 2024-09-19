@@ -1,7 +1,9 @@
+import { Sidebar } from "./Sidebar";
+
 export function Main() {
   return (
-    <div className="pt-3">
-      <h1>Enjoy your day!</h1>
+    <div className="d-flex vh-100">
+      <Sidebar />
     </div>
   );
 }
