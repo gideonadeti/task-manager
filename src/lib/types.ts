@@ -32,3 +32,8 @@ export interface TaskProps {
   priority: "Low" | "Medium" | "High";
   completed: boolean;
 }
+
+export interface ErrorPageProps {
+  statusText?: string;
+  message?: string;
+};

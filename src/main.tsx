@@ -8,11 +8,13 @@ import "./index.css";
 import Root from "./routes/Root";
 import SignUp from "./routes/SignUp";
 import SignIn from "./routes/SignIn";
+import ErrorPage from "./components/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/auth/sign-up",
