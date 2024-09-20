@@ -13,8 +13,11 @@ export function Header({ user }: { user: User | null }) {
           {user && (
             <Link to={"/"} className="text-reset">
               <div className="d-flex gap-2 align-items-center">
-                <span className="bg-light p-2 rounded-pill fs-3">
-                  <i className="bi-person-fill"></i>
+                <span
+                  className="bg-light p-2 rounded-pill d-flex align-items-center justify-content-center"
+                  style={{ width: "48px", height: "48px" }}
+                >
+                  <i className="bi-person-fill fs-3"></i>
                 </span>
                 <div className="d-flex flex-column">
                   <span>

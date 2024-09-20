@@ -1,5 +1,5 @@
 /* Importing Google Fonts */
-@import url("https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Playfair+Display&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Merriweather&family=Montserrat&display=swap");
 
 /* Root Variables */
 :root {
@@ -11,7 +11,7 @@
 
 /* Typography */
 body {
-  font-family: "Inter", sans-serif;
+  font-family: "Merriweather", serif;
 }
 
 h1,
@@ -20,7 +20,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Playfair Display", serif;
+  font-family: "Montserrat", sans-serif;
   margin-bottom: 0;
 }
 
