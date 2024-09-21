@@ -76,12 +76,13 @@ export default function SignUp() {
 
   return (
     <div
-      className="container mt-5 border p-3 rounded shadow-sm"
+      className="container mt-3 border p-3 rounded shadow-sm"
+      
       style={{ maxWidth: "420px" }}
     >
       <h2 className="text-center">Sign Up</h2>
       {errs.length > 0 && (
-        <div className="alert alert-danger">
+        <div className="alert alert-danger my-2">
           <ul>
             {errs.map((err, index) => (
               <li key={index}>{err.message}</li>
@@ -91,7 +92,7 @@ export default function SignUp() {
       )}
 
       {message && (
-        <div className="alert alert-success">
+        <div className="alert alert-success my-2">
           <ul>
             <li>{message}</li>
           </ul>
