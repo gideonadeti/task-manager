@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { Link } from "react-router-dom";
 
 import { FormValues } from "../lib/types";
 import { PasswordInput } from "../components/PasswordInput";
 import axios from "../lib/axios-instance";
+import { redirectTo } from "../lib/redirect-to";
 
 interface Error {
   message: string;
@@ -22,8 +22,6 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [errs, setErrs] = useState<Error[] | []>([]);
   const [message, setMessage] = useState("");
-
-  const navigate = useNavigate();
 
   async function onSubmit(formValues: FormValues) {
     try {
@@ -41,7 +39,7 @@ export default function SignUp() {
       setErrs([]);
 
       setTimeout(() => {
-        navigate("/");
+        redirectTo("/");
       }, 1500);
     } catch (error) {
       console.error(error);
@@ -77,7 +75,6 @@ export default function SignUp() {
   return (
     <div
       className="container mt-3 border p-3 rounded shadow-sm"
-      
       style={{ maxWidth: "420px" }}
     >
       <h2 className="text-center">Sign Up</h2>

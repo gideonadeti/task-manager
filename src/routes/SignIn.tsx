@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { Link } from "react-router-dom";
 
 import { FormValues } from "../lib/types";
 import { PasswordInput } from "../components/PasswordInput";
 import axios from "../lib/axios-instance";
+import { redirectTo } from "../lib/redirect-to";
 
 interface Error {
   message: string;
@@ -22,8 +22,6 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [errs, setErrs] = useState<Error[] | []>([]);
   const [message, setMessage] = useState("");
-
-  const navigate = useNavigate();
 
   async function onSubmit(formValues: FormValues) {
     try {
@@ -41,7 +39,7 @@ export default function SignIn() {
       setErrs([]);
 
       setTimeout(() => {
-        navigate("/");
+        redirectTo("/")
       }, 2000);
     } catch (error) {
       console.error(error);
@@ -76,12 +74,12 @@ export default function SignIn() {
 
   return (
     <div
-      className="container mt-5 border p-3 rounded shadow-sm"
+      className="container mt-3 border p-3 rounded shadow-sm"
       style={{ maxWidth: "420px" }}
     >
       <h2 className="text-center">Sign In</h2>
       {errs.length > 0 && (
-        <div className="alert alert-danger">
+        <div className="alert alert-danger my-2">
           <ul>
             {errs.map((err, index) => (
               <li key={index}>{err.message}</li>
@@ -91,7 +89,7 @@ export default function SignIn() {
       )}
 
       {message && (
-        <div className="alert alert-success">
+        <div className="alert alert-success my-2">
           <ul>
             <li>{message}</li>
           </ul>
