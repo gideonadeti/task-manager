@@ -1,5 +1,5 @@
 /* Importing Google Fonts */
-@import url("https://fonts.googleapis.com/css2?family=Merriweather&family=Montserrat&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto&display=swap");
 
 /* Root Variables */
 :root {
@@ -11,7 +11,7 @@
 
 /* Typography */
 body {
-  font-family: "Merriweather", serif;
+  font-family: "Roboto", sans-serif;
 }
 
 h1,
@@ -20,7 +20,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Montserrat", serif;
   margin-bottom: 0;
 }
 
