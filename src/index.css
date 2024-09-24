@@ -107,3 +107,7 @@ a {
 .pointer-style {
   cursor: pointer;
 }
+
+.badge {
+  font-size: 0.64rem;
+}
