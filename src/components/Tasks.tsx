@@ -12,7 +12,7 @@ export function Tasks({ showSidebar }: { showSidebar: boolean }) {
       <h3>Inbox</h3>
       <div className="my-3 list-group list-group-flush">
         {tasks.map((task) => (
-          <Task task={task} />
+          <Task key={task.title} task={task} />
         ))}
       </div>
       <AddTaskButton className="max-content" />

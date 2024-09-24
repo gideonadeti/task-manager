@@ -4,6 +4,7 @@ import { DefaultTaskGroup } from "./DefaultTaskGroup";
 export function DefaultTaskGroups() {
   return defaultTaskGroups.map((defaultTaskGroup) => (
     <DefaultTaskGroup
+      key={defaultTaskGroup.groupName}
       groupName={defaultTaskGroup.groupName}
       iconName={defaultTaskGroup.iconName}
       to={defaultTaskGroup.to}
