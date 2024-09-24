@@ -43,3 +43,23 @@ export interface UserStore {
   setUser: (newUser: User) => void;
   clearUser: () => void;
 }
+
+export interface TaskGroupsStore {
+  taskGroups: TaskGroup[] | null;
+  setTaskGroups: (taskGroups: TaskGroup[]) => void;
+  clearTaskGroups: () => void;
+}
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  isCompleted: boolean;
+  dueDate: Date;
+  taskGroupId: string;
+}
+
+export interface TaskGroup {
+  id: string;
+  name: string;
+  tasks: Task[];
+}
