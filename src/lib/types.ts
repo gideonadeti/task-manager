@@ -23,6 +23,7 @@ export interface DefaultTaskGroupProps {
   iconName: string;
   groupName: string;
   to: string;
+  numOfTasks: number;
 }
 
 export interface TaskProps {
