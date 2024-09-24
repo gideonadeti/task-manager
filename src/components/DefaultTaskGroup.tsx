@@ -11,7 +11,9 @@ export function DefaultTaskGroup({
     <StyledLink to={to}>
       <i className={`bi-${iconName}`}></i>
       <p>{groupName}</p>
-      <span className="badge text-bg-secondary ms-auto">{numOfTasks}</span>
+      {typeof numOfTasks === "number" && numOfTasks > 0 && (
+        <span className="badge text-bg-secondary ms-auto">{numOfTasks}</span>
+      )}
     </StyledLink>
   );
 }

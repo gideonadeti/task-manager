@@ -23,7 +23,7 @@ export interface DefaultTaskGroupProps {
   iconName: string;
   groupName: string;
   to: string;
-  numOfTasks: number;
+  numOfTasks: number | undefined;
 }
 
 export interface TaskProps {
@@ -50,6 +50,13 @@ export interface TaskGroupsStore {
   setTaskGroups: (taskGroups: TaskGroup[]) => void;
   clearTaskGroups: () => void;
 }
+
+export interface TasksStore {
+  tasks: Task[] | null;
+  setTasks: (tasks: Task[]) => void;
+  clearTasks: () => void;
+}
+
 export interface Task {
   id: string;
   title: string;
