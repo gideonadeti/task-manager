@@ -31,7 +31,7 @@ export interface TaskProps {
   description: string;
   dueDate: Date;
   priority: "Low" | "Medium" | "High";
-  completed: boolean;
+  isCompleted: boolean;
 }
 
 export interface ErrorPageProps {
@@ -63,6 +63,7 @@ export interface Task {
   description: string;
   isCompleted: boolean;
   dueDate: Date;
+  priority: "Low" | "Medium" | "High";
   taskGroupId: string;
 }
 

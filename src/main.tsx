@@ -10,6 +10,7 @@ import SignUp from "./routes/SignUp";
 import SignIn from "./routes/SignIn";
 import ErrorPage from "./components/ErrorPage";
 import Index from "./routes/Index";
+import { Main } from "./components/Main";
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
       {
         path: "/auth/sign-in",
         element: <SignIn />,
+      },
+      {
+        path: "/task-groups/:taskGroupId",
+        element: <Main />,
       },
     ],
   },
