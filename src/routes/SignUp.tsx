@@ -39,7 +39,7 @@ export default function SignUp() {
       setErrs([]);
 
       setTimeout(() => {
-        redirectTo("/");
+        redirectTo("/task-groups/today");
       }, 1500);
     } catch (error) {
       console.error(error);
