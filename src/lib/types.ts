@@ -53,7 +53,7 @@ export interface TaskGroupsStore {
 }
 
 export interface TasksStore {
-  tasks: Task[] | null;
+  tasks: Task[] | [];
   setTasks: (tasks: Task[]) => void;
   clearTasks: () => void;
 }
