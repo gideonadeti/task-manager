@@ -13,6 +13,7 @@ export interface User {
 export interface ClickableElementProps {
   className?: string;
   children: ReactNode;
+  onClick?: () => void;
 }
 
 export interface StyledLinkProps extends ClickableElementProps {
