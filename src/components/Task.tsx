@@ -24,9 +24,9 @@ export function Task({ task }: { task: TaskProps }) {
   }
 
   function getPriorityClass(priority: string) {
-    return priority === "High"
+    return priority === "HIGH"
       ? "bg-danger-subtle"
-      : priority === "Medium"
+      : priority === "MEDIUM"
       ? "bg-warning-subtle"
       : "bg-success-subtle";
   }
