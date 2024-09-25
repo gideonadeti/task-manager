@@ -13,13 +13,14 @@ import { ClickableElement } from "./ClickableElement";
 import { useTaskGroupsStore } from "../stores/task-groups";
 import { TaskGroup } from "../lib/types";
 import axios from "../lib/axios-instance";
+import { redirectTo } from "../lib/redirect-to";
 
 interface TaskFormData {
   title: string;
   description: string;
   dueDate: string;
   priority: string;
-  group: string;
+  groupId: string;
 }
 
 interface Error {
@@ -77,8 +78,17 @@ function AddTaskModal({
       reset();
       setMessage(message);
 
+      const groupId = formValues.groupId;
+      const groupName = taskGroups?.find((group) => group.id === groupId)?.name;
+      let endPoint = "";
+      if (groupName === "Inbox") {
+        endPoint = "inbox";
+      } else {
+        endPoint = groupId;
+      }
+
       setTimeout(() => {
-        setMessage("");
+        redirectTo(`/task-groups/${endPoint}`);
       }, 3000);
     } catch (error) {
       console.error(error);
@@ -175,10 +185,10 @@ function AddTaskModal({
           <Form.Group>
             <Form.Label>Group</Form.Label>
             <Form.Select
-              {...register("group", { required: "Group is required" })}
+              {...register("groupId", { required: "Group is required" })}
             >
               {taskGroups?.map((group) => (
-                <option key={group.id} value={group.name}>
+                <option key={group.id} value={group.id}>
                   {group.name}
                 </option>
               ))}
