@@ -6,17 +6,25 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useForm } from "react-hook-form";
+import Alert from "react-bootstrap/Alert";
+import { AxiosError } from "axios";
+
 import { ClickableElement } from "./ClickableElement";
 import { useTaskGroupsStore } from "../stores/task-groups";
 import { TaskGroup } from "../lib/types";
+import axios from "../lib/axios-instance";
 
-type TaskFormData = {
+interface TaskFormData {
   title: string;
   description: string;
   dueDate: string;
   priority: string;
   group: string;
-};
+}
+
+interface Error {
+  msg: string;
+}
 
 export function AddTaskButton({ className }: { className?: string }) {
   const [show, setShow] = useState(false);
@@ -53,11 +61,52 @@ function AddTaskModal({
     },
   });
 
-  const onSubmit = (data: TaskFormData) => {
-    console.log("Task added:", data);
-    setShow(false);
-    reset();
-  };
+  const [loading, setLoading] = useState(false);
+  const [errs, setErrs] = useState<Error[] | []>([]);
+  const [message, setMessage] = useState("");
+
+  async function onSubmit(formValues: TaskFormData) {
+    try {
+      setLoading(true);
+      setErrs([]);
+
+      const { data } = await axios.post("/tasks", formValues);
+
+      const { message } = data;
+
+      reset();
+      setMessage(message);
+
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
+    } catch (error) {
+      console.error(error);
+
+      setMessage("");
+
+      if (error instanceof AxiosError) {
+        if (!error.response) {
+          return setErrs([
+            {
+              msg: "An error occurred during task addition. Please try again later.",
+            },
+          ]);
+        }
+
+        const responseErrors = error.response.data.errors;
+        setErrs(responseErrors);
+      } else {
+        setErrs([
+          {
+            msg: "An error occurred during task addition. Please try again later.",
+          },
+        ]);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <Modal
@@ -65,6 +114,8 @@ function AddTaskModal({
       onHide={() => {
         setShow(false);
         reset();
+        setMessage("");
+        setErrs([]);
       }}
       backdrop="static"
       keyboard={false}
@@ -74,6 +125,18 @@ function AddTaskModal({
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit(onSubmit)}>
+          {errs.length > 0 && (
+            <div className="alert alert-danger my-3">
+              <ul>
+                {errs.map((err, index) => (
+                  <li key={index}>{err.msg}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {message && <SuccessAlert message={message} />}
+
           <FloatingLabel label="Title" className="mb-3">
             <Form.Control
               {...register("title", { required: "Title is required" })}
@@ -96,9 +159,6 @@ function AddTaskModal({
               <Form.Group>
                 <Form.Label>Due date</Form.Label>
                 <Form.Control type="date" {...register("dueDate")} />
-                {errors.dueDate && (
-                  <p className="text-danger">{errors.dueDate.message}</p>
-                )}
               </Form.Group>
             </Col>
             <Col>
@@ -123,9 +183,6 @@ function AddTaskModal({
                 </option>
               ))}
             </Form.Select>
-            {errors.group && (
-              <p className="text-danger">{errors.group.message}</p>
-            )}
           </Form.Group>
         </Form>
       </Modal.Body>
@@ -135,6 +192,8 @@ function AddTaskModal({
           onClick={() => {
             setShow(false);
             reset();
+            setMessage("");
+            setErrs([]);
           }}
         >
           Cancel
@@ -143,10 +202,19 @@ function AddTaskModal({
           type="submit"
           variant="primary"
           onClick={handleSubmit(onSubmit)}
+          disabled={loading}
         >
-          Add
+          {loading ? "Adding..." : "Add"}
         </Button>
       </Modal.Footer>
     </Modal>
+  );
+}
+
+function SuccessAlert({ message }: { message: string }) {
+  return (
+    <Alert variant="success">
+      <p>{message}</p>
+    </Alert>
   );
 }
