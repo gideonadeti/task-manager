@@ -40,7 +40,8 @@ export function DefaultTaskGroups() {
         return numOfTasks;
       case "Overdue":
         numOfTasks = tasks?.filter(
-          (task) => isPast(task.dueDate) && !isToday(task.dueDate)
+          (task) =>
+            task.dueDate && isPast(task.dueDate) && !isToday(task.dueDate)
         ).length;
         return numOfTasks;
       default:
