@@ -56,6 +56,7 @@ function AddTaskModal({
   const onSubmit = (data: TaskFormData) => {
     console.log("Task added:", data);
     setShow(false);
+    reset();
   };
 
   return (
@@ -126,22 +127,26 @@ function AddTaskModal({
               <p className="text-danger">{errors.group.message}</p>
             )}
           </Form.Group>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setShow(false);
-                reset();
-              }}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary">
-              Add Task
-            </Button>
-          </Modal.Footer>
         </Form>
       </Modal.Body>
+      <Modal.Footer>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            setShow(false);
+            reset();
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          variant="primary"
+          onClick={handleSubmit(onSubmit)}
+        >
+          Add
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 }
