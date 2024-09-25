@@ -1,18 +1,29 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AxiosError } from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { FormValues } from "../lib/types";
 import { PasswordInput } from "../components/PasswordInput";
 import axios from "../lib/axios-instance";
 import { redirectTo } from "../lib/redirect-to";
+import { useUserStore } from "../stores/user";
 
 interface Error {
   message: string;
 }
 
 export default function SignIn() {
+  const { user } = useUserStore();
+  const navigate = useNavigate();
+
+  // Redirect if the user is already signed in
+  useEffect(() => {
+    if (user) {
+      navigate("/task-groups/today");
+    }
+  }, [user, navigate]);
+
   const {
     register,
     handleSubmit,
@@ -39,7 +50,7 @@ export default function SignIn() {
       setErrs([]);
 
       setTimeout(() => {
-        redirectTo("/task-groups/today")
+        redirectTo("/task-groups/today");
       }, 2000);
     } catch (error) {
       console.error(error);
@@ -72,6 +83,10 @@ export default function SignIn() {
     }
   }
 
+  if (user) {
+    return null;
+  }
+
   return (
     <div
       className="container mt-3 border p-3 rounded shadow-sm"
@@ -95,6 +110,7 @@ export default function SignIn() {
           </ul>
         </div>
       )}
+
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
