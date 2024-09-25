@@ -43,10 +43,10 @@ export function Task({ task }: { task: TaskProps }) {
         <p className="description">{task.description}</p>
         <div className="d-flex gap-2 py-1">
           <p className="due-date bg-primary-subtle">
-            Due Date: {formatDueDate(task.dueDate)}
+            Due Date: {task.dueDate ? formatDueDate(task.dueDate) : "undefined"}
           </p>
           <p className={`priority ${getPriorityClass(task.priority)}`}>
-            Priority: {task.priority}
+            Priority: {task.priority.toLowerCase()}
           </p>
         </div>
       </Link>
