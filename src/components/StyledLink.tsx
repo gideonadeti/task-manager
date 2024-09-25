@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 
 import { StyledLinkProps } from "../lib/types";
 
-export function StyledLink({ to, children }: StyledLinkProps) {
+export function StyledLink({ to, className, children }: StyledLinkProps) {
   return (
     <Link
       to={to}
-      className="d-flex align-items-center gap-2 hover-style px-2 py-1 rounded active-style text-reset"
+      className={`d-flex align-items-center gap-2 hover-style px-2 py-1 rounded active-style text-reset ${
+        className ? className : ""
+      }`}
     >
       {children}
     </Link>

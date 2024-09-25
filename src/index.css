@@ -111,3 +111,7 @@ a {
 .badge {
   font-size: 0.64rem;
 }
+
+.active-group {
+  background-color: var(--hover-color);
+}
