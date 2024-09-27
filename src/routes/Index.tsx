@@ -1,10 +1,17 @@
+import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/user";
-
-import { Main } from "../components/Main";
 import { Welcome } from "../components/Welcome";
+import { useEffect } from "react";
 
 export default function Index() {
   const { user } = useUserStore();
+  const navigate = useNavigate();
 
-  return user ? <Main /> : <Welcome />;
+  useEffect(() => {
+    if (user) {
+      navigate("/task-groups/today");
+    }
+  }, [user, navigate]);
+
+  return <Welcome />;
 }
