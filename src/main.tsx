@@ -11,6 +11,7 @@ import SignIn from "./routes/SignIn";
 import ErrorPage from "./components/ErrorPage";
 import Index from "./routes/Index";
 import { Main } from "./components/Main";
+import GoogleRedirect from "./routes/GoogleRedirect";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: "/task-groups/:taskGroupId",
         element: <Main />,
+      },
+      {
+        path: "/auth/google-redirect",
+        element: <GoogleRedirect />,
       },
     ],
   },
