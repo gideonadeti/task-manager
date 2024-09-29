@@ -1,18 +1,29 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AxiosError } from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { FormValues } from "../lib/types";
 import { PasswordInput } from "../components/PasswordInput";
 import axios from "../lib/axios-instance";
 import { redirectTo } from "../lib/redirect-to";
+import { useUserStore } from "../stores/user";
 
 interface Error {
   message: string;
 }
 
 export default function SignUp() {
+  const { user } = useUserStore();
+  const navigate = useNavigate();
+
+  // Redirect if the user is already signed in
+  useEffect(() => {
+    if (user) {
+      navigate("/task-groups/today");
+    }
+  }, [user, navigate]);
+
   const {
     register,
     handleSubmit,
@@ -70,6 +81,10 @@ export default function SignUp() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (user) {
+    return null;
   }
 
   return (
@@ -179,7 +194,10 @@ export default function SignUp() {
         <hr className="flex-grow-1" />
       </div>
 
-      <button className="btn btn-light border w-100">
+      <button
+        className="btn btn-light border w-100"
+        onClick={() => redirectTo("http://localhost:3000/api/auth/google")}
+      >
         <i className="bi bi-google me-2"></i> Continue with Google
       </button>
     </div>

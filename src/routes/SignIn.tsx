@@ -165,7 +165,10 @@ export default function SignIn() {
         <hr className="flex-grow-1" />
       </div>
 
-      <button className="btn btn-light border w-100">
+      <button
+        className="btn btn-light border w-100"
+        onClick={() => redirectTo("http://localhost:3000/api/auth/google")}
+      >
         <i className="bi bi-google me-2"></i> Continue with Google
       </button>
     </div>
