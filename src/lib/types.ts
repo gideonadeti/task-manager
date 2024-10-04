@@ -47,7 +47,7 @@ export interface UserStore {
 }
 
 export interface TaskGroupsStore {
-  taskGroups: TaskGroup[] | null;
+  taskGroups: TaskGroup[] | [];
   setTaskGroups: (taskGroups: TaskGroup[]) => void;
   clearTaskGroups: () => void;
 }
