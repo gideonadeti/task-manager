@@ -1,6 +1,7 @@
 import { AddTaskButton } from "./AddTaskButton";
 import { DefaultTaskGroups } from "./DefaultTaskGroups";
 import { AddTaskGroup } from "./AddTaskGroup";
+import CustomTaskGroups from "./CustomTaskGroups";
 
 export function Sidebar({ showSidebar }: { showSidebar: boolean }) {
   return (
@@ -14,6 +15,7 @@ export function Sidebar({ showSidebar }: { showSidebar: boolean }) {
         <DefaultTaskGroups />
       </div>
       <AddTaskGroup />
+      <CustomTaskGroups />
     </div>
   );
 }
