@@ -28,6 +28,8 @@ export interface DefaultTaskGroupProps {
 }
 
 export interface TaskProps {
+  taskGroupId: string;
+  id: string;
   title: string;
   description: string;
   dueDate: Date;

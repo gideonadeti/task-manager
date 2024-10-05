@@ -38,7 +38,7 @@ export function Task({ task }: { task: TaskProps }) {
         name="completed"
         className="form-check-input rounded-circle me-3 pointer-style"
       />
-      <Link to={`/tasks/taskId`} className="text-reset">
+      <Link to={`/task-groups/${task.taskGroupId}/tasks/${task.id}`} className="text-reset">
         <h5>{task.title}</h5>
         <p className="description">{task.description}</p>
         <div className="d-flex gap-2 py-1">
