@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { ClerkProvider, SignedIn, SignedOut, SignIn } from "@clerk/nextjs";
 
 import "./globals.css";
 
@@ -16,7 +17,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Task Manager",
-  description: "A web app for managing tasks",
+  description: "A web app for managing tasks.",
 };
 
 export default function RootLayout({
@@ -27,9 +28,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} flex flex-col overflow-hidden h-screen`}
       >
-        {children}
+        <ClerkProvider>
+          <SignedIn>{children}</SignedIn>
+          <SignedOut>
+            <div className="flex-grow flex justify-between items-center">
+              <div className="flex flex-col">
+                <h3>Welcome to Task Manager</h3>
+                <p>A web app for managing tasks.</p>
+              </div>
+              <SignIn />
+            </div>
+          </SignedOut>
+        </ClerkProvider>
       </body>
     </html>
   );
