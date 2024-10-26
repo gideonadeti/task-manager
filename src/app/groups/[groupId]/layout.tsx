@@ -1,19 +1,16 @@
-"use client";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 
 import Header from "@/app/components/Header";
 
-export default function GroupPageLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      className="d-flex flex-column overflow-hidden"
-      style={{ height: "100vh" }}
-    >
-      <Header />
-      <div className="flex-grow-1 d-flex position-relative">{children}</div>
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <main className="flex-grow flex flex-col h-screen overflow-y-hidden">
+        <Header />
+        {children}
+      </main>
+    </SidebarProvider>
   );
 }
