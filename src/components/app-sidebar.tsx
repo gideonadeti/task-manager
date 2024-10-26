@@ -21,7 +21,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarGroupAction,
-} from "@/components/ui/sidebar";
+  SidebarFooter,
+} from "./ui/sidebar";
+import AddTask from "./add-task";
 
 // Default Groups
 const defaultGroups = [
@@ -88,6 +90,9 @@ export function AppSidebar() {
           </SidebarGroupAction>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <AddTask />
+      </SidebarFooter>
     </Sidebar>
   );
 }
