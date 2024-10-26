@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import { ClerkProvider, SignedIn, SignedOut, SignIn } from "@clerk/nextjs";
 
 import "./globals.css";
-import { H1 } from "./ui/HTags";
+import { H3 } from "./ui/HTags";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,8 +33,8 @@ export default function RootLayout({
           <SignedIn>{children}</SignedIn>
           <SignedOut>
             <div className="flex flex-col md:flex-row items-center justify-around gap-8 h-screen overflow-y-auto p-8">
-              <div className="flex flex-col text-center">
-                <H1>Welcome to Task Manager</H1>
+              <div className="flex flex-col text-center lg:text-left">
+                <H3>Welcome to Task Manager</H3>
                 <p>A web app for managing tasks.</p>
               </div>
               <div className="flex items-center justify-center">
