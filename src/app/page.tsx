@@ -1,9 +1,14 @@
-import Header from "./components/Header";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div>
-      <Header />
-    </div>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push("/groups/today");
+  });
+
+  return null;
 }
