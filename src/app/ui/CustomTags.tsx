@@ -3,6 +3,8 @@ interface HeadingProps {
   className?: string;
 }
 
+interface ParagraphProps extends HeadingProps {}
+
 export function H1({ children, className = "" }: HeadingProps) {
   return (
     <h1
@@ -40,5 +42,13 @@ export function H4({ children, className = "" }: HeadingProps) {
     >
       {children}
     </h4>
+  );
+}
+
+export function P({ children, className = "" }: ParagraphProps) {
+  return (
+    <p className={`leading-7 [&:not(:first-child)]:mt-6 ${className}`}>
+      {children}
+    </p>
   );
 }
