@@ -4,7 +4,7 @@ import { ClerkProvider, SignedIn, SignedOut, SignIn } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
-import { H3 } from "./ui/HTags";
+import { H1, H3 } from "./ui/CustomTags";
 import QCProvider from "./components/QCProvider";
 
 const geistSans = localFont({
@@ -41,8 +41,8 @@ export default function RootLayout({
           <SignedOut>
             <div className="flex flex-col md:flex-row items-center justify-around gap-8 h-screen overflow-y-auto p-8">
               <div className="flex flex-col text-center lg:text-left">
-                <H3>Welcome to Task Manager</H3>
-                <p>A web app for managing tasks.</p>
+                <H1>Welcome to Task Manager</H1>
+                <H3>A web app for managing tasks.</H3>
               </div>
               <div className="flex items-center justify-center">
                 <SignIn />
