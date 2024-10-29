@@ -47,3 +47,19 @@ export async function createGroup(name: string, userId: string) {
     throw error;
   }
 }
+
+export async function readTasks(userId: string) {
+  try {
+    const tasks = await prismaClient.task.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    return tasks;
+  } catch (error) {
+    console.error("Error reading groups:", error);
+
+    throw error;
+  }
+}
