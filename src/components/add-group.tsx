@@ -58,7 +58,7 @@ function AddGroupForm() {
       queryClient.invalidateQueries({
         queryKey: ["groups"],
       });
-      form.reset();
+      form.reset({ name: "" });
 
       toast({
         description: message,
