@@ -28,3 +28,17 @@ export async function createGroup(name: string, userId: string) {
     throw error;
   }
 }
+
+export async function readTasks(userId: string) {
+  try {
+    const response = await axios.get("/api/tasks", {
+      params: { userId },
+    });
+
+    return response.data.tasks;
+  } catch (error) {
+    console.error(error);
+
+    throw error;
+  }
+}
