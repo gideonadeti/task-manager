@@ -6,7 +6,6 @@ import {
   Calendar,
   CalendarRange,
   AlertTriangle,
-  Plus,
   FolderOpen,
   FolderClosed,
 } from "lucide-react";
@@ -28,6 +27,7 @@ import {
   SidebarFooter,
 } from "./ui/sidebar";
 import AddTask from "./add-task";
+import AddGroup from "./add-group";
 
 // Default Groups
 const defaultGroups = [
@@ -97,7 +97,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Personal Groups</SidebarGroupLabel>
           <SidebarGroupAction title="Add Group">
-            <Plus /> <span className="sr-only">Add Group</span>
+            <AddGroup />
           </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>

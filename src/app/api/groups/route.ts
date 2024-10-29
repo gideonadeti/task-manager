@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { readGroups } from "../../../../prisma/db";
+import { readGroups, createGroup } from "../../../../prisma/db";
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -19,6 +19,26 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       { error: "Something went wrong while reading groups." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  const { name, userId } = await req.json();
+
+  try {
+    await createGroup(name, userId);
+
+    return NextResponse.json(
+      { message: "Group created successfully." },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { error: "Something went wrong while creating group." },
       { status: 500 }
     );
   }

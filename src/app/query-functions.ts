@@ -1,12 +1,27 @@
 import axios from "axios";
 
-export async function fetchGroups(userId: string) {
+export async function readGroups(userId: string) {
   try {
     const response = await axios.get("/api/groups", {
       params: { userId },
     });
 
     return response.data.groups;
+  } catch (error) {
+    console.error(error);
+
+    throw error;
+  }
+}
+
+export async function createGroup(name: string, userId: string) {
+  try {
+    const response = await axios.post("/api/groups", {
+      name,
+      userId,
+    });
+
+    return response.data.message;
   } catch (error) {
     console.error(error);
 
