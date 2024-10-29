@@ -7,9 +7,13 @@ import {
   CalendarRange,
   AlertTriangle,
   Plus,
+  FolderOpen,
+  FolderClosed,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { Group } from "@prisma/client";
 
 import {
   Sidebar,
@@ -56,6 +60,13 @@ const defaultGroups = [
 
 export function AppSidebar() {
   const { groupId } = useParams();
+  const { data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
+  let personalGroups: Group[] = [];
+
+  if (groups && groups.length > 0) {
+    personalGroups = groups.filter((group) => group.name !== "Inbox");
+  }
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -88,6 +99,28 @@ export function AppSidebar() {
           <SidebarGroupAction title="Add Group">
             <Plus /> <span className="sr-only">Add Group</span>
           </SidebarGroupAction>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {personalGroups.length > 0 &&
+                personalGroups.map((personalGroup) => (
+                  <SidebarMenuItem key={personalGroup.id}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={groupId === personalGroup.id}
+                    >
+                      <Link href={`/groups/${personalGroup.id}`}>
+                        {groupId === personalGroup.id ? (
+                          <FolderOpen />
+                        ) : (
+                          <FolderClosed />
+                        )}
+                        <span>{personalGroup.name}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
