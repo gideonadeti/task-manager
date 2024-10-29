@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useUser } from "@clerk/nextjs";
 
-import { fetchGroups } from "@/app/query-functions";
+import { readGroups } from "@/app/query-functions";
 import Spinner from "@/app/components/Spinner";
 import { Group } from "@prisma/client";
 
@@ -15,7 +15,7 @@ export default function GroupPage() {
     error,
   } = useQuery({
     queryKey: ["groups"],
-    queryFn: () => fetchGroups(user!.id),
+    queryFn: () => readGroups(user!.id),
   });
 
   return (
