@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   try {
     const tasks = await readTasks(userId);
 
-    return NextResponse.json({ tasks }, { status: 500 });
+    return NextResponse.json({ tasks }, { status: 200 });
   } catch (error) {
     console.error(error);
 
