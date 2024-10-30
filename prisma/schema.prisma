@@ -14,7 +14,7 @@ model Task {
   description String?
   dueDate     DateTime?
   completed   Boolean   @default(false)
-  Group       Group     @relation(fields: [groupId], references: [id])
+  group       Group     @relation(fields: [groupId], references: [id])
   groupId     String
   userId      String?
   createdAt   DateTime  @default(now())
