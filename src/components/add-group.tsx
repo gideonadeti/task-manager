@@ -62,6 +62,7 @@ function AddGroupForm() {
 
       toast({
         description: message,
+        variant: "success",
       });
     },
     onError: (error) => {
