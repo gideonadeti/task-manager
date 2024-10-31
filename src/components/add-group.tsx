@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Plus } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -14,7 +13,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -29,25 +27,31 @@ const formSchema = z.object({
   name: z.string(),
 });
 
-export default function AddGroup() {
+export default function AddGroup({
+  open,
+  onOpenChange,
+  defaultValue,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  defaultValue: string;
+}) {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Plus />
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Group</DialogTitle>
         </DialogHeader>
-        <AddGroupForm />
+        <AddGroupForm defaultValue={defaultValue} />
       </DialogContent>
     </Dialog>
   );
 }
 
-function AddGroupForm() {
+function AddGroupForm({ defaultValue }: { defaultValue: string }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: { name: defaultValue },
   });
   const queryClient = useQueryClient();
   const { user } = useUser();
