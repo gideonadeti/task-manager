@@ -8,10 +8,17 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+enum Priority {
+  low
+  medium
+  high
+}
+
 model Task {
   id          String    @id @default(cuid())
   title       String
   description String?
+  priority    Priority
   dueDate     DateTime?
   completed   Boolean   @default(false)
   group       Group     @relation(fields: [groupId], references: [id])
