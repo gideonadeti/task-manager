@@ -6,12 +6,15 @@ import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { isToday, isTomorrow, isThisWeek, isPast } from "date-fns";
+import { isToday, isTomorrow, isThisWeek, isPast, compareAsc } from "date-fns";
+import { Task } from "@prisma/client";
 
 import { readGroups, readTasks } from "@/app/query-functions";
 import Spinner from "@/app/components/Spinner";
-import { ExtendedGroup, ExtendedTask } from "@/app/type";
+import { ExtendedGroup } from "@/app/type";
 import { P } from "@/app/ui/CustomTags";
+import { TasksTable } from "@/app/components/TasksTable";
+import { columns } from "@/app/components/TasksTableColumns";
 
 export default function GroupPage() {
   const { user } = useUser();
@@ -29,7 +32,7 @@ export default function GroupPage() {
     status: tasksStatus,
     data: tasks,
     error: tasksError,
-  } = useQuery<ExtendedTask[], AxiosError>({
+  } = useQuery<Task[], AxiosError>({
     queryKey: ["tasks"],
     queryFn: () => readTasks(user!.id),
   });
@@ -55,41 +58,71 @@ export default function GroupPage() {
   }, [groupsError, groupsStatus, tasksError, tasksStatus, toast]);
 
   const filteredTasks = useMemo(() => {
-    if (!groupId || !tasks?.length) return [];
+    if (!tasks?.length) return [];
 
+    // Filter tasks based on the selected group
+    let result;
     switch (groupId) {
       case "inbox": {
         const inboxGroup = groups?.find((group) => group.name === "Inbox");
-        return inboxGroup ? inboxGroup.tasks : [];
+        result = inboxGroup ? inboxGroup.tasks : [];
+        break;
       }
       case "today":
-        return tasks.filter((task) => task.dueDate && isToday(task.dueDate));
+        result = tasks.filter((task) => task.dueDate && isToday(task.dueDate));
+        break;
       case "tomorrow":
-        return tasks.filter((task) => task.dueDate && isTomorrow(task.dueDate));
+        result = tasks.filter(
+          (task) => task.dueDate && isTomorrow(task.dueDate)
+        );
+        break;
       case "this-week":
-        return tasks.filter((task) => task.dueDate && isThisWeek(task.dueDate));
-      case "past":
-        return tasks.filter(
+        result = tasks.filter(
+          (task) => task.dueDate && isThisWeek(task.dueDate)
+        );
+        break;
+      case "overdue":
+        result = tasks.filter(
           (task) =>
             task.dueDate && isPast(task.dueDate) && !isToday(task.dueDate)
         );
+        break;
       default:
-        return tasks.filter((task) => task.groupId === groupId);
+        result = tasks.filter((task) => task.groupId === groupId);
+        break;
     }
+
+    // Sort tasks by dueDate in ascending order (oldest first) and then by priority
+    return result.sort((a, b) => {
+      if (!a.dueDate || !b.dueDate) return 0;
+
+      const dateComparison = compareAsc(a.dueDate, b.dueDate);
+
+      if (dateComparison !== 0) return dateComparison; // If due dates are different, return that result
+
+      // If due dates are the same, sort by priority
+      const priorityOrder = { low: 1, medium: 2, high: 3 };
+
+      return (
+        (priorityOrder[a.priority] || 0) - (priorityOrder[b.priority] || 0)
+      );
+    });
   }, [groupId, groups, tasks]);
 
   return (
-    <div className="flex-grow p-2">
+    <div className="flex-grow">
       <div className="flex items-center justify-center">
         {(groupsStatus === "pending" || tasksStatus === "pending") && (
           <Spinner />
         )}
-        {filteredTasks.length > 0 ? (
-          <P>{filteredTasks.length} tasks found in this group</P>
-        ) : (
-          <P className="text-center">No tasks found in this group</P>
-        )}
       </div>
+      {filteredTasks.length > 0 ? (
+        <TasksTable columns={columns} data={filteredTasks} />
+      ) : (
+        !(tasksStatus === "pending" || groupsStatus === "pending") && (
+          <P className="text-center">No tasks found in this group</P>
+        )
+      )}
     </div>
   );
 }
