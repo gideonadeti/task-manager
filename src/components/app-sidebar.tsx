@@ -68,18 +68,20 @@ const defaultGroups = [
 ];
 
 export function AppSidebar() {
-  const { groupId } = useParams();
+  const { groupId } = useParams() as { groupId: string };
   const { data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
   const [open, setOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
+  const [groupUpdateId, setGroupUpdateId] = useState("");
   let personalGroups: Group[] = [];
 
   if (groups && groups.length > 0) {
     personalGroups = groups.filter((group) => group.name !== "Inbox");
   }
 
-  function handleEdit(groupName: string) {
+  function handleEdit(groupName: string, groupUpdateId: string) {
     setGroupName(groupName);
+    setGroupUpdateId(groupUpdateId);
     setOpen(true);
   }
 
@@ -147,7 +149,9 @@ export function AppSidebar() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuItem
-                          onClick={() => handleEdit(personalGroup.name)}
+                          onClick={() =>
+                            handleEdit(personalGroup.name, personalGroup.id)
+                          }
                         >
                           <span>Edit</span>
                         </DropdownMenuItem>
@@ -164,7 +168,12 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <AddTask />
-        <AddGroup open={open} onOpenChange={setOpen} defaultValue={groupName} />
+        <AddGroup
+          open={open}
+          onOpenChange={setOpen}
+          defaultValue={groupName}
+          groupUpdateId={groupUpdateId}
+        />
       </SidebarFooter>
     </Sidebar>
   );

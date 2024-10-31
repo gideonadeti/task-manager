@@ -3,10 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useUser } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createGroup } from "@/app/query-functions";
+import { createGroup, updateGroup } from "@/app/query-functions";
 import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
@@ -31,24 +32,37 @@ export default function AddGroup({
   open,
   onOpenChange,
   defaultValue,
+  groupUpdateId,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   defaultValue: string;
+  groupUpdateId: string;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Group</DialogTitle>
+          <DialogTitle>
+            {defaultValue ? "Update Group" : "Add Group"}
+          </DialogTitle>
         </DialogHeader>
-        <AddGroupForm defaultValue={defaultValue} />
+        <AddGroupForm
+          defaultValue={defaultValue}
+          groupUpdateId={groupUpdateId}
+        />
       </DialogContent>
     </Dialog>
   );
 }
 
-function AddGroupForm({ defaultValue }: { defaultValue: string }) {
+function AddGroupForm({
+  defaultValue,
+  groupUpdateId,
+}: {
+  defaultValue: string;
+  groupUpdateId: string;
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: defaultValue },
@@ -57,7 +71,13 @@ function AddGroupForm({ defaultValue }: { defaultValue: string }) {
   const { user } = useUser();
   const { toast } = useToast();
   const { mutate, status } = useMutation({
-    mutationFn: ({ name }: { name: string }) => createGroup(name, user!.id),
+    mutationFn: ({ name }: { name: string }) => {
+      if (defaultValue) {
+        return updateGroup(groupUpdateId, name);
+      } else {
+        return createGroup(name, user!.id);
+      }
+    },
     onSuccess: (message) => {
       queryClient.invalidateQueries({
         queryKey: ["groups"],
@@ -72,10 +92,19 @@ function AddGroupForm({ defaultValue }: { defaultValue: string }) {
     onError: (error) => {
       console.error(error);
 
-      toast({
-        variant: "destructive",
-        description: error.message,
-      });
+      if (error instanceof AxiosError && error.response) {
+        const errorMessage = (error.response.data as { error: string }).error;
+
+        toast({
+          description: errorMessage || "Something went wrong",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "Something went wrong",
+        });
+      }
     },
   });
 
@@ -101,7 +130,11 @@ function AddGroupForm({ defaultValue }: { defaultValue: string }) {
         />
 
         <Button type="submit" disabled={status === "pending"}>
-          {status === "pending" ? "Submitting" : "Submit"}
+          {status === "pending"
+            ? "Submitting"
+            : defaultValue
+            ? "Update"
+            : "Submit"}
         </Button>
       </form>
     </Form>
