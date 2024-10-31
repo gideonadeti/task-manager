@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   const { name, userId } = await req.json();
 
   try {
-    await createGroup(name, userId);
+    await createGroup(name.trim(), userId.trim());
 
     return NextResponse.json(
       { message: "Group created successfully." },
