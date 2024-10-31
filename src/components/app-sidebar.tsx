@@ -25,9 +25,17 @@ import {
   SidebarMenuItem,
   SidebarGroupAction,
   SidebarFooter,
+  SidebarMenuAction,
 } from "./ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "./ui/dropdown-menu";
 import AddTask from "./add-task";
 import AddGroup from "./add-group";
+import { MoreHorizontal } from "lucide-react";
 
 // Default Groups
 const defaultGroups = [
@@ -117,6 +125,22 @@ export function AppSidebar() {
                         <span>{personalGroup.name}</span>
                       </Link>
                     </SidebarMenuButton>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <SidebarMenuAction showOnHover>
+                          <MoreHorizontal />
+                          <span className="sr-only">More</span>
+                        </SidebarMenuAction>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem>
+                          <span>Edit</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <span>Delete</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </SidebarMenuItem>
                 ))}
             </SidebarMenu>
