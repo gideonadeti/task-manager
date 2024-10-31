@@ -38,22 +38,36 @@ export default function GroupPage() {
   });
 
   useEffect(() => {
-    if (groupsStatus === "error") {
-      const errorMessage = (groupsError?.response?.data as { error: string })
-        .error;
-      toast({
-        description: errorMessage || "Something went wrong",
-        variant: "destructive",
-      });
-    }
+    if (groupsStatus === "error" || tasksStatus === "error") {
+      if (groupsError?.response) {
+        const errorMessage = (groupsError.response.data as { error: string })
+          .error;
 
-    if (tasksStatus === "error") {
-      const errorMessage = (tasksError?.response?.data as { error: string })
-        .error;
-      toast({
-        description: errorMessage || "Something went wrong",
-        variant: "destructive",
-      });
+        toast({
+          description: errorMessage || "Something went wrong",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          description: "Something went wrong",
+          variant: "destructive",
+        });
+      }
+
+      if (tasksError?.response) {
+        const errorMessage = (tasksError.response.data as { error: string })
+          .error;
+
+        toast({
+          description: errorMessage || "Something went wrong",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          description: "Something went wrong",
+          variant: "destructive",
+        });
+      }
     }
   }, [groupsError, groupsStatus, tasksError, tasksStatus, toast]);
 
