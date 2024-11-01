@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Group } from "@prisma/client";
+import { Group, Task } from "@prisma/client";
 import { useState } from "react";
 import {
   Inbox,
@@ -16,6 +16,7 @@ import {
   MoreHorizontal,
   Plus,
 } from "lucide-react";
+import { isToday, isTomorrow, isThisWeek, isPast } from "date-fns";
 
 import AddTask from "./add-task";
 import AddGroup from "./add-group";
@@ -32,6 +33,7 @@ import {
   SidebarGroupAction,
   SidebarFooter,
   SidebarMenuAction,
+  SidebarMenuBadge,
 } from "./ui/sidebar";
 import {
   DropdownMenu,
@@ -71,16 +73,15 @@ const defaultGroups = [
 export function AppSidebar() {
   const { groupId } = useParams() as { groupId: string };
   const { data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
+  const { data: tasks } = useQuery<Task[]>({ queryKey: ["tasks"] });
   const [open, setOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [groupUpdateId, setGroupUpdateId] = useState("");
   const [groupDeleteId, setGroupDeleteId] = useState("");
   const [openDelete, setOpenDelete] = useState(false);
-  let personalGroups: Group[] = [];
 
-  if (groups && groups.length > 0) {
-    personalGroups = groups.filter((group) => group.name !== "Inbox");
-  }
+  const personalGroups =
+    groups?.filter((group) => group.name !== "Inbox") || [];
 
   function handleEdit(groupName: string, groupUpdateId: string) {
     setGroupName(groupName);
@@ -98,6 +99,35 @@ export function AppSidebar() {
     setOpenDelete(true);
   }
 
+  function getNumOfTasksDefault(groupName: string) {
+    if (!tasks) return 0;
+
+    switch (groupName) {
+      case "Inbox": {
+        const inboxGroupId = groups?.find(
+          (group) => group.name === "Inbox"
+        )?.id;
+        return tasks.filter((task) => task.groupId === inboxGroupId).length;
+      }
+      case "Today":
+        return tasks.filter((task) => task.dueDate && isToday(task.dueDate))
+          .length;
+      case "Tomorrow":
+        return tasks.filter((task) => task.dueDate && isTomorrow(task.dueDate))
+          .length;
+      case "This Week":
+        return tasks.filter((task) => task.dueDate && isThisWeek(task.dueDate))
+          .length;
+      case "Overdue":
+        return tasks.filter(
+          (task) =>
+            task.dueDate && isPast(task.dueDate) && !isToday(task.dueDate)
+        ).length;
+      default:
+        return 0;
+    }
+  }
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -110,6 +140,7 @@ export function AppSidebar() {
                   groupId === defaultGroup.name.toLowerCase() ||
                   (groupId === "this-week" &&
                     defaultGroup.name === "This Week");
+                const numOfTasks = getNumOfTasksDefault(defaultGroup.name);
 
                 return (
                   <SidebarMenuItem key={defaultGroup.name}>
@@ -119,6 +150,9 @@ export function AppSidebar() {
                         <span>{defaultGroup.name}</span>
                       </Link>
                     </SidebarMenuButton>
+                    {numOfTasks > 0 && (
+                      <SidebarMenuBadge>{numOfTasks}</SidebarMenuBadge>
+                    )}
                   </SidebarMenuItem>
                 );
               })}
