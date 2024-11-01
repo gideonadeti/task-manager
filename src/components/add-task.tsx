@@ -1,14 +1,20 @@
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUser } from "@clerk/nextjs";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { AxiosError } from "axios";
+import { Group } from "@prisma/client";
 
+import { useToast } from "@/hooks/use-toast";
+import { createTask } from "@/app/query-functions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -37,11 +43,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-// Update dueDate to z.date() to match Date type expected by Calendar
 const formSchema = z.object({
-  title: z.string(),
+  title: z.string().min(1, { message: "Title is required" }),
   description: z.string(),
-  dueDate: z.date(),
+  dueDate: z.date().optional(),
   priority: z.string(),
   groupId: z.string(),
 });
@@ -63,16 +68,52 @@ export default function AddTask() {
 }
 
 function AddTaskForm() {
+  const { data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
+  const queryClient = useQueryClient();
+  const { user } = useUser();
+  const { toast } = useToast();
+
+  const defaultValues = {
+    title: "",
+    description: "",
+    groupId: groups?.find((group) => group.name === "Inbox")?.id || "",
+    priority: "medium",
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      groupId: "inbox",
-      priority: "medium",
+    defaultValues,
+  });
+
+  const { mutate, status } = useMutation({
+    mutationFn: ({
+      title,
+      description,
+      dueDate,
+      priority,
+      groupId,
+    }: z.infer<typeof formSchema>) =>
+      createTask(title, description, priority, groupId, user!.id, dueDate),
+    onSuccess: (message) => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+      form.reset(defaultValues);
+
+      toast({ description: message, variant: "success" });
+    },
+    onError: (error) => {
+      const description =
+        error instanceof AxiosError && error.response
+          ? (error.response.data as { error: string }).error ||
+            "Something went wrong"
+          : "Something went wrong";
+
+      toast({ description, variant: "destructive" });
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    mutate(values);
   }
 
   return (
@@ -147,9 +188,11 @@ function AddTaskForm() {
                     <SelectValue placeholder="Select group" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="inbox">Inbox</SelectItem>
-                    <SelectItem value="work">Work</SelectItem>
-                    <SelectItem value="personal">Personal</SelectItem>
+                    {groups?.map((group) => (
+                      <SelectItem key={group.id} value={group.id}>
+                        {group.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -168,7 +211,7 @@ function AddTaskForm() {
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
-                      variant={"outline"}
+                      variant="outline"
                       className={cn(
                         "w-[240px] pl-3 text-left font-normal",
                         !field.value && "text-muted-foreground"
@@ -186,9 +229,8 @@ function AddTaskForm() {
                 <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
                   <Select
                     onValueChange={(value) => {
-                      const days = parseInt(value, 10);
                       const date = new Date();
-                      date.setDate(date.getDate() + days);
+                      date.setDate(date.getDate() + parseInt(value, 10));
                       field.onChange(date);
                     }}
                   >
@@ -216,7 +258,9 @@ function AddTaskForm() {
           )}
         />
 
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={status === "pending"}>
+          {status === "pending" ? "Submitting..." : "Submit"}
+        </Button>
       </form>
     </Form>
   );

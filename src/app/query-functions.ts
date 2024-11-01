@@ -68,3 +68,30 @@ export async function deleteGroup(groupId: string) {
     throw error;
   }
 }
+
+export async function createTask(
+  title: string,
+  description: string,
+  priority: string,
+  groupId: string,
+  userId: string,
+  dueDate?: Date,
+) {
+  try {
+    const response = await axios.post("/api/tasks", {
+      title,
+      description,
+      dueDate,
+      priority,
+      groupId,
+      userId,
+    });
+
+    return response.data.message;
+  } catch (error) {
+    console.error(error);
+
+    throw error;
+  }
+}
+

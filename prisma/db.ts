@@ -112,3 +112,47 @@ export async function deleteGroup(groupId: string) {
     throw error;
   }
 }
+
+export async function createTask(
+  title: string,
+  description: string,
+  dueDate: Date,
+  priority: "low" | "medium" | "high",
+  groupId: string,
+  userId: string
+) {
+  try {
+    const task = await prismaClient.task.create({
+      data: {
+        title,
+        description,
+        dueDate,
+        priority,
+        groupId,
+        userId,
+      },
+    });
+
+    return task;
+  } catch (error) {
+    console.error("Error creating task:", error);
+
+    throw error;
+  }
+}
+
+export async function readTask(name: string) {
+  try {
+    const task = await prismaClient.task.findFirst({
+      where: {
+        title: name,
+      },
+    });
+
+    return task;
+  } catch (error) {
+    console.error("Error reading task:", error);
+
+    throw error;
+  }
+}
