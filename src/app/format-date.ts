@@ -7,7 +7,11 @@ import {
   isThisYear,
 } from "date-fns";
 
-export default function formatDate(date: Date) {
+export default function formatDate(date: Date | undefined) {
+  if (!date) {
+    return "undefined";
+  }
+
   const distanceToNow = formatDistanceToNow(date, { addSuffix: true });
 
   if (isToday(date)) {
