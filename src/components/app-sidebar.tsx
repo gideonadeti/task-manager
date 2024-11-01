@@ -19,6 +19,7 @@ import {
 
 import AddTask from "./add-task";
 import AddGroup from "./add-group";
+import DeleteGroup from "./delete-group";
 import {
   Sidebar,
   SidebarContent,
@@ -73,6 +74,8 @@ export function AppSidebar() {
   const [open, setOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [groupUpdateId, setGroupUpdateId] = useState("");
+  const [groupDeleteId, setGroupDeleteId] = useState("");
+  const [openDelete, setOpenDelete] = useState(false);
   let personalGroups: Group[] = [];
 
   if (groups && groups.length > 0) {
@@ -88,6 +91,11 @@ export function AppSidebar() {
   function handleAdd() {
     setGroupName("");
     setOpen(true);
+  }
+
+  function handleDelete(groupDeleteId: string) {
+    setGroupDeleteId(groupDeleteId);
+    setOpenDelete(true);
   }
 
   return (
@@ -155,7 +163,9 @@ export function AppSidebar() {
                         >
                           <span>Edit</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(personalGroup.id)}
+                        >
                           <span>Delete</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -173,6 +183,11 @@ export function AppSidebar() {
           onOpenChange={setOpen}
           defaultValue={groupName}
           groupUpdateId={groupUpdateId}
+        />
+        <DeleteGroup
+          open={openDelete}
+          onOpenChange={setOpenDelete}
+          groupDeleteId={groupDeleteId}
         />
       </SidebarFooter>
     </Sidebar>

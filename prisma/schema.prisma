@@ -21,7 +21,7 @@ model Task {
   priority    Priority
   dueDate     DateTime?
   completed   Boolean   @default(false)
-  group       Group     @relation(fields: [groupId], references: [id])
+  group       Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId     String
   userId      String
   createdAt   DateTime  @default(now())
