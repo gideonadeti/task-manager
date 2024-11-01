@@ -15,6 +15,7 @@ import {
   FolderClosed,
   MoreHorizontal,
   Plus,
+  CheckCircle,
 } from "lucide-react";
 import { isToday, isTomorrow, isThisWeek, isPast } from "date-fns";
 
@@ -49,6 +50,7 @@ const defaultGroups = [
   { name: "Tomorrow", href: "/groups/tomorrow", icon: Calendar },
   { name: "This Week", href: "/groups/this-week", icon: CalendarRange },
   { name: "Overdue", href: "/groups/overdue", icon: AlertTriangle },
+  { name: "Completed", href: "/groups/completed", icon: CheckCircle },
 ];
 
 export function AppSidebar() {
@@ -105,6 +107,8 @@ export function AppSidebar() {
           (task) =>
             task.dueDate && isPast(task.dueDate) && !isToday(task.dueDate)
         ).length;
+      case "Completed":
+        return tasks.filter((task) => task.completed).length;
       default:
         return 0;
     }
