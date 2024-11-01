@@ -59,7 +59,7 @@ export function TasksTable<TData, TValue>({
   });
 
   return (
-    <div className="h-screen overflow-y-auto pb-14 px-2 pt-4">
+    <div className="h-screen overflow-y-auto pb-14 space-y-4 px-2 md:px-4 lg:px-8 pt-4">
       <TasksTableToolbar table={table} />
       <div>
         <Table>

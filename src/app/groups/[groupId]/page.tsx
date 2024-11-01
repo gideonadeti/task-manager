@@ -39,42 +39,21 @@ export default function GroupPage() {
 
   useEffect(() => {
     if (groupsStatus === "error" || tasksStatus === "error") {
-      if (groupsError?.response) {
-        const errorMessage = (groupsError.response.data as { error: string })
-          .error;
+      const errorMessage =
+        (groupsError?.response?.data as { error: string })?.error ||
+        (tasksError?.response?.data as { error: string })?.error ||
+        "Something went wrong";
 
-        toast({
-          description: errorMessage || "Something went wrong",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          description: "Something went wrong",
-          variant: "destructive",
-        });
-      }
-
-      if (tasksError?.response) {
-        const errorMessage = (tasksError.response.data as { error: string })
-          .error;
-
-        toast({
-          description: errorMessage || "Something went wrong",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          description: "Something went wrong",
-          variant: "destructive",
-        });
-      }
+      toast({
+        description: errorMessage,
+        variant: "destructive",
+      });
     }
   }, [groupsError, groupsStatus, tasksError, tasksStatus, toast]);
 
   const filteredTasks = useMemo(() => {
     if (!tasks?.length) return [];
 
-    // Filter tasks based on the selected group
     let result;
     switch (groupId) {
       case "inbox": {
@@ -106,17 +85,13 @@ export default function GroupPage() {
         break;
     }
 
-    // Sort tasks by dueDate in ascending order (oldest first) and then by priority
     return result.sort((a, b) => {
       if (!a.dueDate || !b.dueDate) return 0;
 
       const dateComparison = compareAsc(a.dueDate, b.dueDate);
+      if (dateComparison !== 0) return dateComparison;
 
-      if (dateComparison !== 0) return dateComparison; // If due dates are different, return that result
-
-      // If due dates are the same, sort by priority
       const priorityOrder = { low: 1, medium: 2, high: 3 };
-
       return (
         (priorityOrder[a.priority] || 0) - (priorityOrder[b.priority] || 0)
       );
