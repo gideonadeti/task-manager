@@ -62,26 +62,33 @@ export default function GroupPage() {
         break;
       }
       case "today":
-        result = tasks.filter((task) => task.dueDate && isToday(task.dueDate));
+        result = tasks.filter(
+          (task) => task.dueDate && isToday(task.dueDate) && !task.completed
+        );
         break;
       case "tomorrow":
         result = tasks.filter(
-          (task) => task.dueDate && isTomorrow(task.dueDate)
+          (task) => task.dueDate && isTomorrow(task.dueDate) && !task.completed
         );
         break;
       case "this-week":
         result = tasks.filter(
-          (task) => task.dueDate && isThisWeek(task.dueDate)
+          (task) => task.dueDate && isThisWeek(task.dueDate) && !task.completed
         );
         break;
       case "overdue":
         result = tasks.filter(
           (task) =>
-            task.dueDate && isPast(task.dueDate) && !isToday(task.dueDate)
+            task.dueDate &&
+            isPast(task.dueDate) &&
+            !isToday(task.dueDate) &&
+            !task.completed
         );
         break;
       default:
-        result = tasks.filter((task) => task.groupId === groupId);
+        result = tasks.filter(
+          (task) => task.groupId === groupId && !task.completed
+        );
         break;
     }
 
