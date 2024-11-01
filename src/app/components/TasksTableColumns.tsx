@@ -1,19 +1,15 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Task } from "@prisma/client";
 import formatDate from "../format-date";
-import { Checkbox } from "@/components/ui/checkbox";
 import TasksTableColumnHeader from "./TasksTableHeader";
 import TasksTableActions from "./TasksTableActions";
+import TaskCompletionCheckbox from "./TaskCompletionCheckbox";
 
 export const columns: ColumnDef<Task>[] = [
   {
     id: "select",
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <TaskCompletionCheckbox taskId={row.original.id} completed={row.original.completed} />
     ),
     enableSorting: false,
     enableHiding: false,
