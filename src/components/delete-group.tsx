@@ -29,6 +29,7 @@ export default function DeleteGroup({
     mutationFn: (groupDeleteId: string) => deleteGroup(groupDeleteId),
     onSuccess: (message) => {
       queryClient.invalidateQueries({ queryKey: ["groups"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
 
       toast({
         description: message,
