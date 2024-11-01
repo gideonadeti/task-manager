@@ -75,7 +75,7 @@ export async function createTask(
   priority: string,
   groupId: string,
   userId: string,
-  dueDate?: Date,
+  dueDate?: Date
 ) {
   try {
     const response = await axios.post("/api/tasks", {
@@ -95,3 +95,27 @@ export async function createTask(
   }
 }
 
+export async function updateTask(
+  taskId: string,
+  title: string,
+  description: string,
+  priority: string,
+  groupId: string,
+  dueDate?: Date
+) {
+  try {
+    const response = await axios.patch(`/api/tasks/${taskId}`, {
+      title,
+      description,
+      dueDate,
+      priority,
+      groupId,
+    });
+
+    return response.data.message;
+  } catch (error) {
+    console.error(error);
+
+    throw error;
+  }
+}

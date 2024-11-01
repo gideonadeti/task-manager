@@ -5,10 +5,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@clerk/nextjs";
 import { format } from "date-fns";
 import { AxiosError } from "axios";
-import { Group } from "@prisma/client";
+import { Group, Task } from "@prisma/client";
 
 import { useToast } from "@/hooks/use-toast";
-import { createTask } from "@/app/query-functions";
+import { createTask, updateTask } from "@/app/query-functions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -51,32 +50,41 @@ const formSchema = z.object({
   groupId: z.string(),
 });
 
-export default function AddTask() {
+export default function AddTask({ task, open, setOpen }: { task?: Task, open: boolean, setOpen: (open: boolean) => void }) {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button>Add Task</Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Task</DialogTitle>
         </DialogHeader>
-        <AddTaskForm />
+        <AddTaskForm task={task} />
       </DialogContent>
     </Dialog>
   );
 }
 
-function AddTaskForm() {
+function AddTaskForm({ task }: { task?: Task }) {
   const { data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
   const queryClient = useQueryClient();
   const { user } = useUser();
   const { toast } = useToast();
 
   const defaultValues = {
+    title: task?.title || "",
+    dueDate: task?.dueDate ? new Date(task.dueDate) : undefined,
+    description: task?.description || "",
+    groupId:
+      task?.groupId ||
+      groups?.find((group) => group.name === "Inbox")?.id ||
+      "",
+    priority: task?.priority || "medium",
+  };
+
+  const resetValues = {
     title: "",
+    dueDate: undefined,
     description: "",
-    groupId: groups?.find((group) => group.name === "Inbox")?.id || "",
+    groupId: "",
     priority: "medium",
   };
 
@@ -92,12 +100,31 @@ function AddTaskForm() {
       dueDate,
       priority,
       groupId,
-    }: z.infer<typeof formSchema>) =>
-      createTask(title, description, priority, groupId, user!.id, dueDate),
+    }: z.infer<typeof formSchema>) => {
+      if (task) {
+        return updateTask(
+          task.id,
+          title,
+          description,
+          priority,
+          groupId,
+          dueDate
+        );
+      } else {
+        return createTask(
+          title,
+          description,
+          priority,
+          groupId,
+          user!.id,
+          dueDate
+        );
+      }
+    },
     onSuccess: (message) => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["groups"] });
-      form.reset(defaultValues);
+      form.reset(resetValues);
 
       toast({ description: message, variant: "success" });
     },

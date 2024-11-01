@@ -2,8 +2,11 @@
 
 import { MoreHorizontal } from "lucide-react";
 import { Row } from "@tanstack/react-table";
+import { useState } from "react";
+import { Task } from "@prisma/client";
 
 import { Button } from "@/components/ui/button";
+import AddTask from "@/components/add-task";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,9 +20,17 @@ interface TasksTableActionsProps<TData> {
   row: Row<TData>;
 }
 
-export default function TasksTableActions<TData>({
+export default function TasksTableActions<TData extends Task>({
   row,
 }: TasksTableActionsProps<TData>) {
+  const task = row.original;
+  const [taskUpdate, setTaskUpdate] = useState<TData | undefined>();
+  const [updateOpen, setUpdateOpen] = useState(false);
+
+  function handleUpdate() {
+    setTaskUpdate(task);
+    setUpdateOpen(true);
+  }
 
   return (
     <DropdownMenu>
@@ -31,10 +42,12 @@ export default function TasksTableActions<TData>({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleUpdate}>Edit</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>Delete</DropdownMenuItem>
       </DropdownMenuContent>
+
+      <AddTask task={taskUpdate} open={updateOpen} setOpen={setUpdateOpen} />
     </DropdownMenu>
   );
 }

@@ -21,6 +21,7 @@ import { isToday, isTomorrow, isThisWeek, isPast } from "date-fns";
 import AddTask from "./add-task";
 import AddGroup from "./add-group";
 import DeleteGroup from "./delete-group";
+import { Button } from "./ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -59,6 +60,7 @@ export function AppSidebar() {
   const [groupUpdateId, setGroupUpdateId] = useState("");
   const [groupDeleteId, setGroupDeleteId] = useState("");
   const [openDelete, setOpenDelete] = useState(false);
+  const [openAdd, setOpenAdd] = useState(false);
 
   const personalGroups =
     groups?.filter((group) => group.name !== "Inbox") || [];
@@ -205,7 +207,8 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <AddTask />
+        <Button onClick={() => setOpenAdd(true)}>Add Task</Button>
+        <AddTask open={openAdd} setOpen={setOpenAdd} />
         <AddGroup
           open={open}
           onOpenChange={setOpen}

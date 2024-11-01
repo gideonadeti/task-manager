@@ -156,3 +156,33 @@ export async function readTask(name: string) {
     throw error;
   }
 }
+
+export async function updateTask(
+  taskId: string,
+  title: string,
+  description: string,
+  dueDate: Date,
+  priority: "low" | "medium" | "high",
+  groupId: string
+) {
+  try {
+    const task = await prismaClient.task.update({
+      where: {
+        id: taskId,
+      },
+      data: {
+        title,
+        description,
+        dueDate,
+        priority,
+        groupId,
+      },
+    });
+
+    return task;
+  } catch (error) {
+    console.error("Error updating task:", error);
+
+    throw error;
+  }
+}
