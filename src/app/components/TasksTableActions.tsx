@@ -7,6 +7,7 @@ import { Task } from "@prisma/client";
 
 import { Button } from "@/components/ui/button";
 import AddTask from "@/components/add-task";
+import DeleteTask from "@/components/delete-task";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +27,7 @@ export default function TasksTableActions<TData extends Task>({
   const task = row.original;
   const [taskUpdate, setTaskUpdate] = useState<TData | undefined>();
   const [updateOpen, setUpdateOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   function handleUpdate() {
     setTaskUpdate(task);
@@ -44,10 +46,11 @@ export default function TasksTableActions<TData extends Task>({
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem onClick={handleUpdate}>Edit</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Delete</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setDeleteOpen(true)}>Delete</DropdownMenuItem>
       </DropdownMenuContent>
 
       <AddTask task={taskUpdate} open={updateOpen} setOpen={setUpdateOpen} />
+      <DeleteTask taskDeleteId={task.id} open={deleteOpen} onOpenChange={setDeleteOpen} />
     </DropdownMenu>
   );
 }

@@ -119,3 +119,15 @@ export async function updateTask(
     throw error;
   }
 }
+
+export async function deleteTask(taskId: string) {
+  try {
+    const response = await axios.delete(`/api/tasks/${taskId}`);
+
+    return response.data.message;
+  } catch (error) {
+    console.error(error);
+
+    throw error;
+  }
+}
