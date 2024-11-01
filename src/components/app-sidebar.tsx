@@ -43,31 +43,11 @@ import {
 } from "./ui/dropdown-menu";
 
 const defaultGroups = [
-  {
-    name: "Inbox",
-    href: "/groups/inbox",
-    icon: Inbox,
-  },
-  {
-    name: "Today",
-    href: "/groups/today",
-    icon: Sun,
-  },
-  {
-    name: "Tomorrow",
-    href: "/groups/tomorrow",
-    icon: Calendar,
-  },
-  {
-    name: "This Week",
-    href: "/groups/this-week",
-    icon: CalendarRange,
-  },
-  {
-    name: "Overdue",
-    href: "/groups/overdue",
-    icon: AlertTriangle,
-  },
+  { name: "Inbox", href: "/groups/inbox", icon: Inbox },
+  { name: "Today", href: "/groups/today", icon: Sun },
+  { name: "Tomorrow", href: "/groups/tomorrow", icon: Calendar },
+  { name: "This Week", href: "/groups/this-week", icon: CalendarRange },
+  { name: "Overdue", href: "/groups/overdue", icon: AlertTriangle },
 ];
 
 export function AppSidebar() {
@@ -128,6 +108,10 @@ export function AppSidebar() {
     }
   }
 
+  function getNumOfTasksPersonal(groupId: string) {
+    return tasks ? tasks.filter((task) => task.groupId === groupId).length : 0;
+  }
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -166,8 +150,10 @@ export function AppSidebar() {
           </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
-              {personalGroups.length > 0 &&
-                personalGroups.map((personalGroup) => (
+              {personalGroups.map((personalGroup) => {
+                const numOfTasks = getNumOfTasksPersonal(personalGroup.id);
+
+                return (
                   <SidebarMenuItem key={personalGroup.id}>
                     <SidebarMenuButton
                       asChild
@@ -182,6 +168,13 @@ export function AppSidebar() {
                         <span>{personalGroup.name}</span>
                       </Link>
                     </SidebarMenuButton>
+
+                    {numOfTasks > 0 && (
+                      <SidebarMenuBadge className="me-5">
+                        {numOfTasks}
+                      </SidebarMenuBadge>
+                    )}
+
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <SidebarMenuAction showOnHover>
@@ -205,7 +198,8 @@ export function AppSidebar() {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </SidebarMenuItem>
-                ))}
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
