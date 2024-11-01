@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 
 const formSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, { message: "Name is required" }),
 });
 
 export default function AddGroup({
@@ -65,7 +65,7 @@ function AddGroupForm({
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: defaultValue },
+    defaultValues: { name: defaultValue || "" },
   });
   const queryClient = useQueryClient();
   const { user } = useUser();
@@ -82,7 +82,7 @@ function AddGroupForm({
       queryClient.invalidateQueries({
         queryKey: ["groups"],
       });
-      form.reset({ name: "" });
+      form.reset();
 
       toast({
         description: message,
