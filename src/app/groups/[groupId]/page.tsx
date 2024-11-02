@@ -58,7 +58,9 @@ export default function GroupPage() {
     switch (groupId) {
       case "inbox": {
         const inboxGroup = groups?.find((group) => group.name === "Inbox");
-        result = inboxGroup ? inboxGroup.tasks : [];
+        result = inboxGroup
+          ? inboxGroup.tasks.filter((task) => !task.completed)
+          : [];
         break;
       }
       case "today":
@@ -84,6 +86,9 @@ export default function GroupPage() {
             !isToday(task.dueDate) &&
             !task.completed
         );
+        break;
+      case "completed":
+        result = tasks.filter((task) => task.completed);
         break;
       default:
         result = tasks.filter(
