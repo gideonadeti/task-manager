@@ -104,7 +104,7 @@ export async function updateTask(
   dueDate?: Date
 ) {
   try {
-    const response = await axios.patch(`/api/tasks/${taskId}`, {
+    const response = await axios.put(`/api/tasks/${taskId}`, {
       title,
       description,
       dueDate,
@@ -123,6 +123,20 @@ export async function updateTask(
 export async function deleteTask(taskId: string) {
   try {
     const response = await axios.delete(`/api/tasks/${taskId}`);
+
+    return response.data.message;
+  } catch (error) {
+    console.error(error);
+
+    throw error;
+  }
+}
+
+export async function toggleComplete(taskId: string, previousStatus: boolean) {
+  try {
+    const response = await axios.patch(`/api/tasks/${taskId}`, {
+      previousStatus,
+    });
 
     return response.data.message;
   } catch (error) {

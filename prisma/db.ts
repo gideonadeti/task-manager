@@ -200,3 +200,22 @@ export async function deleteTask(taskId: string) {
     throw error;
   }
 }
+
+export async function toggleComplete(taskId: string, previousStatus: boolean) {
+  try {
+    const task = await prismaClient.task.update({
+      where: {
+        id: taskId,
+      },
+      data: {
+        completed: !previousStatus,
+      },
+    });
+
+    return task;
+  } catch (error) {
+    console.error("Error updating task:", error);
+
+    throw error;
+  }
+}
