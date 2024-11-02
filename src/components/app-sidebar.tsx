@@ -91,22 +91,29 @@ export function AppSidebar() {
         const inboxGroupId = groups?.find(
           (group) => group.name === "Inbox"
         )?.id;
-        return tasks.filter((task) => task.groupId === inboxGroupId).length;
+        return tasks
+          .filter((task) => task.groupId === inboxGroupId)
+          .filter((task) => !task.completed).length;
       }
       case "Today":
-        return tasks.filter((task) => task.dueDate && isToday(task.dueDate))
-          .length;
+        return tasks
+          .filter((task) => task.dueDate && isToday(task.dueDate))
+          .filter((task) => !task.completed).length;
       case "Tomorrow":
-        return tasks.filter((task) => task.dueDate && isTomorrow(task.dueDate))
-          .length;
+        return tasks
+          .filter((task) => task.dueDate && isTomorrow(task.dueDate))
+          .filter((task) => !task.completed).length;
       case "This Week":
-        return tasks.filter((task) => task.dueDate && isThisWeek(task.dueDate))
-          .length;
+        return tasks
+          .filter((task) => task.dueDate && isThisWeek(task.dueDate))
+          .filter((task) => !task.completed).length;
       case "Overdue":
-        return tasks.filter(
-          (task) =>
-            task.dueDate && isPast(task.dueDate) && !isToday(task.dueDate)
-        ).length;
+        return tasks
+          .filter(
+            (task) =>
+              task.dueDate && isPast(task.dueDate) && !isToday(task.dueDate)
+          )
+          .filter((task) => !task.completed).length;
       case "Completed":
         return tasks.filter((task) => task.completed).length;
       default:
