@@ -8,7 +8,7 @@ import {
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const { taskId } = await params;
   const { title, description, dueDate, priority, groupId } = await req.json();
@@ -21,7 +21,7 @@ export async function PUT(
       { status: 200 }
     );
   } catch (error) {
-    console.error(error);
+    console.error("Error updating task:", error);
 
     return NextResponse.json(
       { error: "Something went wrong while updating task." },
@@ -32,9 +32,9 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
-  const { taskId } = params;
+  const { taskId } = await params;
 
   try {
     await deleteTask(taskId);
@@ -44,7 +44,7 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    console.error(error);
+    console.error("Error deleting task:", error);
 
     return NextResponse.json(
       { error: "Something went wrong while deleting task." },
@@ -55,7 +55,7 @@ export async function DELETE(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const { taskId } = await params;
   const { previousStatus } = await req.json();
@@ -68,7 +68,7 @@ export async function PATCH(
       { status: 200 }
     );
   } catch (error) {
-    console.error(error);
+    console.error("Error updating task status:", error);
 
     return NextResponse.json(
       { error: "Something went wrong while updating task status." },

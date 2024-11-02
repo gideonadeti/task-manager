@@ -3,9 +3,9 @@ import { updateGroup, readGroup, deleteGroup } from "../../../../../prisma/db";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { groupId: string } }
+  { params }: { params: Promise<{ groupId: string }> }
 ) {
-  const { groupId } = params;
+  const { groupId } = await params;
   const { name } = await req.json();
 
   try {
@@ -21,14 +21,14 @@ export async function PATCH(
     await updateGroup(groupId, name);
 
     return NextResponse.json(
-      { message: "Group updated successfully." },
+      { message: "Group name updated successfully." },
       { status: 200 }
     );
   } catch (error) {
-    console.error(error);
+    console.error("Error updating group name:", error);
 
     return NextResponse.json(
-      { error: "Something went wrong while updating group." },
+      { error: "Something went wrong while updating group name." },
       { status: 500 }
     );
   }
@@ -36,20 +36,22 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { groupId: string } }
+  { params }: { params: Promise<{ groupId: string }> }
 ) {
-  const { groupId } = params;
+  const { groupId } = await params;
+
+  if (!groupId) {
+    return NextResponse.json({ error: "Invalid group ID." }, { status: 400 });
+  }
 
   try {
     await deleteGroup(groupId);
-
     return NextResponse.json(
       { message: "Group deleted successfully." },
       { status: 200 }
     );
-  } catch (error) {
-    console.error(error);
-
+  } catch (error: unknown) {
+    console.error("Error deleting group:", error);
     return NextResponse.json(
       { error: "Something went wrong while deleting group." },
       { status: 500 }
