@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { ClerkProvider, SignedIn, SignedOut, SignIn } from "@clerk/nextjs";
-import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
-import { H1, H3 } from "./ui/CustomTags";
 import QCProvider from "./components/QCProvider";
+import { H1, H3 } from "./ui/CustomTags";
+import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,11 +31,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} overflow-y-hidden`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} overflow-y-hidden`}
+      >
         <ClerkProvider>
           <SignedIn>
             <QCProvider>
-              {children}
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+              </ThemeProvider>
               <Toaster />
             </QCProvider>
           </SignedIn>

@@ -23,6 +23,7 @@ import AddTask from "./add-task";
 import AddGroup from "./add-group";
 import DeleteGroup from "./delete-group";
 import { Button } from "./ui/button";
+import { ThemeToggler } from "./theme-toggler";
 import {
   Sidebar,
   SidebarContent,
@@ -218,7 +219,16 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <Button onClick={() => setOpenAdd(true)}>Add Task</Button>
+        <SidebarGroup className="flex flex-row items-center justify-between space-x-4">
+          <ThemeToggler />
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => setOpenAdd(true)}
+          >
+            Create Task
+          </Button>
+        </SidebarGroup>
         <AddTask open={openAdd} setOpen={setOpenAdd} />
         <AddGroup
           open={open}
