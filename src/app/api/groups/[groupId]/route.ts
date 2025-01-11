@@ -6,10 +6,10 @@ export async function PATCH(
   { params }: { params: Promise<{ groupId: string }> }
 ) {
   const { groupId } = await params;
-  const { name } = await req.json();
+  const { userId, name  } = await req.json();
 
   try {
-    const group = await readGroup(name.trim());
+    const group = await readGroup(userId, name.trim());
 
     if (group) {
       return NextResponse.json(

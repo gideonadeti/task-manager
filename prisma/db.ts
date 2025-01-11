@@ -83,10 +83,11 @@ export async function updateGroup(groupId: string, name: string) {
   }
 }
 
-export async function readGroup(name: string) {
+export async function readGroup(userId: string, name: string) {
   try {
     const group = await prismaClient.group.findFirst({
       where: {
+        userId,
         name,
       },
     });

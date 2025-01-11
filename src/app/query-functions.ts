@@ -43,9 +43,10 @@ export async function readTasks(userId: string) {
   }
 }
 
-export async function updateGroup(groupId: string, name: string) {
+export async function updateGroup(userId: string, groupId: string, name: string) {
   try {
     const response = await axios.patch(`/api/groups/${groupId}`, {
+      userId,
       name,
     });
 

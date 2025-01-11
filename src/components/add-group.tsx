@@ -73,7 +73,7 @@ function AddGroupForm({
   const { mutate, status } = useMutation({
     mutationFn: ({ name }: { name: string }) => {
       if (defaultValue) {
-        return updateGroup(groupUpdateId, name);
+        return updateGroup(user!.id, groupUpdateId, name);
       } else {
         return createGroup(name, user!.id);
       }

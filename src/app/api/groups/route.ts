@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { readGroups, createGroup } from "../../../../prisma/db";
+import { readGroups, createGroup, readGroup } from "../../../../prisma/db";
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -28,6 +28,15 @@ export async function POST(req: NextRequest) {
   const { name, userId } = await req.json();
 
   try {
+    const group = await readGroup(userId, name.trim());
+
+    if (group) {
+      return NextResponse.json(
+        { error: "Group already exists." },
+        { status: 400 }
+      );
+    }
+
     await createGroup(name.trim(), userId.trim());
 
     return NextResponse.json(
