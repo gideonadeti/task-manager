@@ -50,6 +50,7 @@ export default function AddGroup({
         <AddGroupForm
           defaultValue={defaultValue}
           groupUpdateId={groupUpdateId}
+          onOpenChange={onOpenChange}
         />
       </DialogContent>
     </Dialog>
@@ -59,9 +60,11 @@ export default function AddGroup({
 function AddGroupForm({
   defaultValue,
   groupUpdateId,
+  onOpenChange,
 }: {
   defaultValue: string;
   groupUpdateId: string;
+  onOpenChange: (open: boolean) => void;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -83,6 +86,10 @@ function AddGroupForm({
         queryKey: ["groups"],
       });
       form.reset();
+
+      if (defaultValue) {
+        onOpenChange(false);
+      }
 
       toast({
         description: message,
