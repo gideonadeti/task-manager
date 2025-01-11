@@ -50,20 +50,34 @@ const formSchema = z.object({
   groupId: z.string(),
 });
 
-export default function AddTask({ task, open, setOpen }: { task?: Task, open: boolean, setOpen: (open: boolean) => void }) {
+export default function AddTask({
+  task,
+  open,
+  setOpen,
+}: {
+  task?: Task;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Task</DialogTitle>
         </DialogHeader>
-        <AddTaskForm task={task} />
+        <AddTaskForm task={task} setOpen={setOpen} />
       </DialogContent>
     </Dialog>
   );
 }
 
-function AddTaskForm({ task }: { task?: Task }) {
+function AddTaskForm({
+  task,
+  setOpen,
+}: {
+  task?: Task;
+  setOpen: (open: boolean) => void;
+}) {
   const { data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
   const queryClient = useQueryClient();
   const { user } = useUser();
@@ -125,6 +139,10 @@ function AddTaskForm({ task }: { task?: Task }) {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["groups"] });
       form.reset(resetValues);
+
+      if (task) {
+        setOpen(false);
+      }
 
       toast({ description: message, variant: "success" });
     },
