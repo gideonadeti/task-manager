@@ -102,11 +102,13 @@ export async function readGroup(userId: string, name: string) {
 
 export async function deleteGroup(groupId: string) {
   try {
-    await prismaClient.group.delete({
+    const group = await prismaClient.group.delete({
       where: {
         id: groupId,
       },
     });
+
+    return group;
   } catch (error) {
     console.error("Error deleting group:", error);
 

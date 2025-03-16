@@ -66,7 +66,7 @@ export async function deleteGroup(groupId: string) {
   try {
     const response = await axios.delete(`/api/groups/${groupId}`);
 
-    return response.data.message;
+    return response.data.group;
   } catch (error) {
     console.error(error);
 

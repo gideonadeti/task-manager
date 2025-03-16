@@ -42,11 +42,9 @@ export async function DELETE(
   }
 
   try {
-    await deleteGroup(groupId);
-    return NextResponse.json(
-      { message: "Group deleted successfully." },
-      { status: 200 }
-    );
+    const group = await deleteGroup(groupId);
+
+    return NextResponse.json({ group });
   } catch (error: unknown) {
     console.error("Error deleting group:", error);
     return NextResponse.json(

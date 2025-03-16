@@ -1,6 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-
+import useGroups from "@/app/groups/hooks/use-groups";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,8 +9,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useToast } from "@/hooks/use-toast";
-import { deleteGroup } from "@/app/query-functions";
 
 export default function DeleteGroup({
   open,
@@ -23,41 +19,10 @@ export default function DeleteGroup({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
-  const { mutate, status } = useMutation({
-    mutationFn: (groupDeleteId: string) => deleteGroup(groupDeleteId),
-    onSuccess: (message) => {
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
-
-      toast({
-        description: message,
-        variant: "success",
-      });
-      onOpenChange(false); // Close dialog after success
-    },
-    onError: (error) => {
-      console.error(error);
-
-      if (error instanceof AxiosError && error.response) {
-        const errorMessage = (error.response.data as { error: string }).error;
-
-        toast({
-          description: errorMessage || "Something went wrong",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          description: "Something went wrong",
-        });
-      }
-    },
-  });
+  const { deleteGroupMutation } = useGroups();
 
   function handleDelete() {
-    mutate(groupDeleteId);
+    deleteGroupMutation.mutate({ id: groupDeleteId, onOpenChange });
   }
 
   return (
@@ -77,16 +42,16 @@ export default function DeleteGroup({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel
-            disabled={status === "pending"}
+            disabled={deleteGroupMutation.isPending}
             onClick={() => onOpenChange(false)}
           >
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            disabled={status === "pending"}
+            disabled={deleteGroupMutation.isPending}
             onClick={handleDelete}
           >
-            {status === "pending" ? "Deleting..." : "Delete"}
+            {deleteGroupMutation.isPending ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

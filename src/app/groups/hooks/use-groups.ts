@@ -95,9 +95,9 @@ const useGroups = () => {
   });
 
   const deleteGroupMutation = useMutation<
-    { id: string },
+    Group,
     AxiosError,
-    { id: string }
+    { id: string; onOpenChange: (open: boolean) => void }
   >({
     mutationFn: ({ id }) => {
       return deleteGroup(id);
@@ -109,11 +109,12 @@ const useGroups = () => {
 
       toast.error(description);
     },
-    onSuccess: ({ id }) => {
+    onSuccess: (deletedGroup, { onOpenChange }) => {
       toast.success("Group deleted successfully");
+      onOpenChange(false);
 
       queryClient.setQueryData<Group[]>(["groups"], (prevGroups) => {
-        return prevGroups?.filter((group) => group.id !== id);
+        return prevGroups?.filter((group) => group.id !== deletedGroup.id);
       });
     },
   });
