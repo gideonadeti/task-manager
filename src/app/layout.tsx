@@ -47,9 +47,9 @@ export default function RootLayout({
             </QCProvider>
           </SignedIn>
           <SignedOut>
-            <div className="max-w-4xl mx-auto h-screen">
+            <div className="max-w-4xl mx-auto flex flex-col min-h-screen">
               <H3 className="px-4 py-2">Task Manager</H3>
-              <div className="flex flex-col md:flex-row items-center justify-center gap-4 p-8">
+              <div className="flex-1 flex flex-col md:flex-row items-center justify-center gap-4 p-8">
                 <div className="flex-1 flex flex-col text-center lg:text-left">
                   <H1>Organize Your Life, One Task at a Time</H1>
                   <p className="text-muted-foreground font-semibold text-lg">
