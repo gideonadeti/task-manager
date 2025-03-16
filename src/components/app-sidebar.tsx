@@ -144,7 +144,13 @@ export function AppSidebar() {
                   <SidebarMenuItem key={defaultGroup.name}>
                     <SidebarMenuButton asChild isActive={isActive}>
                       <Link href={defaultGroup.href}>
-                        <defaultGroup.icon />
+                        <defaultGroup.icon
+                          className={`${
+                            defaultGroup.name === "Today" && isActive
+                              ? "animate-spin"
+                              : ""
+                          }`}
+                        />
                         <span>{defaultGroup.name}</span>
                       </Link>
                     </SidebarMenuButton>
