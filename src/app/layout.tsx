@@ -5,7 +5,7 @@ import { ClerkProvider, SignedIn, SignedOut, SignIn } from "@clerk/nextjs";
 import "./globals.css";
 import QCProvider from "./components/QCProvider";
 import { H1, H3 } from "./ui/CustomTags";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = localFont({
