@@ -8,7 +8,7 @@ export default function Header() {
     <header className="flex items-center border-b py-2 ps-2 pe-4">
       <SidebarTrigger />
       <Separator orientation="vertical" className="mx-2" />
-      <Link href="/" className="text-lg font-semibold">
+      <Link href="/groups/today" className="text-lg font-semibold">
         Task Manager
       </Link>
       <div className="ms-auto">
