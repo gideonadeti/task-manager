@@ -14,12 +14,16 @@ export async function PUT(
   const { title, description, dueDate, priority, groupId } = await req.json();
 
   try {
-    await updateTask(taskId, title, description, dueDate, priority, groupId);
-
-    return NextResponse.json(
-      { message: "Task updated successfully." },
-      { status: 200 }
+    const task = await updateTask(
+      taskId,
+      title,
+      description,
+      dueDate,
+      priority,
+      groupId
     );
+
+    return NextResponse.json({ task });
   } catch (error) {
     console.error("Error updating task:", error);
 

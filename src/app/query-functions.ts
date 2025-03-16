@@ -117,7 +117,7 @@ export async function updateTask(
       groupId,
     });
 
-    return response.data.message;
+    return response.data.task;
   } catch (error) {
     console.error(error);
 
