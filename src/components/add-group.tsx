@@ -1,16 +1,11 @@
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { z } from "zod";
-import { AxiosError } from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useUser } from "@clerk/nextjs";
-import { Group } from "@prisma/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import useGroups from "@/app/groups/hooks/use-groups";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createGroup, updateGroup } from "@/app/query-functions";
-import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -30,7 +25,7 @@ const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
 });
 
-export default function AddGroup({
+const AddGroup = ({
   open,
   onOpenChange,
   defaultValue,
@@ -40,7 +35,7 @@ export default function AddGroup({
   onOpenChange: (open: boolean) => void;
   defaultValue: string;
   groupUpdateId: string;
-}) {
+}) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -57,7 +52,7 @@ export default function AddGroup({
       </DialogContent>
     </Dialog>
   );
-}
+};
 
 function AddGroupForm({
   defaultValue,
@@ -72,57 +67,24 @@ function AddGroupForm({
     resolver: zodResolver(formSchema),
     defaultValues: { name: defaultValue || "" },
   });
-  const queryClient = useQueryClient();
   const router = useRouter();
+  const params = useParams();
 
-  const { user } = useUser();
-  const { toast } = useToast();
-  const { mutate, status } = useMutation<Group, AxiosError, { name: string }>({
-    mutationFn: ({ name }: { name: string }) => {
-      if (defaultValue) {
-        return updateGroup(user!.id, groupUpdateId, name);
-      } else {
-        return createGroup(name, user!.id);
-      }
-    },
-    onSuccess: (group) => {
-      queryClient.setQueryData<Group[]>(["groups"], (prevGroups) => {
-        const groupsArray = Array.isArray(prevGroups) ? prevGroups : [];
-
-        return [...groupsArray, group];
-      });
-
-      form.reset();
-
-      toast({
-        description: "Group added successfully",
-        variant: "success",
-      });
-      onOpenChange(false);
-
-      router.push(`/groups/${group.id}`);
-    },
-    onError: (error) => {
-      console.error(error);
-
-      if (error instanceof AxiosError && error.response) {
-        const errorMessage = (error.response.data as { error: string }).error;
-
-        toast({
-          description: errorMessage || "Something went wrong",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          description: "Something went wrong",
-        });
-      }
-    },
-  });
+  const { createGroupMutation, updateGroupMutation } = useGroups();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    mutate(values);
+    if (defaultValue) {
+      updateGroupMutation.mutate({
+        ...values,
+        id: groupUpdateId,
+        form,
+        router,
+        open: groupUpdateId !== params.groupId, // Navigation will take place if the group is different from the current one and the navigation will automatically close the dialog so keep it open initially else it'll kinda open and close
+        onOpenChange,
+      });
+    } else {
+      createGroupMutation.mutate({ ...values, form, router });
+    }
   }
 
   return (
@@ -142,8 +104,13 @@ function AddGroupForm({
           )}
         />
 
-        <Button type="submit" disabled={status === "pending"}>
-          {status === "pending"
+        <Button
+          type="submit"
+          disabled={
+            createGroupMutation.isPending || updateGroupMutation.isPending
+          }
+        >
+          {createGroupMutation.isPending || updateGroupMutation.isPending
             ? "Submitting"
             : defaultValue
             ? "Update"
@@ -153,3 +120,5 @@ function AddGroupForm({
     </Form>
   );
 }
+
+export default AddGroup;

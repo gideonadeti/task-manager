@@ -54,7 +54,7 @@ export async function updateGroup(
       name,
     });
 
-    return response.data.message;
+    return response.data.group;
   } catch (error) {
     console.error(error);
 

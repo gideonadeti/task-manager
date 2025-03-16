@@ -6,7 +6,7 @@ export async function PATCH(
   { params }: { params: Promise<{ groupId: string }> }
 ) {
   const { groupId } = await params;
-  const { userId, name  } = await req.json();
+  const { userId, name } = await req.json();
 
   try {
     const group = await readGroup(userId, name.trim());
@@ -18,12 +18,9 @@ export async function PATCH(
       );
     }
 
-    await updateGroup(groupId, name);
+    const updatedGroup = await updateGroup(groupId, name);
 
-    return NextResponse.json(
-      { message: "Group name updated successfully." },
-      { status: 200 }
-    );
+    return NextResponse.json({ group: updatedGroup });
   } catch (error) {
     console.error("Error updating group name:", error);
 
