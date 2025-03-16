@@ -31,9 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} overflow-y-hidden`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ClerkProvider>
           <SignedIn>
             <QCProvider>
@@ -49,13 +47,19 @@ export default function RootLayout({
             </QCProvider>
           </SignedIn>
           <SignedOut>
-            <div className="flex flex-col md:flex-row items-center justify-around gap-8 h-screen overflow-y-auto p-8">
-              <div className="flex flex-col text-center lg:text-left">
-                <H1>Welcome to Task Manager</H1>
-                <H3>A web app for managing tasks.</H3>
-              </div>
-              <div className="flex items-center justify-center">
-                <SignIn />
+            <div className="max-w-4xl mx-auto h-screen">
+              <H3 className="px-4 py-2">Task Manager</H3>
+              <div className="flex flex-col md:flex-row items-center justify-center gap-4 p-8">
+                <div className="flex-1 flex flex-col text-center lg:text-left">
+                  <H1>Organize Your Life, One Task at a Time</H1>
+                  <p className="text-muted-foreground font-semibold text-lg">
+                    A simple, intuitive task manager that keeps you on track and
+                    boosts productivity.
+                  </p>
+                </div>
+                <div className="flex-1 flex items-center justify-center">
+                  <SignIn />
+                </div>
               </div>
             </div>
           </SignedOut>
