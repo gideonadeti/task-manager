@@ -11,7 +11,7 @@ import {
   deleteGroup,
 } from "@/app/query-functions";
 import { UseFormReturn } from "react-hook-form";
-import { Group } from "@prisma/client";
+import { Group, Task } from "@prisma/client";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 const useGroups = () => {
@@ -113,6 +113,9 @@ const useGroups = () => {
       toast.success("Group deleted successfully");
       onOpenChange(false);
 
+      queryClient.setQueryData<Task[]>(["tasks"], (prevTasks) => {
+        return prevTasks?.filter((task) => task.groupId !== deletedGroup.id);
+      });
       queryClient.setQueryData<Group[]>(["groups"], (prevGroups) => {
         return prevGroups?.filter((group) => group.id !== deletedGroup.id);
       });
