@@ -1,9 +1,11 @@
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useUser } from "@clerk/nextjs";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { z } from "zod";
 import { AxiosError } from "axios";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useUser } from "@clerk/nextjs";
+import { Group } from "@prisma/client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,9 +73,11 @@ function AddGroupForm({
     defaultValues: { name: defaultValue || "" },
   });
   const queryClient = useQueryClient();
+  const router = useRouter();
+
   const { user } = useUser();
   const { toast } = useToast();
-  const { mutate, status } = useMutation({
+  const { mutate, status } = useMutation<Group, AxiosError, { name: string }>({
     mutationFn: ({ name }: { name: string }) => {
       if (defaultValue) {
         return updateGroup(user!.id, groupUpdateId, name);
@@ -81,20 +85,22 @@ function AddGroupForm({
         return createGroup(name, user!.id);
       }
     },
-    onSuccess: (message) => {
-      queryClient.invalidateQueries({
-        queryKey: ["groups"],
+    onSuccess: (group) => {
+      queryClient.setQueryData<Group[]>(["groups"], (prevGroups) => {
+        const groupsArray = Array.isArray(prevGroups) ? prevGroups : [];
+
+        return [...groupsArray, group];
       });
+
       form.reset();
 
-      if (defaultValue) {
-        onOpenChange(false);
-      }
-
       toast({
-        description: message,
+        description: "Group added successfully",
         variant: "success",
       });
+      onOpenChange(false);
+
+      router.push(`/groups/${group.id}`);
     },
     onError: (error) => {
       console.error(error);

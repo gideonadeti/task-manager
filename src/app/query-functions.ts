@@ -21,7 +21,7 @@ export async function createGroup(name: string, userId: string) {
       userId,
     });
 
-    return response.data.message;
+    return response.data.group;
   } catch (error) {
     console.error(error);
 
@@ -43,7 +43,11 @@ export async function readTasks(userId: string) {
   }
 }
 
-export async function updateGroup(userId: string, groupId: string, name: string) {
+export async function updateGroup(
+  userId: string,
+  groupId: string,
+  name: string
+) {
   try {
     const response = await axios.patch(`/api/groups/${groupId}`, {
       userId,

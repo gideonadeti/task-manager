@@ -37,12 +37,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await createGroup(name.trim(), userId.trim());
+    const createdGroup = await createGroup(name.trim(), userId.trim());
 
-    return NextResponse.json(
-      { message: "Group created successfully." },
-      { status: 200 }
-    );
+    return NextResponse.json({ group: createdGroup }, { status: 201 });
   } catch (error) {
     console.error(error);
 
