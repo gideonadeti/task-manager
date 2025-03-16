@@ -1,15 +1,11 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { useUser } from "@clerk/nextjs";
-import { useToast } from "@/hooks/use-toast";
-import { AxiosError } from "axios";
 import { useParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { isToday, isTomorrow, isThisWeek, isPast, compareAsc } from "date-fns";
-import { Task } from "@prisma/client";
 
-import { readGroups, readTasks } from "@/app/query-functions";
+import useGroups from "../hooks/use-groups";
+import useTasks from "../hooks/use-tasks";
 import Spinner from "@/app/components/Spinner";
 import { ExtendedGroup } from "@/app/type";
 import { P } from "@/app/ui/CustomTags";
@@ -17,69 +13,41 @@ import { TasksTable } from "@/app/components/TasksTable";
 import { columns } from "@/app/components/TasksTableColumns";
 
 export default function GroupPage() {
-  const { user } = useUser();
-  const { toast } = useToast();
   const { groupId } = useParams();
-  const {
-    status: groupsStatus,
-    data: groups,
-    error: groupsError,
-  } = useQuery<ExtendedGroup[], AxiosError>({
-    queryKey: ["groups"],
-    queryFn: () => readGroups(user!.id),
-  });
-  const {
-    status: tasksStatus,
-    data: tasks,
-    error: tasksError,
-  } = useQuery<Task[], AxiosError>({
-    queryKey: ["tasks"],
-    queryFn: () => readTasks(user!.id),
-  });
-
-  useEffect(() => {
-    if (groupsStatus === "error" || tasksStatus === "error") {
-      const errorMessage =
-        (groupsError?.response?.data as { error: string })?.error ||
-        (tasksError?.response?.data as { error: string })?.error ||
-        "Something went wrong";
-
-      toast({
-        description: errorMessage,
-        variant: "destructive",
-      });
-    }
-  }, [groupsError, groupsStatus, tasksError, tasksStatus, toast]);
+  const { groupsQuery } = useGroups();
+  const { tasksQuery } = useTasks();
 
   const filteredTasks = useMemo(() => {
-    if (!tasks?.length) return [];
+    if (!tasksQuery.data?.length) return [];
 
     let result;
     switch (groupId) {
       case "inbox": {
-        const inboxGroup = groups?.find((group) => group.name === "Inbox");
-        result = inboxGroup
-          ? inboxGroup.tasks.filter((task) => !task.completed)
-          : [];
+        const inboxGroup = groupsQuery.data?.find(
+          (group) => group.name === "Inbox"
+        ) as ExtendedGroup | undefined;
+        result = tasksQuery.data.filter(
+          (task) => task.groupId === inboxGroup?.id && !task.completed
+        );
         break;
       }
       case "today":
-        result = tasks.filter(
+        result = tasksQuery.data.filter(
           (task) => task.dueDate && isToday(task.dueDate) && !task.completed
         );
         break;
       case "tomorrow":
-        result = tasks.filter(
+        result = tasksQuery.data.filter(
           (task) => task.dueDate && isTomorrow(task.dueDate) && !task.completed
         );
         break;
       case "this-week":
-        result = tasks.filter(
+        result = tasksQuery.data.filter(
           (task) => task.dueDate && isThisWeek(task.dueDate) && !task.completed
         );
         break;
       case "overdue":
-        result = tasks.filter(
+        result = tasksQuery.data.filter(
           (task) =>
             task.dueDate &&
             isPast(task.dueDate) &&
@@ -88,10 +56,10 @@ export default function GroupPage() {
         );
         break;
       case "completed":
-        result = tasks.filter((task) => task.completed);
+        result = tasksQuery.data.filter((task) => task.completed);
         break;
       default:
-        result = tasks.filter(
+        result = tasksQuery.data.filter(
           (task) => task.groupId === groupId && !task.completed
         );
         break;
@@ -108,20 +76,18 @@ export default function GroupPage() {
         (priorityOrder[a.priority] || 0) - (priorityOrder[b.priority] || 0)
       );
     });
-  }, [groupId, groups, tasks]);
+  }, [groupId, groupsQuery.data, tasksQuery.data]);
 
   return (
     <div className="flex-grow">
       <div className="flex items-center justify-center">
-        {(groupsStatus === "pending" || tasksStatus === "pending") && (
-          <Spinner />
-        )}
+        {(groupsQuery.isPending || tasksQuery.isPending) && <Spinner />}
       </div>
       {filteredTasks.length > 0 ? (
         <TasksTable columns={columns} data={filteredTasks} />
       ) : (
-        !(tasksStatus === "pending" || groupsStatus === "pending") && (
-          <P className="text-center">No tasks found in this group</P>
+        !(groupsQuery.isPending || tasksQuery.isPending) && (
+          <P className="text-center">No tasksQuery.data found in this group</P>
         )
       )}
     </div>

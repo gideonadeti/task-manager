@@ -92,7 +92,7 @@ export async function createTask(
       userId,
     });
 
-    return response.data.message;
+    return response.data.task;
   } catch (error) {
     console.error(error);
 

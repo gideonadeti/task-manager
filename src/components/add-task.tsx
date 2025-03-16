@@ -1,14 +1,11 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useUser } from "@clerk/nextjs";
 import { format } from "date-fns";
-import { AxiosError } from "axios";
-import { Group, Task } from "@prisma/client";
+import { Task } from "@prisma/client";
 
-import { useToast } from "@/hooks/use-toast";
-import { createTask, updateTask } from "@/app/query-functions";
+import useGroups from "@/app/groups/hooks/use-groups";
+import useTasks from "@/app/groups/hooks/use-tasks";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -78,10 +75,8 @@ function AddTaskForm({
   task?: Task;
   setOpen: (open: boolean) => void;
 }) {
-  const { data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
-  const queryClient = useQueryClient();
-  const { user } = useUser();
-  const { toast } = useToast();
+  const { groupsQuery } = useGroups();
+  const { createTaskMutation, updateTaskMutation } = useTasks();
 
   const defaultValues = {
     title: task?.title || "",
@@ -89,17 +84,9 @@ function AddTaskForm({
     description: task?.description || "",
     groupId:
       task?.groupId ||
-      groups?.find((group) => group.name === "Inbox")?.id ||
+      groupsQuery.data?.find((group) => group.name === "Inbox")?.id ||
       "",
     priority: task?.priority || "medium",
-  };
-
-  const resetValues = {
-    title: "",
-    dueDate: undefined,
-    description: "",
-    groupId: "",
-    priority: "medium",
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -107,58 +94,21 @@ function AddTaskForm({
     defaultValues,
   });
 
-  const { mutate, status } = useMutation({
-    mutationFn: ({
-      title,
-      description,
-      dueDate,
-      priority,
-      groupId,
-    }: z.infer<typeof formSchema>) => {
-      if (task) {
-        return updateTask(
-          task.id,
-          title,
-          description,
-          priority,
-          groupId,
-          dueDate
-        );
-      } else {
-        return createTask(
-          title,
-          description,
-          priority,
-          groupId,
-          user!.id,
-          dueDate
-        );
-      }
-    },
-    onSuccess: (message) => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
-      form.reset(resetValues);
-
-      if (task) {
-        setOpen(false);
-      }
-
-      toast({ description: message, variant: "success" });
-    },
-    onError: (error) => {
-      const description =
-        error instanceof AxiosError && error.response
-          ? (error.response.data as { error: string }).error ||
-            "Something went wrong"
-          : "Something went wrong";
-
-      toast({ description, variant: "destructive" });
-    },
-  });
-
   function onSubmit(values: z.infer<typeof formSchema>) {
-    mutate(values);
+    if (task) {
+      updateTaskMutation.mutate({
+        ...values,
+        id: task.id,
+        form,
+        setOpen,
+      });
+    } else {
+      createTaskMutation.mutate({
+        ...values,
+        form,
+        setOpen,
+      });
+    }
   }
 
   return (
@@ -233,7 +183,7 @@ function AddTaskForm({
                     <SelectValue placeholder="Select group" />
                   </SelectTrigger>
                   <SelectContent>
-                    {groups?.map((group) => (
+                    {groupsQuery.data?.map((group) => (
                       <SelectItem key={group.id} value={group.id}>
                         {group.name}
                       </SelectItem>
@@ -303,8 +253,15 @@ function AddTaskForm({
           )}
         />
 
-        <Button type="submit" disabled={status === "pending"}>
-          {status === "pending" ? "Submitting..." : "Submit"}
+        <Button
+          type="submit"
+          disabled={
+            createTaskMutation.isPending || updateTaskMutation.isPending
+          }
+        >
+          {createTaskMutation.isPending || updateTaskMutation.isPending
+            ? "Submitting..."
+            : "Submit"}
         </Button>
       </form>
     </Form>

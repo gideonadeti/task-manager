@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await createTask(
+    const createdTask = await createTask(
       title.trim(),
       description.trim(),
       dueDate,
@@ -47,10 +47,7 @@ export async function POST(req: NextRequest) {
       userId.trim()
     );
 
-    return NextResponse.json(
-      { message: "Task created successfully." },
-      { status: 200 }
-    );
+    return NextResponse.json({ task: createdTask }, { status: 201 });
   } catch (error) {
     console.error(error);
 
