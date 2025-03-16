@@ -129,7 +129,7 @@ export async function deleteTask(taskId: string) {
   try {
     const response = await axios.delete(`/api/tasks/${taskId}`);
 
-    return response.data.message;
+    return response.data.task;
   } catch (error) {
     console.error(error);
 

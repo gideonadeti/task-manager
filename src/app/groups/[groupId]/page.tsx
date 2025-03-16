@@ -87,7 +87,7 @@ export default function GroupPage() {
         <TasksTable columns={columns} data={filteredTasks} />
       ) : (
         !(groupsQuery.isPending || tasksQuery.isPending) && (
-          <P className="text-center">No tasksQuery.data found in this group</P>
+          <P className="text-center">No tasks found in this group</P>
         )
       )}
     </div>

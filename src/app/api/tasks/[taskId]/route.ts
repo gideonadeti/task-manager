@@ -41,12 +41,9 @@ export async function DELETE(
   const { taskId } = await params;
 
   try {
-    await deleteTask(taskId);
+    const task = await deleteTask(taskId);
 
-    return NextResponse.json(
-      { message: "Task deleted successfully." },
-      { status: 200 }
-    );
+    return NextResponse.json({ task });
   } catch (error) {
     console.error("Error deleting task:", error);
 

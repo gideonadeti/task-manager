@@ -128,6 +128,7 @@ const useTasks = () => {
       return deleteTask(id);
     },
     onError: (err) => {
+      console.error(err);
       const description =
         (err?.response?.data as { error: string })?.error ||
         "Something went wrong";

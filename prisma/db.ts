@@ -192,11 +192,13 @@ export async function updateTask(
 
 export async function deleteTask(taskId: string) {
   try {
-    await prismaClient.task.delete({
+    const task = await prismaClient.task.delete({
       where: {
         id: taskId,
       },
     });
+
+    return task;
   } catch (error) {
     console.error("Error deleting task:", error);
 
