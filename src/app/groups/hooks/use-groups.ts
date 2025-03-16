@@ -38,7 +38,7 @@ const useGroups = () => {
     },
     onError: (err) => {
       const description =
-        (err?.response?.data as { errMsg: string })?.errMsg ||
+        (err?.response?.data as { error: string })?.error ||
         "Something went wrong";
 
       toast.error(description);
@@ -74,7 +74,7 @@ const useGroups = () => {
     },
     onError: (err) => {
       const description =
-        (err?.response?.data as { errMsg: string })?.errMsg ||
+        (err?.response?.data as { error: string })?.error ||
         "Something went wrong";
 
       toast.error(description);
@@ -104,7 +104,7 @@ const useGroups = () => {
     },
     onError: (err) => {
       const description =
-        (err?.response?.data as { errMsg: string })?.errMsg ||
+        (err?.response?.data as { error: string })?.error ||
         "Something went wrong";
 
       toast.error(description);
@@ -128,7 +128,7 @@ const useGroups = () => {
   useEffect(() => {
     if (groupsQuery.status === "error") {
       const description =
-        (groupsQuery.error?.response?.data as { errMsg: string })?.errMsg ||
+        (groupsQuery.error?.response?.data as { error: string })?.error ||
         "Something went wrong";
 
       toast.error(description);
