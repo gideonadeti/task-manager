@@ -123,7 +123,10 @@ export function AppSidebar() {
   }
 
   function getNumOfTasksPersonal(groupId: string) {
-    return tasks ? tasks.filter((task) => task.groupId === groupId).length : 0;
+    return tasks
+      ? tasks.filter((task) => task.groupId === groupId && !task.completed)
+          .length
+      : 0;
   }
 
   return (
