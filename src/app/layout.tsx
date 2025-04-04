@@ -43,7 +43,7 @@ export default function RootLayout({
               >
                 {children}
               </ThemeProvider>
-              <Toaster />
+              <Toaster richColors />
             </QCProvider>
           </SignedIn>
           <SignedOut>
