@@ -8,9 +8,9 @@ import useGroups from "../hooks/use-groups";
 import useTasks from "../hooks/use-tasks";
 import Spinner from "@/app/components/Spinner";
 import { ExtendedGroup } from "@/app/type";
-import { P } from "@/app/ui/CustomTags";
 import { TasksTable } from "@/app/components/TasksTable";
 import { columns } from "@/app/components/TasksTableColumns";
+import NoTasks from "./components/no-tasks";
 
 export default function GroupPage() {
   const { groupId } = useParams();
@@ -79,7 +79,7 @@ export default function GroupPage() {
   }, [groupId, groupsQuery.data, tasksQuery.data]);
 
   return (
-    <div className="flex-grow">
+    <div className="flex-1">
       <div className="flex items-center justify-center">
         {(groupsQuery.isPending || tasksQuery.isPending) && <Spinner />}
       </div>
@@ -87,7 +87,7 @@ export default function GroupPage() {
         <TasksTable columns={columns} data={filteredTasks} />
       ) : (
         !(groupsQuery.isPending || tasksQuery.isPending) && (
-          <P className="text-center">No tasks found in this group</P>
+          <NoTasks groupId={groupId as string} />
         )
       )}
     </div>
