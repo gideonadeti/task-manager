@@ -2,7 +2,7 @@
 
 ## Overview
 
-[Task Manager](https://gideonadeti-task-manager.vercel.app/) is a web application for manage tasks.
+[Task Manager](https://gideonadeti-task-manager.vercel.app/) is a full-stack application built as a portfolio project, extending beyond The Odin Project’s Todo List project to demonstrate advanced web development skills.
 
 ## Features
 
