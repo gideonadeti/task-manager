@@ -43,7 +43,7 @@ export class TaskService {
       description: string;
       priority: "low" | "medium" | "high";
       groupId: string;
-      dueDate: Date;
+      dueDate?: Date | null;
     }
   ): Promise<Task> {
     // Check if task already exists
@@ -99,7 +99,7 @@ export class TaskService {
       taskId,
       data.title ?? existingTask.title,
       data.description ?? existingTask.description ?? "",
-      data.dueDate ?? existingTask.dueDate ?? new Date(),
+      data.dueDate !== undefined ? data.dueDate : existingTask.dueDate,
       data.priority ?? existingTask.priority,
       data.groupId ?? existingTask.groupId,
       userId
