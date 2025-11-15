@@ -1,8 +1,12 @@
 "use client";
 
-import { Cross2Icon } from "@radix-ui/react-icons";
+import { Cross2Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import PriorityFilter from "./PriorityFilter";
 
 interface TasksToolbarProps {
@@ -28,12 +32,18 @@ export default function TasksToolbar({
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        <Input
-          placeholder="Search task..."
-          value={searchQuery}
-          onChange={(event) => onSearchChange(event.target.value)}
-          className="h-8 w-[150px] lg:w-[250px]"
-        />
+        <InputGroup className="h-8 w-[150px] lg:w-[250px]">
+          <InputGroupAddon align="inline-start">
+            <MagnifyingGlassIcon />
+          </InputGroupAddon>
+          <InputGroupInput
+            placeholder="Search task..."
+            value={searchQuery}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              onSearchChange(event.target.value)
+            }
+          />
+        </InputGroup>
         <PriorityFilter
           selectedPriorities={selectedPriorities}
           onPrioritiesChange={onPrioritiesChange}
