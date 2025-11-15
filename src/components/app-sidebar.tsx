@@ -40,6 +40,7 @@ import {
   SidebarGroupAction,
   SidebarMenuAction,
   SidebarMenuBadge,
+  SidebarMenuSkeleton,
 } from "./ui/sidebar";
 import {
   DropdownMenu,
@@ -59,7 +60,7 @@ const defaultGroups = [
 
 export function AppSidebar() {
   const { groupId } = useParams() as { groupId: string };
-  const { data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
+  const { data: groups, isPending: groupsPending } = useQuery<Group[]>({ queryKey: ["groups"] });
   const { data: tasks } = useQuery<Task[]>({ queryKey: ["tasks"] });
   const [open, setOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
@@ -170,7 +171,22 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Personal Groups</SidebarGroupLabel>
-          {personalGroups.length === 0 ? (
+          {groupsPending ? (
+            <>
+              <SidebarGroupAction title="Add Group">
+                <Plus onClick={handleAdd} />
+              </SidebarGroupAction>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <SidebarMenuItem key={index}>
+                      <SidebarMenuSkeleton showIcon />
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </>
+          ) : personalGroups.length === 0 ? (
             <SidebarGroupContent>
               <Empty className="border-0 p-4">
                 <EmptyHeader>
