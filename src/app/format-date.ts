@@ -9,25 +9,22 @@ import {
 } from "date-fns";
 
 const formatDate = (date: Date) => {
-  const absolute = format(date, "p");
+  const time = format(date, "p");
 
   if (isToday(date)) {
-    return `Today at ${absolute}`;
+    return `Today at ${time}`;
   } else if (isYesterday(date)) {
-    return `Yesterday at ${absolute}`;
+    return `Yesterday at ${time}`;
   } else if (isTomorrow(date)) {
-    return `Tomorrow at ${absolute}`;
+    return `Tomorrow at ${time}`;
   } else if (isThisWeek(date)) {
     // For dates in the current week, distinguish between past and future
-    if (isPast(date)) {
-      return `Last ${format(date, "EEEE")}`;
-    } else {
-      return `This ${format(date, "EEEE")}`;
-    }
+    const dayName = isPast(date) ? `Last ${format(date, "EEEE")}` : `This ${format(date, "EEEE")}`;
+    return `${dayName} at ${time}`;
   } else if (isThisYear(date)) {
-    return `${format(date, "MMM d")}`;
+    return `${format(date, "MMM d")} at ${time}`;
   } else {
-    return `${format(date, "MMM d, yyyy")}`;
+    return `${format(date, "MMM d, yyyy")} at ${time}`;
   }
 };
 
