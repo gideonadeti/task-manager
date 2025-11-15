@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 import {
   createTask,
@@ -34,6 +35,9 @@ const useTasks = () => {
       dueDate?: Date;
       form: UseFormReturn<TaskFormData, TaskFormData, undefined>;
       setOpen: (open: boolean) => void;
+      router?: AppRouterInstance;
+      currentGroupId?: string;
+      groups?: Array<{ id: string; name: string }>;
     }
   >({
     mutationFn: ({ title, description, priority, groupId, dueDate }) => {
@@ -42,7 +46,7 @@ const useTasks = () => {
     onError: (err) => {
       handleApiError(err);
     },
-    onSuccess: (createdTask, { form, setOpen }) => {
+    onSuccess: (createdTask, { form, setOpen, router, currentGroupId, groups }) => {
       setOpen(false);
 
       toast.success("Task created successfully");
@@ -50,6 +54,18 @@ const useTasks = () => {
       queryClient.setQueryData<Task[]>(["tasks"], (prevTasks) => {
         return [createdTask, ...(prevTasks || [])];
       });
+
+      // Navigate to the task's group if it's different from the current one
+      if (router && currentGroupId && groups) {
+        const taskGroup = groups.find((g) => g.id === createdTask.groupId);
+        const isInboxGroup = taskGroup?.name === "Inbox";
+        const targetGroupId = isInboxGroup ? "inbox" : createdTask.groupId;
+
+        // Only redirect if we're not already on that group's page
+        if (currentGroupId !== targetGroupId) {
+          router.push(`/groups/${targetGroupId}`);
+        }
+      }
     },
   });
 
