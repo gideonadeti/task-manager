@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -19,10 +20,12 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { Task } from "@prisma/client";
 
 interface PriorityFilterProps {
   selectedPriorities: string[];
   onPrioritiesChange: (priorities: string[]) => void;
+  tasks?: Task[];
 }
 
 const priorityOptions = [
@@ -34,8 +37,26 @@ const priorityOptions = [
 export default function PriorityFilter({
   selectedPriorities,
   onPrioritiesChange,
+  tasks = [],
 }: PriorityFilterProps) {
   const selectedValues = new Set(selectedPriorities);
+
+  // Count tasks by priority
+  const priorityCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      low: 0,
+      medium: 0,
+      high: 0,
+    };
+
+    tasks.forEach((task) => {
+      if (task.priority in counts) {
+        counts[task.priority]++;
+      }
+    });
+
+    return counts;
+  }, [tasks]);
 
   return (
     <Popover>
@@ -109,7 +130,10 @@ export default function PriorityFilter({
                     >
                       <CheckIcon className={cn("h-4 w-4")} />
                     </div>
-                    <span>{option.label}</span>
+                    <span className="flex-1">{option.label}</span>
+                    {priorityCounts[option.value] > 0 && (
+                      <span>{priorityCounts[option.value]}</span>
+                    )}
                   </CommandItem>
                 );
               })}
@@ -133,4 +157,3 @@ export default function PriorityFilter({
     </Popover>
   );
 }
-
