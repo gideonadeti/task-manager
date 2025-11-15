@@ -1,10 +1,8 @@
 import axios from "axios";
 
-export async function readGroups(userId: string) {
+export async function readGroups() {
   try {
-    const response = await axios.get("/api/groups", {
-      params: { userId },
-    });
+    const response = await axios.get("/api/groups");
 
     return response.data.groups;
   } catch (error) {
@@ -14,11 +12,10 @@ export async function readGroups(userId: string) {
   }
 }
 
-export async function createGroup(name: string, userId: string) {
+export async function createGroup(name: string) {
   try {
     const response = await axios.post("/api/groups", {
       name,
-      userId,
     });
 
     return response.data.group;
@@ -29,11 +26,9 @@ export async function createGroup(name: string, userId: string) {
   }
 }
 
-export async function readTasks(userId: string) {
+export async function readTasks() {
   try {
-    const response = await axios.get("/api/tasks", {
-      params: { userId },
-    });
+    const response = await axios.get("/api/tasks");
 
     return response.data.tasks;
   } catch (error) {
@@ -43,14 +38,9 @@ export async function readTasks(userId: string) {
   }
 }
 
-export async function updateGroup(
-  userId: string,
-  groupId: string,
-  name: string
-) {
+export async function updateGroup(groupId: string, name: string) {
   try {
     const response = await axios.patch(`/api/groups/${groupId}`, {
-      userId,
       name,
     });
 
@@ -79,7 +69,6 @@ export async function createTask(
   description: string,
   priority: string,
   groupId: string,
-  userId: string,
   dueDate?: Date
 ) {
   try {
@@ -89,7 +78,6 @@ export async function createTask(
       dueDate,
       priority,
       groupId,
-      userId,
     });
 
     return response.data.task;
