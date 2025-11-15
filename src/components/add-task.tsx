@@ -19,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import CustomDialogFooter from "@/app/components/custom-dialog-footer";
 import {
   Form,
   FormControl,
@@ -63,9 +64,14 @@ export default function AddTask({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Task</DialogTitle>
+          <DialogTitle>{task ? "Edit Task" : "Add Task"}</DialogTitle>
         </DialogHeader>
-        <AddTaskForm task={task} setOpen={setOpen} defaultGroupId={defaultGroupId} />
+        <AddTaskForm
+          task={task}
+          open={open}
+          setOpen={setOpen}
+          defaultGroupId={defaultGroupId}
+        />
       </DialogContent>
     </Dialog>
   );
@@ -73,10 +79,12 @@ export default function AddTask({
 
 function AddTaskForm({
   task,
+  open,
   setOpen,
   defaultGroupId,
 }: {
   task?: Task;
+  open: boolean;
   setOpen: (open: boolean) => void;
   defaultGroupId?: string;
 }) {
@@ -106,6 +114,13 @@ function AddTaskForm({
       form.setValue("groupId", defaultGroupId);
     }
   }, [defaultGroupId, groupsQuery.data, task, form]);
+
+  // Reset form when dialog closes
+  useEffect(() => {
+    if (!open && !task) {
+      form.reset();
+    }
+  }, [open, task, form]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (task) {
@@ -162,10 +177,7 @@ function AddTaskForm({
             <FormItem>
               <FormLabel>Priority</FormLabel>
               <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                >
+                <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select priority" />
                   </SelectTrigger>
@@ -188,10 +200,7 @@ function AddTaskForm({
             <FormItem>
               <FormLabel>Group</FormLabel>
               <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                >
+                <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select group" />
                   </SelectTrigger>
@@ -266,16 +275,17 @@ function AddTaskForm({
           )}
         />
 
-        <Button
-          type="submit"
-          disabled={
+        <CustomDialogFooter
+          isPending={
             createTaskMutation.isPending || updateTaskMutation.isPending
           }
-        >
-          {createTaskMutation.isPending || updateTaskMutation.isPending
-            ? "Submitting..."
-            : "Submit"}
-        </Button>
+          disabled={!form.formState.isValid}
+          handleCancel={() => {
+            setOpen(false);
+            form.reset();
+          }}
+          handleSubmit={form.handleSubmit(onSubmit)}
+        />
       </form>
     </Form>
   );

@@ -2,9 +2,9 @@ import { useForm } from "react-hook-form";
 import { useRouter, useParams } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 
 import useGroups from "@/hooks/use-groups";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -20,6 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import CustomDialogFooter from "@/app/components/custom-dialog-footer";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -47,6 +48,7 @@ const AddGroup = ({
         <AddGroupForm
           defaultValue={defaultValue}
           groupUpdateId={groupUpdateId}
+          open={open}
           onOpenChange={onOpenChange}
         />
       </DialogContent>
@@ -57,10 +59,12 @@ const AddGroup = ({
 function AddGroupForm({
   defaultValue,
   groupUpdateId,
+  open,
   onOpenChange,
 }: {
   defaultValue: string;
   groupUpdateId: string;
+  open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -71,6 +75,13 @@ function AddGroupForm({
   const params = useParams();
 
   const { createGroupMutation, updateGroupMutation } = useGroups();
+
+  // Reset form when dialog closes (for new groups only)
+  useEffect(() => {
+    if (!open && !defaultValue) {
+      form.reset();
+    }
+  }, [open, defaultValue, form]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (defaultValue) {
@@ -104,18 +115,15 @@ function AddGroupForm({
           )}
         />
 
-        <Button
-          type="submit"
-          disabled={
-            createGroupMutation.isPending || updateGroupMutation.isPending
-          }
-        >
-          {createGroupMutation.isPending || updateGroupMutation.isPending
-            ? "Submitting"
-            : defaultValue
-            ? "Update"
-            : "Submit"}
-        </Button>
+        <CustomDialogFooter
+          isPending={createGroupMutation.isPending || updateGroupMutation.isPending}
+          disabled={!form.formState.isValid}
+          handleCancel={() => {
+            onOpenChange(false);
+            form.reset();
+          }}
+          handleSubmit={form.handleSubmit(onSubmit)}
+        />
       </form>
     </Form>
   );

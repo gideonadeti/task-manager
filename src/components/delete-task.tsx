@@ -1,14 +1,12 @@
 import useTasks from "@/hooks/use-tasks";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import CustomDialogFooter from "@/app/components/custom-dialog-footer";
 
 export default function DeleteTask({
   open,
@@ -39,20 +37,13 @@ export default function DeleteTask({
             This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel
-            disabled={deleteTaskMutation.isPending}
-            onClick={() => onOpenChange(false)}
-          >
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            disabled={deleteTaskMutation.isPending}
-            onClick={handleDelete}
-          >
-            {deleteTaskMutation.isPending ? "Deleting..." : "Delete"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
+        <CustomDialogFooter
+          variant="alert"
+          isPending={deleteTaskMutation.isPending}
+          submitText="Delete"
+          handleCancel={() => onOpenChange(false)}
+          handleSubmit={handleDelete}
+        />
       </AlertDialogContent>
     </AlertDialog>
   );

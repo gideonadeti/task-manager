@@ -1,14 +1,12 @@
 import useGroups from "@/hooks/use-groups";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import CustomDialogFooter from "@/app/components/custom-dialog-footer";
 
 export default function DeleteGroup({
   open,
@@ -40,20 +38,13 @@ export default function DeleteGroup({
             deleted.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel
-            disabled={deleteGroupMutation.isPending}
-            onClick={() => onOpenChange(false)}
-          >
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            disabled={deleteGroupMutation.isPending}
-            onClick={handleDelete}
-          >
-            {deleteGroupMutation.isPending ? "Deleting..." : "Delete"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
+        <CustomDialogFooter
+          variant="alert"
+          isPending={deleteGroupMutation.isPending}
+          submitText="Delete"
+          handleCancel={() => onOpenChange(false)}
+          handleSubmit={handleDelete}
+        />
       </AlertDialogContent>
     </AlertDialog>
   );
