@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { hasAxiosResponse, isAxiosErrorResponse } from "@/lib/type-guards";
+import { hasAxiosResponse, isApiErrorResponse } from "@/lib/type-guards";
 
 /**
  * Handles API errors and shows appropriate toast notifications
@@ -13,8 +13,8 @@ export function handleApiError(
   let description = defaultMessage;
 
   if (hasAxiosResponse(error) && error.response?.data) {
-    if (isAxiosErrorResponse(error.response.data)) {
-      description = error.response.data.error;
+    if (isApiErrorResponse(error.response.data)) {
+      description = error.response.data.error.message;
     }
   }
 
