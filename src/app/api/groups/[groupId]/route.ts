@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { getUserId } from "@/lib/auth/get-user-id";
-import { updateGroup, readGroup, deleteGroup } from "../../../../../prisma/db";
 import {
   updateGroupSchema,
   groupIdParamSchema,
   validateRequestBody,
   validateParams,
 } from "@/lib/validations";
+import { GroupService } from "@/services/group-service";
 
 export async function PATCH(
   req: NextRequest,
@@ -25,16 +25,11 @@ export async function PATCH(
     // Validate request body
     const validatedData = validateRequestBody(updateGroupSchema, body);
 
-    const group = await readGroup(userId, validatedData.name);
-
-    if (group) {
-      return NextResponse.json(
-        { error: "Group name already exists." },
-        { status: 400 }
-      );
-    }
-
-    const updatedGroup = await updateGroup(groupId, validatedData.name, userId);
+    const updatedGroup = await GroupService.updateGroup(
+      userId,
+      groupId,
+      validatedData.name
+    );
 
     return NextResponse.json({ group: updatedGroup });
   } catch (error) {
@@ -59,6 +54,14 @@ export async function PATCH(
       );
     }
 
+    // Handle business logic errors from service
+    if (error instanceof Error && error.message.includes("already exists")) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       { error: "Something went wrong while updating group name." },
       { status: 500 }
@@ -77,7 +80,7 @@ export async function DELETE(
     // Validate route parameters
     const { groupId } = validateParams(groupIdParamSchema, rawParams);
 
-    const group = await deleteGroup(groupId, userId);
+    const group = await GroupService.deleteGroup(userId, groupId);
 
     return NextResponse.json({ group });
   } catch (error: unknown) {

@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { readGroups, createGroup, readGroup } from "../../../../prisma/db";
 import { getUserId } from "@/lib/auth/get-user-id";
 import { createGroupSchema, validateRequestBody } from "@/lib/validations";
+import { GroupService } from "@/services/group-service";
 
 export async function GET() {
   try {
     const userId = await getUserId();
-    const groups = await readGroups(userId);
+    const groups = await GroupService.getGroups(userId);
 
     return NextResponse.json({ groups }, { status: 200 });
   } catch (error) {
@@ -40,16 +40,7 @@ export async function POST(req: NextRequest) {
     // Validate request body
     const validatedData = validateRequestBody(createGroupSchema, body);
 
-    const group = await readGroup(userId, validatedData.name);
-
-    if (group) {
-      return NextResponse.json(
-        { error: "Group already exists." },
-        { status: 400 }
-      );
-    }
-
-    const createdGroup = await createGroup(validatedData.name, userId);
+    const createdGroup = await GroupService.createGroup(userId, validatedData.name);
 
     return NextResponse.json({ group: createdGroup }, { status: 201 });
   } catch (error) {
@@ -64,6 +55,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "Unauthorized. Authentication required." },
         { status: 401 }
+      );
+    }
+
+    // Handle business logic errors from service
+    if (error instanceof Error && error.message.includes("already exists")) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 400 }
       );
     }
 
