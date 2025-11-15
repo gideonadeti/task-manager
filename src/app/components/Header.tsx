@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { ThemeToggler } from "@/components/theme-toggler";
 
 export default function Header() {
   const { resolvedTheme } = useTheme();
@@ -14,13 +15,23 @@ export default function Header() {
   const isLightTheme = resolvedTheme === "light";
 
   return (
-    <header className="flex items-center border-b py-2 ps-2 pe-4">
-      <SidebarTrigger />
-      <Separator orientation="vertical" className="mx-2" />
-      <Link href="/groups/today" className="text-lg font-semibold">
-        Taskflow
-      </Link>
-      <div className="ms-auto">
+    <header className="relative flex items-center border-b py-2 ps-2 pe-4 gap-2">
+      {/* Left section: Sidebar trigger and theme toggler */}
+      <div className="flex items-center gap-1">
+        <SidebarTrigger />
+        <Separator orientation="vertical" className="mx-2 h-8" />
+        <ThemeToggler />
+      </div>
+
+      {/* Center section: Title */}
+      <div className="absolute left-1/2 transform -translate-x-1/2">
+        <Link href="/groups/today" className="text-lg font-semibold">
+          Taskflow
+        </Link>
+      </div>
+
+      {/* Right section: User button */}
+      <div className="ms-auto flex items-center">
         {!isLoaded ? (
           <Skeleton className="min-w-28 h-8 rounded-full" />
         ) : (
