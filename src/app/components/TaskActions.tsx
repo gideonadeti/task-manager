@@ -44,7 +44,7 @@ export default function TaskActions({ task }: TaskActionsProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => setDeleteOpen(true)}
-          className="text-destructive bg-destructive/10"
+          className="text-red-500 hover:bg-red-500/10"
         >
           Delete
         </DropdownMenuItem>
