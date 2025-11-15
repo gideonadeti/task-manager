@@ -1,4 +1,7 @@
+"use client";
+
 import { useUser } from "@clerk/nextjs";
+import { useState } from "react";
 import {
   Sun,
   Inbox,
@@ -14,7 +17,11 @@ import {
   EmptyMedia,
   EmptyTitle,
   EmptyDescription,
+  EmptyContent,
 } from "@/components/ui/empty";
+import { Button } from "@/components/ui/button";
+import AddTask from "@/components/add-task";
+import useGroups from "@/hooks/use-groups";
 
 interface NoTasksProps {
   groupId: string;
@@ -29,6 +36,26 @@ interface MessageConfig {
 
 const NoTasks = ({ groupId }: NoTasksProps) => {
   const { user } = useUser();
+  const { groupsQuery } = useGroups();
+  const [addTaskOpen, setAddTaskOpen] = useState(false);
+
+  // Special views that don't have a single group
+  const specialViews = ["today", "tomorrow", "this-week", "overdue", "completed"];
+  const isValidGroup = !specialViews.includes(groupId);
+
+  // Get the actual group ID
+  const getActualGroupId = (): string | undefined => {
+    if (!isValidGroup) return undefined;
+    
+    if (groupId === "inbox") {
+      return groupsQuery.data?.find((group) => group.name === "Inbox")?.id;
+    }
+    
+    // For actual group IDs (UUIDs), return as is
+    return groupId;
+  };
+
+  const actualGroupId = getActualGroupId();
 
   const messages: Record<string, MessageConfig> = {
     inbox: {
@@ -83,19 +110,35 @@ const NoTasks = ({ groupId }: NoTasksProps) => {
     : title;
 
   return (
-    <Empty className="h-full border-0">
-      <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <Icon
-            className={`${
-              groupId === "today" ? "animate-bounce" : ""
-            } text-muted-foreground`}
-          />
-        </EmptyMedia>
-        <EmptyTitle>{displayTitle}</EmptyTitle>
-        <EmptyDescription>{description}</EmptyDescription>
-      </EmptyHeader>
-    </Empty>
+    <>
+      <Empty className="h-full border-0">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Icon
+              className={`${
+                groupId === "today" ? "animate-bounce" : ""
+              } text-muted-foreground`}
+            />
+          </EmptyMedia>
+          <EmptyTitle>{displayTitle}</EmptyTitle>
+          <EmptyDescription>{description}</EmptyDescription>
+        </EmptyHeader>
+        {isValidGroup && actualGroupId && (
+          <EmptyContent>
+            <Button onClick={() => setAddTaskOpen(true)}>
+              Add Task
+            </Button>
+          </EmptyContent>
+        )}
+      </Empty>
+      {isValidGroup && actualGroupId && (
+        <AddTask
+          open={addTaskOpen}
+          setOpen={setAddTaskOpen}
+          defaultGroupId={actualGroupId}
+        />
+      )}
+    </>
   );
 };
 
