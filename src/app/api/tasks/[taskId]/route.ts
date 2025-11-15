@@ -14,19 +14,12 @@ import {
   validateRequestBody,
   validateParams,
 } from "@/lib/validations";
-import { rateLimiters } from "@/lib/rate-limit";
 
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
-    // Apply rate limiting
-    const rateLimitResponse = await rateLimiters.general(req);
-    if (rateLimitResponse) {
-      return rateLimitResponse;
-    }
-
     const userId = await getUserId();
     const rawParams = await params;
 
@@ -111,12 +104,6 @@ export async function DELETE(
   }
 ) {
   try {
-    // Apply rate limiting
-    const rateLimitResponse = await rateLimiters.general(req);
-    if (rateLimitResponse) {
-      return rateLimitResponse;
-    }
-
     const userId = await getUserId();
     const rawParams = await params;
 
@@ -160,12 +147,6 @@ export async function PATCH(
   { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
-    // Apply rate limiting
-    const rateLimitResponse = await rateLimiters.general(req);
-    if (rateLimitResponse) {
-      return rateLimitResponse;
-    }
-
     const userId = await getUserId();
     const rawParams = await params;
 
