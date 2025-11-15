@@ -25,8 +25,17 @@ export default function Header() {
 
       {/* Center section: Title */}
       <div className="absolute left-1/2 transform -translate-x-1/2">
-        <Link href="/groups/today" className="text-lg font-semibold">
-          Taskflow
+        <Link
+          href="/groups/today"
+          className="group relative inline-block transition-all hover:scale-105 active:scale-95"
+        >
+          <span className="relative z-10 block text-xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+            Taskflow
+          </span>
+          {/* Glow effect on hover */}
+          <span className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent opacity-0 blur-sm group-hover:opacity-50 transition-opacity duration-300">
+            Taskflow
+          </span>
         </Link>
       </div>
 
