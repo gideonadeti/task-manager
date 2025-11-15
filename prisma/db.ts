@@ -64,8 +64,24 @@ export async function readTasks(userId: string) {
   }
 }
 
-export async function updateGroup(groupId: string, name: string) {
+export async function updateGroup(
+  groupId: string,
+  name: string,
+  userId: string
+) {
   try {
+    // First verify the group belongs to the user
+    const existingGroup = await prismaClient.group.findFirst({
+      where: {
+        id: groupId,
+        userId,
+      },
+    });
+
+    if (!existingGroup) {
+      throw new Error("Forbidden. You don't have access to this resource.");
+    }
+
     const group = await prismaClient.group.update({
       where: {
         id: groupId,
@@ -100,8 +116,20 @@ export async function readGroup(userId: string, name: string) {
   }
 }
 
-export async function deleteGroup(groupId: string) {
+export async function deleteGroup(groupId: string, userId: string) {
   try {
+    // First verify the group belongs to the user
+    const existingGroup = await prismaClient.group.findFirst({
+      where: {
+        id: groupId,
+        userId,
+      },
+    });
+
+    if (!existingGroup) {
+      throw new Error("Forbidden. You don't have access to this resource.");
+    }
+
     const group = await prismaClient.group.delete({
       where: {
         id: groupId,
@@ -144,11 +172,12 @@ export async function createTask(
   }
 }
 
-export async function readTask(name: string) {
+export async function readTask(name: string, userId: string) {
   try {
     const task = await prismaClient.task.findFirst({
       where: {
         title: name,
+        userId,
       },
     });
 
@@ -166,9 +195,22 @@ export async function updateTask(
   description: string,
   dueDate: Date,
   priority: "low" | "medium" | "high",
-  groupId: string
+  groupId: string,
+  userId: string
 ) {
   try {
+    // First verify the task belongs to the user
+    const existingTask = await prismaClient.task.findFirst({
+      where: {
+        id: taskId,
+        userId,
+      },
+    });
+
+    if (!existingTask) {
+      throw new Error("Forbidden. You don't have access to this resource.");
+    }
+
     const task = await prismaClient.task.update({
       where: {
         id: taskId,
@@ -190,8 +232,20 @@ export async function updateTask(
   }
 }
 
-export async function deleteTask(taskId: string) {
+export async function deleteTask(taskId: string, userId: string) {
   try {
+    // First verify the task belongs to the user
+    const existingTask = await prismaClient.task.findFirst({
+      where: {
+        id: taskId,
+        userId,
+      },
+    });
+
+    if (!existingTask) {
+      throw new Error("Forbidden. You don't have access to this resource.");
+    }
+
     const task = await prismaClient.task.delete({
       where: {
         id: taskId,
@@ -206,8 +260,24 @@ export async function deleteTask(taskId: string) {
   }
 }
 
-export async function toggleComplete(taskId: string, previousStatus: boolean) {
+export async function toggleComplete(
+  taskId: string,
+  previousStatus: boolean,
+  userId: string
+) {
   try {
+    // First verify the task belongs to the user
+    const existingTask = await prismaClient.task.findFirst({
+      where: {
+        id: taskId,
+        userId,
+      },
+    });
+
+    if (!existingTask) {
+      throw new Error("Forbidden. You don't have access to this resource.");
+    }
+
     const task = await prismaClient.task.update({
       where: {
         id: taskId,
