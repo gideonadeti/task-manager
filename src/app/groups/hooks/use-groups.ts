@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
 
 import {
   createGroup,
@@ -15,7 +14,6 @@ import { Group, Task } from "@prisma/client";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 const useGroups = () => {
-  const { user } = useUser();
 
   const queryClient = useQueryClient();
   const createGroupMutation = useMutation<
@@ -34,7 +32,7 @@ const useGroups = () => {
     }
   >({
     mutationFn: ({ name }) => {
-      return createGroup(name, user!.id);
+      return createGroup(name);
     },
     onError: (err) => {
       const description =
@@ -70,7 +68,7 @@ const useGroups = () => {
     }
   >({
     mutationFn: ({ id, name }) => {
-      return updateGroup(user!.id, id, name);
+      return updateGroup(id, name);
     },
     onError: (err) => {
       const description =
@@ -124,7 +122,7 @@ const useGroups = () => {
 
   const groupsQuery = useQuery<Group[], AxiosError>({
     queryKey: ["groups"],
-    queryFn: () => readGroups(user!.id),
+    queryFn: () => readGroups(),
   });
 
   // Error handling effect
