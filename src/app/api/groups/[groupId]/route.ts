@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+
+import { getUserId } from "@/lib/auth/get-user-id";
 import { updateGroup, readGroup, deleteGroup } from "../../../../../prisma/db";
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ groupId: string }> }
 ) {
-  const { groupId } = await params;
-  const { userId, name } = await req.json();
-
   try {
+    const userId = await getUserId();
+    const { groupId } = await params;
+    const { name } = await req.json();
+
     const group = await readGroup(userId, name.trim());
 
     if (group) {
@@ -18,11 +21,25 @@ export async function PATCH(
       );
     }
 
-    const updatedGroup = await updateGroup(groupId, name);
+    const updatedGroup = await updateGroup(groupId, name, userId);
 
     return NextResponse.json({ group: updatedGroup });
   } catch (error) {
     console.error("Error updating group name:", error);
+
+    if (error instanceof Error && error.message.includes("Unauthorized")) {
+      return NextResponse.json(
+        { error: "Unauthorized. Authentication required." },
+        { status: 401 }
+      );
+    }
+
+    if (error instanceof Error && error.message.includes("Forbidden")) {
+      return NextResponse.json(
+        { error: "Forbidden. You don't have access to this resource." },
+        { status: 403 }
+      );
+    }
 
     return NextResponse.json(
       { error: "Something went wrong while updating group name." },
@@ -35,18 +52,34 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ groupId: string }> }
 ) {
-  const { groupId } = await params;
-
-  if (!groupId) {
-    return NextResponse.json({ error: "Invalid group ID." }, { status: 400 });
-  }
-
   try {
-    const group = await deleteGroup(groupId);
+    const userId = await getUserId();
+    const { groupId } = await params;
+
+    if (!groupId) {
+      return NextResponse.json({ error: "Invalid group ID." }, { status: 400 });
+    }
+
+    const group = await deleteGroup(groupId, userId);
 
     return NextResponse.json({ group });
   } catch (error: unknown) {
     console.error("Error deleting group:", error);
+
+    if (error instanceof Error && error.message.includes("Unauthorized")) {
+      return NextResponse.json(
+        { error: "Unauthorized. Authentication required." },
+        { status: 401 }
+      );
+    }
+
+    if (error instanceof Error && error.message.includes("Forbidden")) {
+      return NextResponse.json(
+        { error: "Forbidden. You don't have access to this resource." },
+        { status: 403 }
+      );
+    }
+
     return NextResponse.json(
       { error: "Something went wrong while deleting group." },
       { status: 500 }
