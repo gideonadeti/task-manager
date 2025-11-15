@@ -6,7 +6,6 @@ import {
   ColumnFiltersState,
   SortingState,
   VisibilityState,
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -14,16 +13,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import TaskTablePagination from "./TasksTablePagination";
 import TasksTableToolbar from "./TasksTableToolbar";
+import TasksCardView from "./TasksCardView";
+import { Task } from "@prisma/client";
 
 interface TasksTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -58,59 +51,14 @@ export function TasksTable<TData, TValue>({
     },
   });
 
+  const filteredData = table
+    .getFilteredRowModel()
+    .rows.map((row) => row.original);
+
   return (
     <div className="h-screen overflow-y-auto pb-14 space-y-4 px-2 md:px-4 lg:px-8 pt-4">
       <TasksTableToolbar table={table} />
-      <div>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <TasksCardView tasks={filteredData as unknown as Task[]} />
       <TaskTablePagination table={table} />
     </div>
   );
