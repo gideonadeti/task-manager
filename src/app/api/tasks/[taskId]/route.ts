@@ -5,30 +5,81 @@ import {
   updateTask,
   deleteTask,
   toggleComplete,
+  readTaskById,
 } from "../../../../../prisma/db";
+import {
+  updateTaskSchema,
+  taskIdParamSchema,
+  toggleCompleteSchema,
+  validateRequestBody,
+  validateParams,
+} from "@/lib/validations";
+import { rateLimiters } from "@/lib/rate-limit";
 
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
+    // Apply rate limiting
+    const rateLimitResponse = await rateLimiters.general(req);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
     const userId = await getUserId();
-    const { taskId } = await params;
-    const { title, description, dueDate, priority, groupId } = await req.json();
+    const rawParams = await params;
+
+    // Validate route parameters
+    const { taskId } = validateParams(taskIdParamSchema, rawParams);
+
+    const body = await req.json();
+
+    // Validate request body
+    const validatedData = validateRequestBody(updateTaskSchema, body);
+
+    // Ensure at least one field is provided for update
+    if (
+      !validatedData.title &&
+      !validatedData.description &&
+      !validatedData.priority &&
+      !validatedData.groupId &&
+      !validatedData.dueDate
+    ) {
+      return NextResponse.json(
+        { error: "At least one field must be provided for update." },
+        { status: 400 }
+      );
+    }
+
+    // Fetch existing task to fill in missing fields
+    const existingTask = await readTaskById(taskId, userId);
+
+    if (!existingTask) {
+      return NextResponse.json(
+        { error: "Task not found or you don't have access to this resource." },
+        { status: 404 }
+      );
+    }
 
     const task = await updateTask(
       taskId,
-      title,
-      description,
-      dueDate,
-      priority,
-      groupId,
+      validatedData.title ?? existingTask.title,
+      validatedData.description ?? existingTask.description ?? "",
+      validatedData.dueDate ?? existingTask.dueDate ?? new Date(),
+      validatedData.priority ?? existingTask.priority,
+      validatedData.groupId ?? existingTask.groupId,
       userId
     );
 
     return NextResponse.json({ task });
   } catch (error) {
     console.error("Error updating task:", error);
+
+    // Handle validation errors (NextResponse thrown by validate functions)
+    if (error instanceof NextResponse) {
+      return error;
+    }
 
     if (error instanceof Error && error.message.includes("Unauthorized")) {
       return NextResponse.json(
@@ -51,20 +102,37 @@ export async function PUT(
   }
 }
 
-export async function DELETE({
-  params,
-}: {
-  params: Promise<{ taskId: string }>;
-}) {
+export async function DELETE(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: Promise<{ taskId: string }>;
+  }
+) {
   try {
+    // Apply rate limiting
+    const rateLimitResponse = await rateLimiters.general(req);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
     const userId = await getUserId();
-    const { taskId } = await params;
+    const rawParams = await params;
+
+    // Validate route parameters
+    const { taskId } = validateParams(taskIdParamSchema, rawParams);
 
     const task = await deleteTask(taskId, userId);
 
     return NextResponse.json({ task });
   } catch (error) {
     console.error("Error deleting task:", error);
+
+    // Handle validation errors (NextResponse thrown by validate functions)
+    if (error instanceof NextResponse) {
+      return error;
+    }
 
     if (error instanceof Error && error.message.includes("Unauthorized")) {
       return NextResponse.json(
@@ -92,11 +160,24 @@ export async function PATCH(
   { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
-    const userId = await getUserId();
-    const { taskId } = await params;
-    const { previousStatus } = await req.json();
+    // Apply rate limiting
+    const rateLimitResponse = await rateLimiters.general(req);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
 
-    await toggleComplete(taskId, previousStatus, userId);
+    const userId = await getUserId();
+    const rawParams = await params;
+
+    // Validate route parameters
+    const { taskId } = validateParams(taskIdParamSchema, rawParams);
+
+    const body = await req.json();
+
+    // Validate request body
+    const validatedData = validateRequestBody(toggleCompleteSchema, body);
+
+    await toggleComplete(taskId, validatedData.previousStatus, userId);
 
     return NextResponse.json(
       { message: "Task status updated successfully." },
@@ -104,6 +185,11 @@ export async function PATCH(
     );
   } catch (error) {
     console.error("Error updating task status:", error);
+
+    // Handle validation errors (NextResponse thrown by validate functions)
+    if (error instanceof NextResponse) {
+      return error;
+    }
 
     if (error instanceof Error && error.message.includes("Unauthorized")) {
       return NextResponse.json(
