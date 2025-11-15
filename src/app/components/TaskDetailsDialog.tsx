@@ -86,7 +86,7 @@ export default function TaskDetailsDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="max-w-[95vw] sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               {task.completed ? (
@@ -114,7 +114,7 @@ export default function TaskDetailsDialog({
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
                   <Tag className="h-4 w-4" />

@@ -71,7 +71,7 @@ function TaskCard({ task, onCardClick }: TaskCardProps) {
   return (
     <div
       onClick={handleClick}
-      className={`relative border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer ${
+      className={`relative border rounded-lg p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer ${
         task.completed ? "bg-muted/50 opacity-75" : "bg-card"
       }`}
     >
@@ -156,7 +156,7 @@ function TaskCards({ tasks }: TaskCardsProps) {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 pb-4">
         {tasks.map((task) => (
           <TaskCard key={task.id} task={task} onCardClick={handleCardClick} />
         ))}

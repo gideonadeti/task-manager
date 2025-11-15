@@ -30,14 +30,14 @@ const CustomDialogFooter = ({
         <AlertDialogCancel
           disabled={isPending}
           onClick={() => handleCancel()}
-          className="w-32"
+          className="w-full sm:w-32 min-h-[44px]"
         >
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
           disabled={disabled || isPending}
           onClick={() => handleSubmit()}
-          className="w-32"
+          className="w-full sm:w-32 min-h-[44px]"
         >
           {isPending ? (
             <>
@@ -59,7 +59,7 @@ const CustomDialogFooter = ({
         variant="secondary"
         onClick={() => handleCancel()}
         disabled={isPending}
-        className="w-32"
+        className="w-full sm:w-32 min-h-[44px]"
       >
         Cancel
       </Button>
@@ -67,7 +67,7 @@ const CustomDialogFooter = ({
         type="submit"
         onClick={() => handleSubmit()}
         disabled={disabled || isPending}
-        className="w-32"
+        className="w-full sm:w-32 min-h-[44px]"
       >
         {isPending ? (
           <>
