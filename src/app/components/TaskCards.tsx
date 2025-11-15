@@ -2,7 +2,15 @@
 
 import { Task } from "@prisma/client";
 import { isToday, isTomorrow, isPast } from "date-fns";
+import { Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+} from "@/components/ui/empty";
 import TaskCompletionCheckbox from "./TaskCompletionCheckbox";
 import TaskActions from "./TaskActions";
 import formatDate from "../format-date";
@@ -46,9 +54,17 @@ export default function TaskCards({ tasks }: TaskCardsProps) {
 
   if (tasks.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">No tasks found.</p>
-      </div>
+      <Empty className="h-64 border-0">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Search className="text-muted-foreground" />
+          </EmptyMedia>
+          <EmptyTitle>No tasks found</EmptyTitle>
+          <EmptyDescription>
+            Try adjusting your search or filter criteria
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     );
   }
 
