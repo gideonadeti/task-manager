@@ -3,6 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { Task } from "@prisma/client";
+import { useEffect } from "react";
 
 import useGroups from "@/hooks/use-groups";
 import useTasks from "@/hooks/use-tasks";
@@ -51,10 +52,12 @@ export default function AddTask({
   task,
   open,
   setOpen,
+  defaultGroupId,
 }: {
   task?: Task;
   open: boolean;
   setOpen: (open: boolean) => void;
+  defaultGroupId?: string;
 }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -62,7 +65,7 @@ export default function AddTask({
         <DialogHeader>
           <DialogTitle>Add Task</DialogTitle>
         </DialogHeader>
-        <AddTaskForm task={task} setOpen={setOpen} />
+        <AddTaskForm task={task} setOpen={setOpen} defaultGroupId={defaultGroupId} />
       </DialogContent>
     </Dialog>
   );
@@ -71,9 +74,11 @@ export default function AddTask({
 function AddTaskForm({
   task,
   setOpen,
+  defaultGroupId,
 }: {
   task?: Task;
   setOpen: (open: boolean) => void;
+  defaultGroupId?: string;
 }) {
   const { groupsQuery } = useGroups();
   const { createTaskMutation, updateTaskMutation } = useTasks();
@@ -84,6 +89,7 @@ function AddTaskForm({
     description: task?.description || "",
     groupId:
       task?.groupId ||
+      defaultGroupId ||
       groupsQuery.data?.find((group) => group.name === "Inbox")?.id ||
       "",
     priority: task?.priority || "medium",
@@ -93,6 +99,13 @@ function AddTaskForm({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
+
+  // Reset form when defaultGroupId changes (for new tasks only)
+  useEffect(() => {
+    if (!task && defaultGroupId && groupsQuery.data) {
+      form.setValue("groupId", defaultGroupId);
+    }
+  }, [defaultGroupId, groupsQuery.data, task, form]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (task) {
@@ -151,7 +164,7 @@ function AddTaskForm({
               <FormControl>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={field.value}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select priority" />
@@ -177,7 +190,7 @@ function AddTaskForm({
               <FormControl>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={field.value}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select group" />
