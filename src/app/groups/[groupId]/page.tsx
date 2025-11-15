@@ -8,7 +8,7 @@ import useGroups from "@/hooks/use-groups";
 import useTasks from "@/hooks/use-tasks";
 import Spinner from "@/app/components/Spinner";
 import { ExtendedGroup } from "@/types";
-import { TasksTable } from "@/app/components/TasksTable";
+import { TasksList } from "@/app/components/TasksList";
 import NoTasks from "./components/no-tasks";
 
 export default function GroupPage() {
@@ -83,7 +83,7 @@ export default function GroupPage() {
         {(groupsQuery.isPending || tasksQuery.isPending) && <Spinner />}
       </div>
       {filteredTasks.length > 0 ? (
-        <TasksTable data={filteredTasks} />
+        <TasksList data={filteredTasks} />
       ) : (
         !(groupsQuery.isPending || tasksQuery.isPending) && (
           <NoTasks groupId={groupId as string} />
