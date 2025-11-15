@@ -8,7 +8,7 @@ import {
   readGroups,
   updateGroup,
   deleteGroup,
-} from "@/app/query-functions";
+} from "@/lib/api/query-functions";
 import { UseFormReturn } from "react-hook-form";
 import { Group, Task } from "@prisma/client";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
