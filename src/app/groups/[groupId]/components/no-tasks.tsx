@@ -2,6 +2,7 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import {
   Sun,
   Inbox,
@@ -20,8 +21,12 @@ import {
   EmptyContent,
 } from "@/components/ui/empty";
 import { Button } from "@/components/ui/button";
-import AddTask from "@/components/add-task";
 import useGroups from "@/hooks/use-groups";
+
+// Dynamically import AddTask to reduce initial bundle size
+const AddTask = dynamic(() => import("@/components/add-task"), {
+  loading: () => null, // No loading indicator needed as it's only shown when dialog is open
+});
 
 interface NoTasksProps {
   groupId: string;

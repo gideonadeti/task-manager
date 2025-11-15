@@ -3,10 +3,18 @@
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { Task } from "@prisma/client";
+import dynamic from "next/dynamic";
 
 import { Button } from "@/components/ui/button";
-import AddTask from "@/components/add-task";
-import DeleteDialog from "@/components/delete-dialog";
+
+// Dynamically import heavy dialog components to reduce initial bundle size
+const AddTask = dynamic(() => import("@/components/add-task"), {
+  loading: () => null, // No loading indicator needed as it's only shown when dialog is open
+});
+
+const DeleteDialog = dynamic(() => import("@/components/delete-dialog"), {
+  loading: () => null, // No loading indicator needed as it's only shown when dialog is open
+});
 import {
   DropdownMenu,
   DropdownMenuContent,

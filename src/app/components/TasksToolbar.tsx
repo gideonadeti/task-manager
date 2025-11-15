@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { Cross2Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Plus } from "lucide-react";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -11,9 +12,13 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import PriorityFilter from "./PriorityFilter";
-import AddTask from "@/components/add-task";
 import useGroups from "@/hooks/use-groups";
 import { Task } from "@prisma/client";
+
+// Dynamically import AddTask to reduce initial bundle size
+const AddTask = dynamic(() => import("@/components/add-task"), {
+  loading: () => null, // No loading indicator needed as it's only shown when dialog is open
+});
 
 interface TasksToolbarProps {
   searchQuery: string;

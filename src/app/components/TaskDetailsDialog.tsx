@@ -4,6 +4,7 @@ import { Task } from "@prisma/client";
 import { useState } from "react";
 import { isToday, isTomorrow, isPast } from "date-fns";
 import { Calendar, Clock, CheckCircle2, Circle, Tag } from "lucide-react";
+import dynamic from "next/dynamic";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,10 +13,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import AddTask from "@/components/add-task";
-import DeleteDialog from "@/components/delete-dialog";
 import useGroups from "@/hooks/use-groups";
 import formatDate from "../format-date";
+
+// Dynamically import heavy dialog components to reduce initial bundle size
+const AddTask = dynamic(() => import("@/components/add-task"), {
+  loading: () => null, // No loading indicator needed as it's only shown when dialog is open
+});
+
+const DeleteDialog = dynamic(() => import("@/components/delete-dialog"), {
+  loading: () => null, // No loading indicator needed as it's only shown when dialog is open
+});
 
 interface TaskDetailsDialogProps {
   task: Task | null;
