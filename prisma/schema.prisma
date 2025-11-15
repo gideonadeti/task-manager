@@ -29,7 +29,6 @@ model Task {
 
   @@index([userId])
   @@index([groupId])
-  @@index([completed])
   @@index([dueDate])
   @@index([userId, completed])
 }
