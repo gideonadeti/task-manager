@@ -1,3 +1,5 @@
+import { isError } from "./type-guards";
+
 /**
  * Simple structured logger
  */
@@ -11,12 +13,12 @@ export const logger = {
       timestamp: new Date().toISOString(),
       level: "error",
       message,
-      ...(error instanceof Error && {
+      ...(isError(error) && {
         error: {
           name: error.name,
           message: error.message,
           stack: error.stack,
-          ...(("code" in error) && { code: error.code }),
+          ...(("code" in error) && { code: (error as Error & { code?: unknown }).code }),
         },
       }),
       ...(context && { context }),
