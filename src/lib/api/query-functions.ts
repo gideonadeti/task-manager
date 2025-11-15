@@ -1,4 +1,5 @@
 import axios from "axios";
+import { logger } from "../logger";
 
 export async function readGroups() {
   try {
@@ -6,8 +7,7 @@ export async function readGroups() {
 
     return response.data.groups;
   } catch (error) {
-    console.error(error);
-
+    logger.error("Error reading groups", error);
     throw error;
   }
 }
@@ -20,8 +20,7 @@ export async function createGroup(name: string) {
 
     return response.data.group;
   } catch (error) {
-    console.error(error);
-
+    logger.error("Error creating group", error, { name });
     throw error;
   }
 }
@@ -32,8 +31,7 @@ export async function readTasks() {
 
     return response.data.tasks;
   } catch (error) {
-    console.error(error);
-
+    logger.error("Error reading tasks", error);
     throw error;
   }
 }
@@ -46,8 +44,7 @@ export async function updateGroup(groupId: string, name: string) {
 
     return response.data.group;
   } catch (error) {
-    console.error(error);
-
+    logger.error("Error updating group", error, { groupId, name });
     throw error;
   }
 }
@@ -58,8 +55,7 @@ export async function deleteGroup(groupId: string) {
 
     return response.data.group;
   } catch (error) {
-    console.error(error);
-
+    logger.error("Error deleting group", error, { groupId });
     throw error;
   }
 }
@@ -82,8 +78,7 @@ export async function createTask(
 
     return response.data.task;
   } catch (error) {
-    console.error(error);
-
+    logger.error("Error creating task", error, { title, groupId });
     throw error;
   }
 }
@@ -107,8 +102,7 @@ export async function updateTask(
 
     return response.data.task;
   } catch (error) {
-    console.error(error);
-
+    logger.error("Error updating task", error, { taskId });
     throw error;
   }
 }
@@ -119,8 +113,7 @@ export async function deleteTask(taskId: string) {
 
     return response.data.task;
   } catch (error) {
-    console.error(error);
-
+    logger.error("Error deleting task", error, { taskId });
     throw error;
   }
 }
@@ -133,8 +126,10 @@ export async function toggleComplete(taskId: string, previousStatus: boolean) {
 
     return response.data.message;
   } catch (error) {
-    console.error(error);
-
+    logger.error("Error toggling task completion", error, {
+      taskId,
+      previousStatus,
+    });
     throw error;
   }
 }
