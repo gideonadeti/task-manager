@@ -73,11 +73,12 @@ export default function TasksToolbar({
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
-        <div className="flex flex-1 items-center gap-2 flex-wrap">
-          <InputGroup className="h-8 flex-1 min-w-[120px] max-w-[300px]">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-2">
+        {/* Search and Filters Section */}
+        <div className="flex flex-1 items-center gap-2 sm:gap-2 flex-wrap">
+          <InputGroup className="h-11 sm:h-8 flex-1 min-w-0 sm:min-w-[120px] sm:max-w-[300px]">
             <InputGroupAddon align="inline-start">
-              <MagnifyingGlassIcon />
+              <MagnifyingGlassIcon className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
             </InputGroupAddon>
             <InputGroupInput
               placeholder="Search task..."
@@ -85,6 +86,7 @@ export default function TasksToolbar({
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 onSearchChange(event.target.value)
               }
+              className="text-base sm:text-sm"
             />
           </InputGroup>
           <PriorityFilter
@@ -96,14 +98,19 @@ export default function TasksToolbar({
             <Button
               variant="outline"
               onClick={handleReset}
-              className="h-8 px-2 sm:px-3"
+              className="h-11 sm:h-8 min-h-[44px] sm:min-h-0 px-3 sm:px-3"
+              aria-label="Reset filters"
             >
               <span className="hidden sm:inline">Reset</span>
-              <Cross2Icon className="sm:ml-2 h-4 w-4" />
+              <Cross2Icon className="h-4 w-4 sm:ml-2" />
             </Button>
           )}
         </div>
-        <Button onClick={() => setOpenAdd(true)} className="h-8 gap-2 min-h-[44px] sm:min-h-0">
+        {/* Create Task Button */}
+        <Button 
+          onClick={() => setOpenAdd(true)} 
+          className="h-11 sm:h-8 min-h-[44px] sm:min-h-0 gap-2 w-full sm:w-auto"
+        >
           <Plus className="h-4 w-4" />
           <span className="hidden sm:inline">Create Task</span>
           <span className="sm:hidden">Create</span>
