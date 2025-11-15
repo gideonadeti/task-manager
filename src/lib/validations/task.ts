@@ -22,17 +22,28 @@ const taskDescriptionSchema = z
 // Group ID validation
 const groupIdSchema = z.string().min(1, "Group ID is required");
 
-// Date validation - must be a valid date string or Date object
+// Date validation - must be a valid date string or Date object, or undefined/null
 const dateSchema = z
-  .union([z.string().datetime(), z.date(), z.string()])
+  .any()
   .refine(
     (val) => {
+      // Allow undefined and null
+      if (val === undefined || val === null) {
+        return true;
+      }
+      // Validate date for other types
       const date = val instanceof Date ? val : new Date(val);
       return !isNaN(date.getTime());
     },
     { message: "Invalid date format" }
   )
-  .transform((val) => (val instanceof Date ? val : new Date(val)))
+  .transform((val) => {
+    // Return undefined for null/undefined, otherwise transform to Date
+    if (val === undefined || val === null) {
+      return undefined;
+    }
+    return val instanceof Date ? val : new Date(val);
+  })
   .optional();
 
 // Create task schema
