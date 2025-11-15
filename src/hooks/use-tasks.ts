@@ -13,7 +13,6 @@ import { UseFormReturn } from "react-hook-form";
 import { Task } from "@prisma/client";
 
 const useTasks = () => {
-
   const queryClient = useQueryClient();
   const createTaskMutation = useMutation<
     Task,
@@ -49,16 +48,13 @@ const useTasks = () => {
       toast.error(description);
     },
     onSuccess: (createdTask, { form, setOpen }) => {
-      form.reset();
-      toast.success("Task created successfully");
-
-      queryClient.setQueryData<Task[]>(["tasks"], (prevTasks) => {
-        const tasksArray = Array.isArray(prevTasks) ? prevTasks : [];
-
-        return [...tasksArray, createdTask];
-      });
-
       setOpen(false);
+
+      toast.success("Task created successfully");
+      form.reset();
+      queryClient.setQueryData<Task[]>(["tasks"], (prevTasks) => {
+        return [createdTask, ...(prevTasks || [])];
+      });
     },
   });
 
@@ -97,16 +93,15 @@ const useTasks = () => {
       toast.error(description);
     },
     onSuccess: (updatedTask, { form, setOpen }) => {
-      form.reset();
-      toast.success("Task updated successfully");
+      setOpen(false);
 
+      toast.success("Task updated successfully");
+      form.reset();
       queryClient.setQueryData<Task[]>(["tasks"], (prevTasks) => {
         return prevTasks?.map((task) =>
           task.id === updatedTask.id ? updatedTask : task
         );
       });
-
-      setOpen(false);
     },
   });
 
@@ -127,9 +122,9 @@ const useTasks = () => {
       toast.error(description);
     },
     onSuccess: (deletedTask, { onOpenChange }) => {
-      toast.success("Task deleted successfully");
       onOpenChange(false);
 
+      toast.success("Task deleted successfully");
       queryClient.setQueryData<Task[]>(["tasks"], (prevTasks) => {
         return prevTasks?.filter((task) => task.id !== deletedTask.id);
       });
