@@ -19,11 +19,8 @@ import {
 } from "lucide-react";
 import { isToday, isTomorrow, isThisWeek, isPast } from "date-fns";
 
-import AddTask from "./add-task";
 import AddGroup from "./add-group";
 import DeleteGroup from "./delete-group";
-import { Button } from "./ui/button";
-import { ThemeToggler } from "./theme-toggler";
 import {
   Sidebar,
   SidebarContent,
@@ -34,7 +31,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarGroupAction,
-  SidebarFooter,
   SidebarMenuAction,
   SidebarMenuBadge,
 } from "./ui/sidebar";
@@ -63,7 +59,6 @@ export function AppSidebar() {
   const [groupUpdateId, setGroupUpdateId] = useState("");
   const [groupDeleteId, setGroupDeleteId] = useState("");
   const [openDelete, setOpenDelete] = useState(false);
-  const [openAdd, setOpenAdd] = useState(false);
 
   const personalGroups =
     groups?.filter((group) => group.name !== "Inbox") || [];
@@ -227,30 +222,17 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <SidebarGroup className="flex flex-row items-center justify-between space-x-4">
-          <ThemeToggler />
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => setOpenAdd(true)}
-          >
-            Create Task
-          </Button>
-        </SidebarGroup>
-        <AddTask open={openAdd} setOpen={setOpenAdd} />
-        <AddGroup
-          open={open}
-          onOpenChange={setOpen}
-          defaultValue={groupName}
-          groupUpdateId={groupUpdateId}
-        />
-        <DeleteGroup
-          open={openDelete}
-          onOpenChange={setOpenDelete}
-          groupDeleteId={groupDeleteId}
-        />
-      </SidebarFooter>
+      <AddGroup
+        open={open}
+        onOpenChange={setOpen}
+        defaultValue={groupName}
+        groupUpdateId={groupUpdateId}
+      />
+      <DeleteGroup
+        open={openDelete}
+        onOpenChange={setOpenDelete}
+        groupDeleteId={groupDeleteId}
+      />
     </Sidebar>
   );
 }
