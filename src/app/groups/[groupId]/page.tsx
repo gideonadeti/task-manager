@@ -4,10 +4,10 @@ import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import { isToday, isTomorrow, isThisWeek, isPast, compareAsc } from "date-fns";
 
-import useGroups from "../hooks/use-groups";
-import useTasks from "../hooks/use-tasks";
+import useGroups from "@/hooks/use-groups";
+import useTasks from "@/hooks/use-tasks";
 import Spinner from "@/app/components/Spinner";
-import { ExtendedGroup } from "@/app/type";
+import { ExtendedGroup } from "@/types";
 import { TasksTable } from "@/app/components/TasksTable";
 import { columns } from "@/app/components/TasksTableColumns";
 import NoTasks from "./components/no-tasks";
