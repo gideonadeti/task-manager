@@ -6,8 +6,15 @@ export async function readGroups(userId: string) {
       where: {
         userId,
       },
+      orderBy: {
+        updatedAt: "desc",
+      },
       include: {
-        tasks: true,
+        tasks: {
+          orderBy: {
+            updatedAt: "desc",
+          },
+        },
       },
     });
 
@@ -34,7 +41,11 @@ export async function createGroup(name: string, userId: string) {
         userId,
       },
       include: {
-        tasks: true,
+        tasks: {
+          orderBy: {
+            updatedAt: "desc",
+          },
+        },
       },
     });
 
@@ -51,6 +62,9 @@ export async function readTasks(userId: string) {
     const tasks = await prisma.task.findMany({
       where: {
         userId,
+      },
+      orderBy: {
+        updatedAt: "desc",
       },
     });
 
