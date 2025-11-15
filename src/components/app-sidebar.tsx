@@ -60,7 +60,9 @@ const defaultGroups = [
 
 export function AppSidebar() {
   const { groupId } = useParams() as { groupId: string };
-  const { data: groups, isPending: groupsPending } = useQuery<Group[]>({ queryKey: ["groups"] });
+  const { data: groups, isPending: groupsPending } = useQuery<Group[]>({
+    queryKey: ["groups"],
+  });
   const { data: tasks } = useQuery<Task[]>({ queryKey: ["tasks"] });
   const [open, setOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
@@ -173,8 +175,8 @@ export function AppSidebar() {
           <SidebarGroupLabel>Personal Groups</SidebarGroupLabel>
           {groupsPending ? (
             <>
-              <SidebarGroupAction title="Add Group">
-                <Plus onClick={handleAdd} />
+              <SidebarGroupAction title="Add Group" onClick={handleAdd}>
+                <Plus />
               </SidebarGroupAction>
               <SidebarGroupContent>
                 <SidebarMenu>
@@ -193,7 +195,9 @@ export function AppSidebar() {
                   <EmptyMedia variant="icon">
                     <FolderOpen className="text-muted-foreground" />
                   </EmptyMedia>
-                  <EmptyTitle className="text-sm">No personal groups</EmptyTitle>
+                  <EmptyTitle className="text-sm">
+                    No personal groups
+                  </EmptyTitle>
                   <EmptyDescription className="text-xs">
                     Create a group to organize your tasks
                   </EmptyDescription>
