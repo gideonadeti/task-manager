@@ -106,7 +106,9 @@ function AddGroupForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>
+                Name <span className="text-destructive">*</span>
+              </FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>

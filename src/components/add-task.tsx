@@ -187,7 +187,9 @@ function AddTaskForm({
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>
+                Title <span className="text-destructive">*</span>
+              </FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -201,7 +203,7 @@ function AddTaskForm({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Description (optional)</FormLabel>
               <FormControl>
                 <Textarea className="resize-none" rows={3} {...field} />
               </FormControl>
@@ -215,7 +217,9 @@ function AddTaskForm({
           name="priority"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Priority</FormLabel>
+              <FormLabel>
+                Priority <span className="text-destructive">*</span>
+              </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger>
@@ -238,7 +242,9 @@ function AddTaskForm({
           name="groupId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Group</FormLabel>
+              <FormLabel>
+                Group <span className="text-destructive">*</span>
+              </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger>
@@ -293,7 +299,7 @@ function AddTaskForm({
 
             return (
               <FormItem className="flex flex-col">
-                <FormLabel>Due Date & Time</FormLabel>
+                <FormLabel>Due Date & Time (optional)</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
