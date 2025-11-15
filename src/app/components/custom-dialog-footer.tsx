@@ -1,5 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
+import {
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { Spinner } from "@/components/ui/spinner";
 
 interface CustomDialogFooterProps {
@@ -7,6 +12,8 @@ interface CustomDialogFooterProps {
   disabled?: boolean;
   handleCancel: () => void;
   handleSubmit: () => void;
+  submitText?: string;
+  variant?: "dialog" | "alert";
 }
 
 const CustomDialogFooter = ({
@@ -14,7 +21,37 @@ const CustomDialogFooter = ({
   disabled,
   handleCancel,
   handleSubmit,
+  submitText = "Submit",
+  variant = "dialog",
 }: CustomDialogFooterProps) => {
+  if (variant === "alert") {
+    return (
+      <AlertDialogFooter>
+        <AlertDialogCancel
+          disabled={isPending}
+          onClick={() => handleCancel()}
+          className="w-32"
+        >
+          Cancel
+        </AlertDialogCancel>
+        <AlertDialogAction
+          disabled={disabled || isPending}
+          onClick={() => handleSubmit()}
+          className="w-32"
+        >
+          {isPending ? (
+            <>
+              <Spinner />
+              Submitting...
+            </>
+          ) : (
+            submitText
+          )}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    );
+  }
+
   return (
     <DialogFooter>
       <Button
@@ -36,7 +73,7 @@ const CustomDialogFooter = ({
             Submitting...
           </>
         ) : (
-          "Submit"
+          submitText
         )}
       </Button>
     </DialogFooter>
