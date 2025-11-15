@@ -26,6 +26,12 @@ model Task {
   userId      String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([groupId])
+  @@index([completed])
+  @@index([dueDate])
+  @@index([userId, completed])
 }
 
 model Group {
@@ -35,4 +41,6 @@ model Group {
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
