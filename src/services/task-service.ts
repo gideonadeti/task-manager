@@ -8,6 +8,7 @@ import {
   toggleComplete as dbToggleComplete,
 } from "@/lib/db/queries";
 import { Task } from "@prisma/client";
+import { ConflictError, NotFoundError, ValidationError } from "@/lib/errors";
 
 export class TaskService {
   /**
@@ -48,7 +49,7 @@ export class TaskService {
     // Check if task already exists
     const existingTask = await dbReadTask(data.title, userId);
     if (existingTask) {
-      throw new Error("Task already exists.");
+      throw new ConflictError("Task already exists.");
     }
 
     return await dbCreateTask(
@@ -85,13 +86,13 @@ export class TaskService {
       !data.groupId &&
       !data.dueDate
     ) {
-      throw new Error("At least one field must be provided for update.");
+      throw new ValidationError("At least one field must be provided for update.");
     }
 
     // Fetch existing task to fill in missing fields
     const existingTask = await dbReadTaskById(taskId, userId);
     if (!existingTask) {
-      throw new Error("Task not found or you don't have access to this resource.");
+      throw new NotFoundError("Task", taskId);
     }
 
     return await dbUpdateTask(

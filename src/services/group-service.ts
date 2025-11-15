@@ -6,6 +6,7 @@ import {
   deleteGroup as dbDeleteGroup,
 } from "@/lib/db/queries";
 import { Group } from "@prisma/client";
+import { ConflictError } from "@/lib/errors";
 
 export class GroupService {
   /**
@@ -30,7 +31,7 @@ export class GroupService {
     // Check if group already exists
     const existingGroup = await dbReadGroup(userId, name);
     if (existingGroup) {
-      throw new Error("Group already exists.");
+      throw new ConflictError("Group already exists.");
     }
 
     return await dbCreateGroup(name, userId);
@@ -48,7 +49,7 @@ export class GroupService {
     // Check if new name already exists (excluding current group)
     const existingGroup = await dbReadGroup(userId, name);
     if (existingGroup && existingGroup.id !== groupId) {
-      throw new Error("Group name already exists.");
+      throw new ConflictError("Group name already exists.");
     }
 
     return await dbUpdateGroup(groupId, name, userId);
