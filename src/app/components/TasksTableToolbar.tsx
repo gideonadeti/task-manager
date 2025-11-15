@@ -6,7 +6,6 @@ import { Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import TasksTableFacetedFilter from "./TasksTableFacetedFilter";
-import TasksTableViewOptions from "./TasksTableViewOptions";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -50,7 +49,6 @@ export default function TasksTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <TasksTableViewOptions table={table} />
     </div>
   );
 }
