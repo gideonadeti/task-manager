@@ -8,6 +8,7 @@ import {
   validateParams,
 } from "@/lib/validations";
 import { GroupService } from "@/services/group-service";
+import { handleApiError } from "@/lib/errors";
 
 export async function PATCH(
   req: NextRequest,
@@ -33,39 +34,7 @@ export async function PATCH(
 
     return NextResponse.json({ group: updatedGroup });
   } catch (error) {
-    console.error("Error updating group name:", error);
-
-    // Handle validation errors (NextResponse thrown by validate functions)
-    if (error instanceof NextResponse) {
-      return error;
-    }
-
-    if (error instanceof Error && error.message.includes("Unauthorized")) {
-      return NextResponse.json(
-        { error: "Unauthorized. Authentication required." },
-        { status: 401 }
-      );
-    }
-
-    if (error instanceof Error && error.message.includes("Forbidden")) {
-      return NextResponse.json(
-        { error: "Forbidden. You don't have access to this resource." },
-        { status: 403 }
-      );
-    }
-
-    // Handle business logic errors from service
-    if (error instanceof Error && error.message.includes("already exists")) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Something went wrong while updating group name." },
-      { status: 500 }
-    );
+    return handleApiError(error, req);
   }
 }
 
@@ -84,30 +53,6 @@ export async function DELETE(
 
     return NextResponse.json({ group });
   } catch (error: unknown) {
-    console.error("Error deleting group:", error);
-
-    // Handle validation errors (NextResponse thrown by validate functions)
-    if (error instanceof NextResponse) {
-      return error;
-    }
-
-    if (error instanceof Error && error.message.includes("Unauthorized")) {
-      return NextResponse.json(
-        { error: "Unauthorized. Authentication required." },
-        { status: 401 }
-      );
-    }
-
-    if (error instanceof Error && error.message.includes("Forbidden")) {
-      return NextResponse.json(
-        { error: "Forbidden. You don't have access to this resource." },
-        { status: 403 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Something went wrong while deleting group." },
-      { status: 500 }
-    );
+    return handleApiError(error, req);
   }
 }
