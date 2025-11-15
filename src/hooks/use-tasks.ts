@@ -11,6 +11,15 @@ import {
 } from "@/lib/api/query-functions";
 import { UseFormReturn } from "react-hook-form";
 import { Task } from "@prisma/client";
+import { hasAxiosResponse, isAxiosErrorResponse } from "@/lib/type-guards";
+
+type TaskFormData = {
+  title: string;
+  description: string;
+  priority: string;
+  groupId: string;
+  dueDate?: Date;
+};
 
 const useTasks = () => {
   const queryClient = useQueryClient();
@@ -23,17 +32,7 @@ const useTasks = () => {
       priority: string;
       groupId: string;
       dueDate?: Date;
-      form: UseFormReturn<
-        {
-          title: string;
-          description: string;
-          priority: string;
-          groupId: string;
-          dueDate?: Date;
-        },
-        unknown,
-        undefined
-      >;
+      form: UseFormReturn<TaskFormData, TaskFormData, undefined>;
       setOpen: (open: boolean) => void;
     }
   >({
@@ -41,9 +40,13 @@ const useTasks = () => {
       return createTask(title, description, priority, groupId, dueDate);
     },
     onError: (err) => {
-      const description =
-        (err?.response?.data as { error: string })?.error ||
-        "Something went wrong";
+      let description = "Something went wrong";
+
+      if (hasAxiosResponse(err) && err.response?.data) {
+        if (isAxiosErrorResponse(err.response.data)) {
+          description = err.response.data.error;
+        }
+      }
 
       toast.error(description);
     },
@@ -68,17 +71,7 @@ const useTasks = () => {
       priority: string;
       groupId: string;
       dueDate?: Date;
-      form: UseFormReturn<
-        {
-          title: string;
-          description: string;
-          priority: string;
-          groupId: string;
-          dueDate?: Date | undefined;
-        },
-        unknown,
-        undefined
-      >;
+      form: UseFormReturn<TaskFormData, TaskFormData, undefined>;
       setOpen: (open: boolean) => void;
     }
   >({
@@ -86,9 +79,13 @@ const useTasks = () => {
       return updateTask(id, title, description, priority, groupId, dueDate);
     },
     onError: (err) => {
-      const description =
-        (err?.response?.data as { error: string })?.error ||
-        "Something went wrong";
+      let description = "Something went wrong";
+
+      if (hasAxiosResponse(err) && err.response?.data) {
+        if (isAxiosErrorResponse(err.response.data)) {
+          description = err.response.data.error;
+        }
+      }
 
       toast.error(description);
     },
@@ -116,9 +113,13 @@ const useTasks = () => {
     onError: (err) => {
       // Error is already handled by React Query and shown via toast
       // Logging here for debugging purposes
-      const description =
-        (err?.response?.data as { error: string })?.error ||
-        "Something went wrong";
+      let description = "Something went wrong";
+
+      if (hasAxiosResponse(err) && err.response?.data) {
+        if (isAxiosErrorResponse(err.response.data)) {
+          description = err.response.data.error;
+        }
+      }
 
       toast.error(description);
     },
@@ -139,14 +140,21 @@ const useTasks = () => {
 
   // Error handling effect
   useEffect(() => {
-    if (tasksQuery.isError) {
-      const description =
-        (tasksQuery.error?.response?.data as { error: string })?.error ||
-        "Something went wrong";
+    if (tasksQuery.isError && tasksQuery.error) {
+      let description = "Something went wrong";
+
+      if (
+        hasAxiosResponse(tasksQuery.error) &&
+        tasksQuery.error.response?.data
+      ) {
+        if (isAxiosErrorResponse(tasksQuery.error.response.data)) {
+          description = tasksQuery.error.response.data.error;
+        }
+      }
 
       toast.error(description);
     }
-  }, [tasksQuery.error?.response?.data, tasksQuery.isError]);
+  }, [tasksQuery.error, tasksQuery.isError]);
 
   return {
     createTaskMutation,

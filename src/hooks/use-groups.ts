@@ -12,6 +12,11 @@ import {
 import { UseFormReturn } from "react-hook-form";
 import { Group, Task } from "@prisma/client";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { hasAxiosResponse, isAxiosErrorResponse } from "@/lib/type-guards";
+
+type GroupFormData = {
+  name: string;
+};
 
 const useGroups = () => {
   const queryClient = useQueryClient();
@@ -20,13 +25,7 @@ const useGroups = () => {
     AxiosError,
     {
       name: string;
-      form: UseFormReturn<
-        {
-          name: string;
-        },
-        unknown,
-        undefined
-      >;
+      form: UseFormReturn<GroupFormData, GroupFormData, undefined>;
       router: AppRouterInstance;
     }
   >({
@@ -34,9 +33,13 @@ const useGroups = () => {
       return createGroup(name);
     },
     onError: (err) => {
-      const description =
-        (err?.response?.data as { error: string })?.error ||
-        "Something went wrong";
+      let description = "Something went wrong";
+
+      if (hasAxiosResponse(err) && err.response?.data) {
+        if (isAxiosErrorResponse(err.response.data)) {
+          description = err.response.data.error;
+        }
+      }
 
       toast.error(description);
     },
@@ -58,7 +61,7 @@ const useGroups = () => {
     {
       id: string;
       name: string;
-      form: UseFormReturn<{ name: string }, unknown, undefined>;
+      form: UseFormReturn<GroupFormData, GroupFormData, undefined>;
       router: AppRouterInstance;
       open: boolean;
       onOpenChange: (open: boolean) => void;
@@ -68,9 +71,13 @@ const useGroups = () => {
       return updateGroup(id, name);
     },
     onError: (err) => {
-      const description =
-        (err?.response?.data as { error: string })?.error ||
-        "Something went wrong";
+      let description = "Something went wrong";
+
+      if (hasAxiosResponse(err) && err.response?.data) {
+        if (isAxiosErrorResponse(err.response.data)) {
+          description = err.response.data.error;
+        }
+      }
 
       toast.error(description);
     },
@@ -98,9 +105,13 @@ const useGroups = () => {
       return deleteGroup(id);
     },
     onError: (err) => {
-      const description =
-        (err?.response?.data as { error: string })?.error ||
-        "Something went wrong";
+      let description = "Something went wrong";
+
+      if (hasAxiosResponse(err) && err.response?.data) {
+        if (isAxiosErrorResponse(err.response.data)) {
+          description = err.response.data.error;
+        }
+      }
 
       toast.error(description);
     },
@@ -125,14 +136,21 @@ const useGroups = () => {
 
   // Error handling effect
   useEffect(() => {
-    if (groupsQuery.status === "error") {
-      const description =
-        (groupsQuery.error?.response?.data as { error: string })?.error ||
-        "Something went wrong";
+    if (groupsQuery.status === "error" && groupsQuery.error) {
+      let description = "Something went wrong";
+
+      if (
+        hasAxiosResponse(groupsQuery.error) &&
+        groupsQuery.error.response?.data
+      ) {
+        if (isAxiosErrorResponse(groupsQuery.error.response.data)) {
+          description = groupsQuery.error.response.data.error;
+        }
+      }
 
       toast.error(description);
     }
-  }, [groupsQuery.error?.response?.data, groupsQuery.status]);
+  }, [groupsQuery.error, groupsQuery.status]);
 
   return {
     createGroupMutation,
