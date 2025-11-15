@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useParams } from "next/navigation";
 import { Cross2Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import {
 } from "@/components/ui/input-group";
 import PriorityFilter from "./PriorityFilter";
 import AddTask from "@/components/add-task";
+import useGroups from "@/hooks/use-groups";
 
 interface TasksToolbarProps {
   searchQuery: string;
@@ -27,6 +29,34 @@ export default function TasksToolbar({
 }: TasksToolbarProps) {
   const [openAdd, setOpenAdd] = useState(false);
   const isFiltered = searchQuery.trim() !== "" || selectedPriorities.length > 0;
+  const { groupId } = useParams();
+  const { groupsQuery } = useGroups();
+
+  // Get the actual group ID to prefill the form
+  // Handles special routes like "inbox" and regular group IDs
+  const defaultGroupId = useMemo(() => {
+    if (!groupId || !groupsQuery.data) return undefined;
+
+    // Special views that don't have a single group - default to Inbox
+    const specialViews = [
+      "today",
+      "tomorrow",
+      "this-week",
+      "overdue",
+      "completed",
+    ];
+    if (specialViews.includes(groupId as string)) {
+      return groupsQuery.data.find((group) => group.name === "Inbox")?.id;
+    }
+
+    // Handle "inbox" route - find the actual Inbox group ID
+    if (groupId === "inbox") {
+      return groupsQuery.data.find((group) => group.name === "Inbox")?.id;
+    }
+
+    // For actual group IDs (UUIDs), return as is
+    return groupId as string;
+  }, [groupId, groupsQuery.data]);
 
   const handleReset = () => {
     onSearchChange("");
@@ -64,15 +94,16 @@ export default function TasksToolbar({
             </Button>
           )}
         </div>
-        <Button
-          onClick={() => setOpenAdd(true)}
-          className="h-8 gap-2"
-        >
+        <Button onClick={() => setOpenAdd(true)} className="h-8 gap-2">
           <Plus className="h-4 w-4" />
           Create Task
         </Button>
       </div>
-      <AddTask open={openAdd} setOpen={setOpenAdd} />
+      <AddTask
+        open={openAdd}
+        setOpen={setOpenAdd}
+        defaultGroupId={defaultGroupId}
+      />
     </>
   );
 }
