@@ -11,7 +11,7 @@ import {
 } from "@/lib/api/query-functions";
 import { UseFormReturn } from "react-hook-form";
 import { Task } from "@prisma/client";
-import { hasAxiosResponse, isAxiosErrorResponse } from "@/lib/type-guards";
+import { handleApiError } from "@/lib/api/error-handler";
 
 type TaskFormData = {
   title: string;
@@ -40,15 +40,7 @@ const useTasks = () => {
       return createTask(title, description, priority, groupId, dueDate);
     },
     onError: (err) => {
-      let description = "Something went wrong";
-
-      if (hasAxiosResponse(err) && err.response?.data) {
-        if (isAxiosErrorResponse(err.response.data)) {
-          description = err.response.data.error;
-        }
-      }
-
-      toast.error(description);
+      handleApiError(err);
     },
     onSuccess: (createdTask, { form, setOpen }) => {
       setOpen(false);
@@ -79,15 +71,7 @@ const useTasks = () => {
       return updateTask(id, title, description, priority, groupId, dueDate);
     },
     onError: (err) => {
-      let description = "Something went wrong";
-
-      if (hasAxiosResponse(err) && err.response?.data) {
-        if (isAxiosErrorResponse(err.response.data)) {
-          description = err.response.data.error;
-        }
-      }
-
-      toast.error(description);
+      handleApiError(err);
     },
     onSuccess: (updatedTask, { form, setOpen }) => {
       setOpen(false);
@@ -113,15 +97,7 @@ const useTasks = () => {
     onError: (err) => {
       // Error is already handled by React Query and shown via toast
       // Logging here for debugging purposes
-      let description = "Something went wrong";
-
-      if (hasAxiosResponse(err) && err.response?.data) {
-        if (isAxiosErrorResponse(err.response.data)) {
-          description = err.response.data.error;
-        }
-      }
-
-      toast.error(description);
+      handleApiError(err);
     },
     onSuccess: (deletedTask, { onOpenChange }) => {
       onOpenChange(false);
@@ -141,18 +117,7 @@ const useTasks = () => {
   // Error handling effect
   useEffect(() => {
     if (tasksQuery.isError && tasksQuery.error) {
-      let description = "Something went wrong";
-
-      if (
-        hasAxiosResponse(tasksQuery.error) &&
-        tasksQuery.error.response?.data
-      ) {
-        if (isAxiosErrorResponse(tasksQuery.error.response.data)) {
-          description = tasksQuery.error.response.data.error;
-        }
-      }
-
-      toast.error(description);
+      handleApiError(tasksQuery.error);
     }
   }, [tasksQuery.error, tasksQuery.isError]);
 

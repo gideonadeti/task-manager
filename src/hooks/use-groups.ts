@@ -12,7 +12,7 @@ import {
 import { UseFormReturn } from "react-hook-form";
 import { Group, Task } from "@prisma/client";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { hasAxiosResponse, isAxiosErrorResponse } from "@/lib/type-guards";
+import { handleApiError } from "@/lib/api/error-handler";
 
 type GroupFormData = {
   name: string;
@@ -33,15 +33,7 @@ const useGroups = () => {
       return createGroup(name);
     },
     onError: (err) => {
-      let description = "Something went wrong";
-
-      if (hasAxiosResponse(err) && err.response?.data) {
-        if (isAxiosErrorResponse(err.response.data)) {
-          description = err.response.data.error;
-        }
-      }
-
-      toast.error(description);
+      handleApiError(err);
     },
     onSuccess: (createdGroup, { form, router }) => {
       toast.success("Group created successfully");
@@ -71,15 +63,7 @@ const useGroups = () => {
       return updateGroup(id, name);
     },
     onError: (err) => {
-      let description = "Something went wrong";
-
-      if (hasAxiosResponse(err) && err.response?.data) {
-        if (isAxiosErrorResponse(err.response.data)) {
-          description = err.response.data.error;
-        }
-      }
-
-      toast.error(description);
+      handleApiError(err);
     },
     onSuccess: (updatedGroup, { form, router, open, onOpenChange }) => {
       onOpenChange(open);
@@ -105,15 +89,7 @@ const useGroups = () => {
       return deleteGroup(id);
     },
     onError: (err) => {
-      let description = "Something went wrong";
-
-      if (hasAxiosResponse(err) && err.response?.data) {
-        if (isAxiosErrorResponse(err.response.data)) {
-          description = err.response.data.error;
-        }
-      }
-
-      toast.error(description);
+      handleApiError(err);
     },
     onSuccess: (deletedGroup, { onOpenChange }) => {
       onOpenChange(false);
@@ -137,18 +113,7 @@ const useGroups = () => {
   // Error handling effect
   useEffect(() => {
     if (groupsQuery.status === "error" && groupsQuery.error) {
-      let description = "Something went wrong";
-
-      if (
-        hasAxiosResponse(groupsQuery.error) &&
-        groupsQuery.error.response?.data
-      ) {
-        if (isAxiosErrorResponse(groupsQuery.error.response.data)) {
-          description = groupsQuery.error.response.data.error;
-        }
-      }
-
-      toast.error(description);
+      handleApiError(groupsQuery.error);
     }
   }, [groupsQuery.error, groupsQuery.status]);
 
