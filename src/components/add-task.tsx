@@ -63,7 +63,7 @@ export default function AddTask({
 }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[425px]" hideCloseButton preventClose>
+      <DialogContent className="max-w-[95vw] sm:max-w-[425px]" hideCloseButton preventClose>
         <DialogHeader>
           <DialogTitle>{task ? "Edit Task" : "Add Task"}</DialogTitle>
         </DialogHeader>
@@ -181,7 +181,7 @@ function AddTaskForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
         <FormField
           control={form.control}
           name="title"
@@ -315,7 +315,7 @@ function AddTaskForm({
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
+                  <PopoverContent className="flex w-auto max-w-[95vw] sm:max-w-none flex-col space-y-2 p-2" align="start">
                     <Select
                       onValueChange={(value) => {
                         const date = new Date();

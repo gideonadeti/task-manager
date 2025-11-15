@@ -39,7 +39,7 @@ const AddGroup = ({
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]" hideCloseButton preventClose>
+      <DialogContent className="max-w-[95vw] sm:max-w-[425px]" hideCloseButton preventClose>
         <DialogHeader>
           <DialogTitle>
             {defaultValue ? "Update Group" : "Add Group"}
@@ -100,7 +100,7 @@ function AddGroupForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
         <FormField
           control={form.control}
           name="name"
