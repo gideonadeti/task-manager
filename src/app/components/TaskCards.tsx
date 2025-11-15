@@ -2,6 +2,7 @@
 
 import { Task } from "@prisma/client";
 import { isToday, isTomorrow, isPast } from "date-fns";
+import { useState } from "react";
 import { Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/empty";
 import TaskCompletionCheckbox from "./TaskCompletionCheckbox";
 import TaskActions from "./TaskActions";
+import TaskDetailsDialog from "./TaskDetailsDialog";
 import formatDate from "../format-date";
 
 interface TaskCardsProps {
@@ -20,6 +22,21 @@ interface TaskCardsProps {
 }
 
 export default function TaskCards({ tasks }: TaskCardsProps) {
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+
+  const handleCardClick = (task: Task) => {
+    setSelectedTask(task);
+    setDetailsOpen(true);
+  };
+
+  const handleDetailsOpenChange = (open: boolean) => {
+    setDetailsOpen(open);
+    if (!open) {
+      setSelectedTask(null);
+    }
+  };
+
   const getPriorityColor = (priority: string) => {
     switch (priority.toLowerCase()) {
       case "high":
@@ -46,11 +63,6 @@ export default function TaskCards({ tasks }: TaskCardsProps) {
     return "text-gray-600 dark:text-gray-400";
   };
 
-  const truncateDescription = (description: string | null, maxLength: number = 100) => {
-    if (!description) return null;
-    if (description.length <= maxLength) return description;
-    return description.substring(0, maxLength) + "...";
-  };
 
   if (tasks.length === 0) {
     return (
@@ -69,19 +81,24 @@ export default function TaskCards({ tasks }: TaskCardsProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
-      {tasks.map((task) => (
-        <div
-          key={task.id}
-          className={`relative border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${
-            task.completed
-              ? "bg-muted/50 opacity-75"
-              : "bg-card"
-          }`}
-        >
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
+        {tasks.map((task) => (
+          <div
+            key={task.id}
+            onClick={() => handleCardClick(task)}
+            className={`relative border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer ${
+              task.completed
+                ? "bg-muted/50 opacity-75"
+                : "bg-card"
+            }`}
+          >
           <div className="flex items-start justify-between gap-2 mb-3">
             <div className="flex items-start gap-3 flex-1 min-w-0">
-              <div className="mt-1 flex-shrink-0">
+              <div
+                className="mt-1 flex-shrink-0"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <TaskCompletionCheckbox
                   taskId={task.id}
                   completed={task.completed}
@@ -89,7 +106,7 @@ export default function TaskCards({ tasks }: TaskCardsProps) {
               </div>
               <div className="flex-1 min-w-0">
                 <h3
-                  className={`font-semibold text-base mb-1 ${
+                  className={`font-semibold text-base mb-1 line-clamp-1 ${
                     task.completed
                       ? "line-through text-muted-foreground"
                       : ""
@@ -99,12 +116,15 @@ export default function TaskCards({ tasks }: TaskCardsProps) {
                 </h3>
                 {task.description && (
                   <p className="text-sm text-muted-foreground line-clamp-2">
-                    {truncateDescription(task.description)}
+                    {task.description}
                   </p>
                 )}
               </div>
             </div>
-            <div className="flex-shrink-0">
+            <div
+              className="flex-shrink-0"
+              onClick={(e) => e.stopPropagation()}
+            >
               <TaskActions task={task} />
             </div>
           </div>
@@ -129,7 +149,13 @@ export default function TaskCards({ tasks }: TaskCardsProps) {
           </div>
         </div>
       ))}
-    </div>
+      </div>
+      <TaskDetailsDialog
+        task={selectedTask}
+        open={detailsOpen}
+        onOpenChange={handleDetailsOpenChange}
+      />
+    </>
   );
 }
 
