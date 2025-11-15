@@ -114,7 +114,8 @@ const useTasks = () => {
       return deleteTask(id);
     },
     onError: (err) => {
-      console.error(err);
+      // Error is already handled by React Query and shown via toast
+      // Logging here for debugging purposes
       const description =
         (err?.response?.data as { error: string })?.error ||
         "Something went wrong";
