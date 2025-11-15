@@ -189,6 +189,23 @@ export async function readTask(name: string, userId: string) {
   }
 }
 
+export async function readTaskById(taskId: string, userId: string) {
+  try {
+    const task = await prismaClient.task.findFirst({
+      where: {
+        id: taskId,
+        userId,
+      },
+    });
+
+    return task;
+  } catch (error) {
+    console.error("Error reading task by ID:", error);
+
+    throw error;
+  }
+}
+
 export async function updateTask(
   taskId: string,
   title: string,
