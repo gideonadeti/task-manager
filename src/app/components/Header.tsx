@@ -23,7 +23,7 @@ export default function Header() {
       <SidebarTrigger />
       <Separator orientation="vertical" className="mx-2" />
       <Link href="/groups/today" className="text-lg font-semibold">
-        Task Manager
+        Taskflow
       </Link>
       <div className="ms-auto">
         <UserButton

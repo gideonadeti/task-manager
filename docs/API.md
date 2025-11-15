@@ -1,8 +1,8 @@
-# Task Manager API Documentation
+# Taskflow API Documentation
 
 ## Overview
 
-The Task Manager API is a RESTful API that provides endpoints for managing tasks and groups. All endpoints require authentication via Clerk and return JSON responses.
+The Taskflow API is a RESTful API that provides endpoints for managing tasks and groups. All endpoints require authentication via Clerk and return JSON responses.
 
 **Base URL**: `https://your-domain.com/api` (development: `http://localhost:3000/api`)
 

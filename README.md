@@ -1,12 +1,12 @@
-# Task Manager
+# Taskflow
 
 A modern, full-stack task management application built with Next.js, featuring authentication, CRUD operations, and intuitive task organization.
 
-**Live Demo**: [Task Manager](https://gideonadeti-task-manager.vercel.app/)
+**Live Demo**: [Taskflow](https://gideonadeti-task-manager.vercel.app/)
 
 ## Overview
 
-Task Manager is a full-stack application built as a portfolio project, extending beyond The Odin Project's Todo List project to demonstrate advanced web development skills. It provides a seamless experience for managing tasks and organizing them into groups, with a clean and intuitive user interface.
+Taskflow is a full-stack application built as a portfolio project, extending beyond The Odin Project's Todo List project to demonstrate advanced web development skills. It provides a seamless experience for managing tasks and organizing them into groups, with a clean and intuitive user interface.
 
 ## Features
 
@@ -83,8 +83,8 @@ NODE_ENV="development"
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/gideonadeti/task-manager.git
-cd task-manager
+git clone https://github.com/gideonadeti/taskflow.git
+cd taskflow
 ```
 
 ### 2. Install Dependencies
@@ -240,7 +240,7 @@ describe("FeatureName", () => {
 ## Project Structure
 
 ```text
-task-manager/
+taskflow/
 ├── __tests__/              # Test files
 │   ├── api/               # API route tests
 │   ├── lib/               # Utility tests
@@ -412,8 +412,8 @@ This project is open source and available under the [MIT License](LICENSE).
 
 For questions, issues, or contributions:
 
-- **Issues**: [GitHub Issues](https://github.com/gideonadeti/task-manager/issues)
-- **Pull Requests**: [GitHub Pull Requests](https://github.com/gideonadeti/task-manager/pulls)
+- **Issues**: [GitHub Issues](https://github.com/gideonadeti/taskflow/issues)
+- **Pull Requests**: [GitHub Pull Requests](https://github.com/gideonadeti/taskflow/pulls)
 
 ---
 

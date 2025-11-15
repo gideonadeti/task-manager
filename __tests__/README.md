@@ -1,6 +1,6 @@
 # Test Infrastructure
 
-This directory contains the test suite for the task manager application.
+This directory contains the test suite for the Taskflow application.
 
 ## Test Structure
 

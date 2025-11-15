@@ -21,7 +21,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Task Manager",
+  title: "Taskflow",
   description: "A web app for managing tasks.",
 };
 
@@ -49,7 +49,7 @@ export default function RootLayout({
           </SignedIn>
           <SignedOut>
             <div className="max-w-4xl mx-auto flex flex-col min-h-screen">
-              <H3 className="px-4 py-2">Task Manager</H3>
+              <H3 className="px-4 py-2">Taskflow</H3>
               <div className="flex-1 flex flex-col md:flex-row items-center justify-center gap-4 p-8">
                 <div className="flex-1 flex flex-col text-center lg:text-left">
                   <H1>Organize Your Life, One Task at a Time</H1>
