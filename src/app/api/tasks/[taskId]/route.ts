@@ -9,6 +9,7 @@ import {
   validateParams,
 } from "@/lib/validations";
 import { TaskService } from "@/services/task-service";
+import { handleApiError } from "@/lib/errors";
 
 export async function PUT(
   req: NextRequest,
@@ -36,46 +37,7 @@ export async function PUT(
 
     return NextResponse.json({ task });
   } catch (error) {
-    console.error("Error updating task:", error);
-
-    // Handle validation errors (NextResponse thrown by validate functions)
-    if (error instanceof NextResponse) {
-      return error;
-    }
-
-    if (error instanceof Error && error.message.includes("Unauthorized")) {
-      return NextResponse.json(
-        { error: "Unauthorized. Authentication required." },
-        { status: 401 }
-      );
-    }
-
-    if (error instanceof Error && error.message.includes("Forbidden")) {
-      return NextResponse.json(
-        { error: "Forbidden. You don't have access to this resource." },
-        { status: 403 }
-      );
-    }
-
-    // Handle business logic errors from service
-    if (error instanceof Error && error.message.includes("not found")) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 404 }
-      );
-    }
-
-    if (error instanceof Error && error.message.includes("must be provided")) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Something went wrong while updating task." },
-      { status: 500 }
-    );
+    return handleApiError(error, req);
   }
 }
 
@@ -98,31 +60,7 @@ export async function DELETE(
 
     return NextResponse.json({ task });
   } catch (error) {
-    console.error("Error deleting task:", error);
-
-    // Handle validation errors (NextResponse thrown by validate functions)
-    if (error instanceof NextResponse) {
-      return error;
-    }
-
-    if (error instanceof Error && error.message.includes("Unauthorized")) {
-      return NextResponse.json(
-        { error: "Unauthorized. Authentication required." },
-        { status: 401 }
-      );
-    }
-
-    if (error instanceof Error && error.message.includes("Forbidden")) {
-      return NextResponse.json(
-        { error: "Forbidden. You don't have access to this resource." },
-        { status: 403 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Something went wrong while deleting task." },
-      { status: 500 }
-    );
+    return handleApiError(error, req);
   }
 }
 
@@ -149,30 +87,6 @@ export async function PATCH(
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error updating task status:", error);
-
-    // Handle validation errors (NextResponse thrown by validate functions)
-    if (error instanceof NextResponse) {
-      return error;
-    }
-
-    if (error instanceof Error && error.message.includes("Unauthorized")) {
-      return NextResponse.json(
-        { error: "Unauthorized. Authentication required." },
-        { status: 401 }
-      );
-    }
-
-    if (error instanceof Error && error.message.includes("Forbidden")) {
-      return NextResponse.json(
-        { error: "Forbidden. You don't have access to this resource." },
-        { status: 403 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Something went wrong while updating task status." },
-      { status: 500 }
-    );
+    return handleApiError(error, req);
   }
 }
