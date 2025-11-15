@@ -3,16 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { readGroups, createGroup, readGroup } from "../../../../prisma/db";
 import { getUserId } from "@/lib/auth/get-user-id";
 import { createGroupSchema, validateRequestBody } from "@/lib/validations";
-import { rateLimiters } from "@/lib/rate-limit";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    // Apply rate limiting
-    const rateLimitResponse = await rateLimiters.general(req);
-    if (rateLimitResponse) {
-      return rateLimitResponse;
-    }
-
     const userId = await getUserId();
     const groups = await readGroups(userId);
 
@@ -41,12 +34,6 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    // Apply rate limiting
-    const rateLimitResponse = await rateLimiters.general(req);
-    if (rateLimitResponse) {
-      return rateLimitResponse;
-    }
-
     const userId = await getUserId();
     const body = await req.json();
 

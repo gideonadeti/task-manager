@@ -8,19 +8,12 @@ import {
   validateRequestBody,
   validateParams,
 } from "@/lib/validations";
-import { rateLimiters } from "@/lib/rate-limit";
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ groupId: string }> }
 ) {
   try {
-    // Apply rate limiting
-    const rateLimitResponse = await rateLimiters.general(req);
-    if (rateLimitResponse) {
-      return rateLimitResponse;
-    }
-
     const userId = await getUserId();
     const rawParams = await params;
 
@@ -78,12 +71,6 @@ export async function DELETE(
   { params }: { params: Promise<{ groupId: string }> }
 ) {
   try {
-    // Apply rate limiting
-    const rateLimitResponse = await rateLimiters.general(req);
-    if (rateLimitResponse) {
-      return rateLimitResponse;
-    }
-
     const userId = await getUserId();
     const rawParams = await params;
 
