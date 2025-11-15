@@ -1,4 +1,6 @@
 import { prisma } from "./prisma-client";
+import { logger } from "../logger";
+import { AuthorizationError } from "../errors";
 
 export async function readGroups(userId: string) {
   try {
@@ -27,8 +29,7 @@ export async function readGroups(userId: string) {
 
     return groups;
   } catch (error) {
-    console.error("Error reading groups:", error);
-
+    logger.error("Error reading groups", error, { userId });
     throw error;
   }
 }
@@ -51,8 +52,7 @@ export async function createGroup(name: string, userId: string) {
 
     return group;
   } catch (error) {
-    console.error("Error creating group:", error);
-
+    logger.error("Error creating group", error, { name, userId });
     throw error;
   }
 }
@@ -70,8 +70,7 @@ export async function readTasks(userId: string) {
 
     return tasks;
   } catch (error) {
-    console.error("Error reading tasks:", error);
-
+    logger.error("Error reading tasks", error, { userId });
     throw error;
   }
 }
@@ -91,7 +90,7 @@ export async function updateGroup(
     });
 
     if (!existingGroup) {
-      throw new Error("Forbidden. You don't have access to this resource.");
+      throw new AuthorizationError();
     }
 
     const group = await prisma.group.update({
@@ -105,8 +104,7 @@ export async function updateGroup(
 
     return group;
   } catch (error) {
-    console.error("Error updating group:", error);
-
+    logger.error("Error updating group", error, { groupId, name, userId });
     throw error;
   }
 }
@@ -122,8 +120,7 @@ export async function readGroup(userId: string, name: string) {
 
     return group;
   } catch (error) {
-    console.error("Error reading group:", error);
-
+    logger.error("Error reading group", error, { userId, name });
     throw error;
   }
 }
@@ -139,7 +136,7 @@ export async function deleteGroup(groupId: string, userId: string) {
     });
 
     if (!existingGroup) {
-      throw new Error("Forbidden. You don't have access to this resource.");
+      throw new AuthorizationError();
     }
 
     const group = await prisma.group.delete({
@@ -150,8 +147,7 @@ export async function deleteGroup(groupId: string, userId: string) {
 
     return group;
   } catch (error) {
-    console.error("Error deleting group:", error);
-
+    logger.error("Error deleting group", error, { groupId, userId });
     throw error;
   }
 }
@@ -178,8 +174,11 @@ export async function createTask(
 
     return task;
   } catch (error) {
-    console.error("Error creating task:", error);
-
+    logger.error("Error creating task", error, {
+      title,
+      groupId,
+      userId,
+    });
     throw error;
   }
 }
@@ -195,8 +194,7 @@ export async function readTask(name: string, userId: string) {
 
     return task;
   } catch (error) {
-    console.error("Error reading task:", error);
-
+    logger.error("Error reading task", error, { name, userId });
     throw error;
   }
 }
@@ -212,8 +210,7 @@ export async function readTaskById(taskId: string, userId: string) {
 
     return task;
   } catch (error) {
-    console.error("Error reading task by ID:", error);
-
+    logger.error("Error reading task by ID", error, { taskId, userId });
     throw error;
   }
 }
@@ -237,7 +234,7 @@ export async function updateTask(
     });
 
     if (!existingTask) {
-      throw new Error("Forbidden. You don't have access to this resource.");
+      throw new AuthorizationError();
     }
 
     const task = await prisma.task.update({
@@ -255,8 +252,7 @@ export async function updateTask(
 
     return task;
   } catch (error) {
-    console.error("Error updating task:", error);
-
+    logger.error("Error updating task", error, { taskId, userId });
     throw error;
   }
 }
@@ -272,7 +268,7 @@ export async function deleteTask(taskId: string, userId: string) {
     });
 
     if (!existingTask) {
-      throw new Error("Forbidden. You don't have access to this resource.");
+      throw new AuthorizationError();
     }
 
     const task = await prisma.task.delete({
@@ -283,8 +279,7 @@ export async function deleteTask(taskId: string, userId: string) {
 
     return task;
   } catch (error) {
-    console.error("Error deleting task:", error);
-
+    logger.error("Error deleting task", error, { taskId, userId });
     throw error;
   }
 }
@@ -304,7 +299,7 @@ export async function toggleComplete(
     });
 
     if (!existingTask) {
-      throw new Error("Forbidden. You don't have access to this resource.");
+      throw new AuthorizationError();
     }
 
     const task = await prisma.task.update({
@@ -318,8 +313,11 @@ export async function toggleComplete(
 
     return task;
   } catch (error) {
-    console.error("Error updating task:", error);
-
+    logger.error("Error toggling task completion", error, {
+      taskId,
+      previousStatus,
+      userId,
+    });
     throw error;
   }
 }
