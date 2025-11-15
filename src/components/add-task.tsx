@@ -62,7 +62,11 @@ export default function AddTask({
 }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent 
+        className="sm:max-w-[425px]"
+        hideCloseButton
+        preventClose
+      >
         <DialogHeader>
           <DialogTitle>{task ? "Edit Task" : "Add Task"}</DialogTitle>
         </DialogHeader>

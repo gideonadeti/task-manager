@@ -39,7 +39,7 @@ const AddGroup = ({
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" hideCloseButton preventClose>
         <DialogHeader>
           <DialogTitle>
             {defaultValue ? "Update Group" : "Add Group"}
@@ -116,7 +116,9 @@ function AddGroupForm({
         />
 
         <CustomDialogFooter
-          isPending={createGroupMutation.isPending || updateGroupMutation.isPending}
+          isPending={
+            createGroupMutation.isPending || updateGroupMutation.isPending
+          }
           disabled={!form.formState.isValid}
           handleCancel={() => {
             onOpenChange(false);
