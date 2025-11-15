@@ -11,13 +11,7 @@ export async function readGroups(userId: string) {
       orderBy: {
         updatedAt: "desc",
       },
-      include: {
-        tasks: {
-          orderBy: {
-            updatedAt: "desc",
-          },
-        },
-      },
+      // Removed include tasks - tasks are fetched separately, this was causing unnecessary joins
     });
 
     // If there are no groups, create and return default group as list
@@ -41,13 +35,7 @@ export async function createGroup(name: string, userId: string) {
         name,
         userId,
       },
-      include: {
-        tasks: {
-          orderBy: {
-            updatedAt: "desc",
-          },
-        },
-      },
+      // Removed include tasks - tasks are fetched separately, this was causing unnecessary joins
     });
 
     return group;
@@ -81,29 +69,39 @@ export async function updateGroup(
   userId: string
 ) {
   try {
-    // First verify the group belongs to the user
-    const existingGroup = await prisma.group.findFirst({
+    // Optimize: Use updateMany to combine auth check and update, then verify result
+    const result = await prisma.group.updateMany({
       where: {
         id: groupId,
-        userId,
-      },
-    });
-
-    if (!existingGroup) {
-      throw new AuthorizationError();
-    }
-
-    const group = await prisma.group.update({
-      where: {
-        id: groupId,
+        userId, // Authorization check built into where clause
       },
       data: {
         name,
       },
     });
 
+    // If no rows were updated, the group doesn't exist or doesn't belong to user
+    if (result.count === 0) {
+      throw new AuthorizationError();
+    }
+
+    // Fetch the updated group
+    const group = await prisma.group.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    if (!group) {
+      throw new AuthorizationError();
+    }
+
     return group;
   } catch (error) {
+    // If it's already an AuthorizationError, rethrow it
+    if (error instanceof AuthorizationError) {
+      throw error;
+    }
     logger.error("Error updating group", error, { groupId, name, userId });
     throw error;
   }
@@ -127,15 +125,19 @@ export async function readGroup(userId: string, name: string) {
 
 export async function deleteGroup(groupId: string, userId: string) {
   try {
-    // First verify the group belongs to the user
-    const existingGroup = await prisma.group.findFirst({
+    // Optimize: First verify the group belongs to the user using findUnique with id only
+    // then delete. This avoids an extra query if we can't find it.
+    const existingGroup = await prisma.group.findUnique({
       where: {
         id: groupId,
-        userId,
+      },
+      select: {
+        id: true,
+        userId: true,
       },
     });
 
-    if (!existingGroup) {
+    if (!existingGroup || existingGroup.userId !== userId) {
       throw new AuthorizationError();
     }
 
@@ -147,6 +149,10 @@ export async function deleteGroup(groupId: string, userId: string) {
 
     return group;
   } catch (error) {
+    // If it's already an AuthorizationError, rethrow it
+    if (error instanceof AuthorizationError) {
+      throw error;
+    }
     logger.error("Error deleting group", error, { groupId, userId });
     throw error;
   }
@@ -201,12 +207,17 @@ export async function readTask(name: string, userId: string) {
 
 export async function readTaskById(taskId: string, userId: string) {
   try {
-    const task = await prisma.task.findFirst({
+    // Optimize: Use findUnique for id lookup (faster with index)
+    const task = await prisma.task.findUnique({
       where: {
         id: taskId,
-        userId,
       },
     });
+
+    // Verify ownership
+    if (task && task.userId !== userId) {
+      return null;
+    }
 
     return task;
   } catch (error) {
@@ -225,21 +236,11 @@ export async function updateTask(
   userId: string
 ) {
   try {
-    // First verify the task belongs to the user
-    const existingTask = await prisma.task.findFirst({
+    // Optimize: Use updateMany to combine auth check and update, then verify result
+    const result = await prisma.task.updateMany({
       where: {
         id: taskId,
-        userId,
-      },
-    });
-
-    if (!existingTask) {
-      throw new AuthorizationError();
-    }
-
-    const task = await prisma.task.update({
-      where: {
-        id: taskId,
+        userId, // Authorization check built into where clause
       },
       data: {
         title,
@@ -250,8 +251,28 @@ export async function updateTask(
       },
     });
 
+    // If no rows were updated, the task doesn't exist or doesn't belong to user
+    if (result.count === 0) {
+      throw new AuthorizationError();
+    }
+
+    // Fetch the updated task
+    const task = await prisma.task.findUnique({
+      where: {
+        id: taskId,
+      },
+    });
+
+    if (!task) {
+      throw new AuthorizationError();
+    }
+
     return task;
   } catch (error) {
+    // If it's already an AuthorizationError, rethrow it
+    if (error instanceof AuthorizationError) {
+      throw error;
+    }
     logger.error("Error updating task", error, { taskId, userId });
     throw error;
   }
@@ -259,15 +280,19 @@ export async function updateTask(
 
 export async function deleteTask(taskId: string, userId: string) {
   try {
-    // First verify the task belongs to the user
-    const existingTask = await prisma.task.findFirst({
+    // Optimize: First verify the task belongs to the user using findUnique with id only
+    // then delete. This avoids an extra query if we can't find it.
+    const existingTask = await prisma.task.findUnique({
       where: {
         id: taskId,
-        userId,
+      },
+      select: {
+        id: true,
+        userId: true,
       },
     });
 
-    if (!existingTask) {
+    if (!existingTask || existingTask.userId !== userId) {
       throw new AuthorizationError();
     }
 
@@ -279,6 +304,10 @@ export async function deleteTask(taskId: string, userId: string) {
 
     return task;
   } catch (error) {
+    // If it's already an AuthorizationError, rethrow it
+    if (error instanceof AuthorizationError) {
+      throw error;
+    }
     logger.error("Error deleting task", error, { taskId, userId });
     throw error;
   }
@@ -290,29 +319,49 @@ export async function toggleComplete(
   userId: string
 ) {
   try {
-    // First verify the task belongs to the user
-    const existingTask = await prisma.task.findFirst({
+    // Optimize: Use updateMany to combine auth check and update, then verify result
+    const result = await prisma.task.updateMany({
       where: {
         id: taskId,
-        userId,
-      },
-    });
-
-    if (!existingTask) {
-      throw new AuthorizationError();
-    }
-
-    const task = await prisma.task.update({
-      where: {
-        id: taskId,
+        userId, // Authorization check built into where clause
+        completed: previousStatus, // Also verify current status matches
       },
       data: {
         completed: !previousStatus,
       },
     });
 
+    // If no rows were updated, the task doesn't exist, doesn't belong to user, or status changed
+    if (result.count === 0) {
+      // Check if task exists at all
+      const taskExists = await prisma.task.findUnique({
+        where: { id: taskId },
+        select: { id: true, userId: true },
+      });
+      
+      if (!taskExists || taskExists.userId !== userId) {
+        throw new AuthorizationError();
+      }
+      // If task exists but status doesn't match, that's okay - just fetch current state
+    }
+
+    // Fetch the updated task
+    const task = await prisma.task.findUnique({
+      where: {
+        id: taskId,
+      },
+    });
+
+    if (!task) {
+      throw new AuthorizationError();
+    }
+
     return task;
   } catch (error) {
+    // If it's already an AuthorizationError, rethrow it
+    if (error instanceof AuthorizationError) {
+      throw error;
+    }
     logger.error("Error toggling task completion", error, {
       taskId,
       previousStatus,
