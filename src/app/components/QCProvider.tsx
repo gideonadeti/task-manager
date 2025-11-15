@@ -10,17 +10,21 @@ const queryClient = new QueryClient({
       // Cache data for 5 minutes before considering it stale
       staleTime: 1000 * 60 * 5,
       // Keep unused data in cache for 10 minutes
-      gcTime: 1000 * 60 * 10, // Previously called cacheTime
+      gcTime: 1000 * 60 * 10,
       // Retry failed requests up to 1 time
       retry: 1,
-      // Refetch on window focus for better UX
-      refetchOnWindowFocus: true,
       // Don't refetch on mount if data is fresh
       refetchOnMount: false,
     },
     mutations: {
-      // Retry failed mutations once
-      retry: 1,
+      // Don't retry on network errors (they'll fail fast)
+      retry: (failureCount, error) => {
+        // Only retry on non-network errors
+        if (error instanceof Error && error.message.includes("network")) {
+          return false;
+        }
+        return failureCount < 1;
+      },
     },
   },
 });
