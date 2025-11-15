@@ -3,7 +3,7 @@ import { useRouter, useParams } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import useGroups from "@/app/groups/hooks/use-groups";
+import useGroups from "@/hooks/use-groups";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {

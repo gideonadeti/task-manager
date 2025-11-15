@@ -1,4 +1,4 @@
-import useTasks from "@/app/groups/hooks/use-tasks";
+import useTasks from "@/hooks/use-tasks";
 import {
   AlertDialog,
   AlertDialogAction,

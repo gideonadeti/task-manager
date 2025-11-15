@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { Task } from "@prisma/client";
 
-import useGroups from "@/app/groups/hooks/use-groups";
-import useTasks from "@/app/groups/hooks/use-tasks";
+import useGroups from "@/hooks/use-groups";
+import useTasks from "@/hooks/use-tasks";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";

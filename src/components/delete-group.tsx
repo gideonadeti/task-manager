@@ -1,4 +1,4 @@
-import useGroups from "@/app/groups/hooks/use-groups";
+import useGroups from "@/hooks/use-groups";
 import {
   AlertDialog,
   AlertDialogAction,
