@@ -40,7 +40,7 @@ export default function TasksToolbar({
         />
         {isFiltered && (
           <Button
-            variant="ghost"
+            variant="outline"
             onClick={handleReset}
             className="h-8 px-2 lg:px-3"
           >
@@ -52,4 +52,3 @@ export default function TasksToolbar({
     </div>
   );
 }
-
