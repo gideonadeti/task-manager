@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { Task } from "@prisma/client";
 import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 
 import useGroups from "@/hooks/use-groups";
 import useTasks from "@/hooks/use-tasks";
@@ -90,6 +91,9 @@ function AddTaskForm({
 }) {
   const { groupsQuery } = useGroups();
   const { createTaskMutation, updateTaskMutation } = useTasks();
+  const router = useRouter();
+  const params = useParams();
+  const currentGroupId = params?.groupId as string | undefined;
 
   const defaultDueDate = task?.dueDate ? new Date(task.dueDate) : undefined;
   const defaultTime = defaultDueDate
@@ -167,6 +171,10 @@ function AddTaskForm({
         ...submitValues,
         form,
         setOpen,
+        router,
+        currentGroupId,
+        groups:
+          groupsQuery.data?.map((g) => ({ id: g.id, name: g.name })) || [],
       });
     }
   }
