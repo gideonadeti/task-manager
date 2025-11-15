@@ -52,7 +52,7 @@ export async function DELETE(
     const group = await GroupService.deleteGroup(userId, groupId);
 
     return NextResponse.json({ group });
-  } catch (error: unknown) {
+  } catch (error) {
     return handleApiError(error, req);
   }
 }
