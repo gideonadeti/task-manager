@@ -2,17 +2,37 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { getUserId } from "@/lib/auth/get-user-id";
 import { updateGroup, readGroup, deleteGroup } from "../../../../../prisma/db";
+import {
+  updateGroupSchema,
+  groupIdParamSchema,
+  validateRequestBody,
+  validateParams,
+} from "@/lib/validations";
+import { rateLimiters } from "@/lib/rate-limit";
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ groupId: string }> }
 ) {
   try {
-    const userId = await getUserId();
-    const { groupId } = await params;
-    const { name } = await req.json();
+    // Apply rate limiting
+    const rateLimitResponse = await rateLimiters.general(req);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
 
-    const group = await readGroup(userId, name.trim());
+    const userId = await getUserId();
+    const rawParams = await params;
+
+    // Validate route parameters
+    const { groupId } = validateParams(groupIdParamSchema, rawParams);
+
+    const body = await req.json();
+
+    // Validate request body
+    const validatedData = validateRequestBody(updateGroupSchema, body);
+
+    const group = await readGroup(userId, validatedData.name);
 
     if (group) {
       return NextResponse.json(
@@ -21,11 +41,16 @@ export async function PATCH(
       );
     }
 
-    const updatedGroup = await updateGroup(groupId, name, userId);
+    const updatedGroup = await updateGroup(groupId, validatedData.name, userId);
 
     return NextResponse.json({ group: updatedGroup });
   } catch (error) {
     console.error("Error updating group name:", error);
+
+    // Handle validation errors (NextResponse thrown by validate functions)
+    if (error instanceof NextResponse) {
+      return error;
+    }
 
     if (error instanceof Error && error.message.includes("Unauthorized")) {
       return NextResponse.json(
@@ -53,18 +78,28 @@ export async function DELETE(
   { params }: { params: Promise<{ groupId: string }> }
 ) {
   try {
-    const userId = await getUserId();
-    const { groupId } = await params;
-
-    if (!groupId) {
-      return NextResponse.json({ error: "Invalid group ID." }, { status: 400 });
+    // Apply rate limiting
+    const rateLimitResponse = await rateLimiters.general(req);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
     }
+
+    const userId = await getUserId();
+    const rawParams = await params;
+
+    // Validate route parameters
+    const { groupId } = validateParams(groupIdParamSchema, rawParams);
 
     const group = await deleteGroup(groupId, userId);
 
     return NextResponse.json({ group });
   } catch (error: unknown) {
     console.error("Error deleting group:", error);
+
+    // Handle validation errors (NextResponse thrown by validate functions)
+    if (error instanceof NextResponse) {
+      return error;
+    }
 
     if (error instanceof Error && error.message.includes("Unauthorized")) {
       return NextResponse.json(
