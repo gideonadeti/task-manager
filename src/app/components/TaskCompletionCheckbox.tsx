@@ -4,8 +4,8 @@ import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { toggleComplete } from "@/app/query-functions";
-import { ExtendedGroup } from "../type";
+import { toggleComplete } from "@/lib/api/query-functions";
+import { ExtendedGroup } from "@/types";
 
 type TaskCompletionCheckboxProps = {
   taskId: string;
