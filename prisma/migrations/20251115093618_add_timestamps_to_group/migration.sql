@@ -1,0 +1,4 @@
+-- AlterTable
+-- Add columns with defaults for existing rows
+ALTER TABLE "Group" ADD COLUMN "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
