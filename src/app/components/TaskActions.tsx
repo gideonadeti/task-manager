@@ -6,7 +6,7 @@ import { Task } from "@prisma/client";
 
 import { Button } from "@/components/ui/button";
 import AddTask from "@/components/add-task";
-import DeleteTask from "@/components/delete-task";
+import DeleteDialog from "@/components/delete-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,8 +51,9 @@ export default function TaskActions({ task }: TaskActionsProps) {
       </DropdownMenuContent>
 
       <AddTask task={taskUpdate} open={updateOpen} setOpen={setUpdateOpen} />
-      <DeleteTask
-        taskDeleteId={task.id}
+      <DeleteDialog
+        type="task"
+        deleteId={task.id}
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
       />

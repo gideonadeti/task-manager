@@ -20,7 +20,7 @@ import {
 import { isToday, isTomorrow, isThisWeek, isPast } from "date-fns";
 
 import AddGroup from "./add-group";
-import DeleteGroup from "./delete-group";
+import DeleteDialog from "./delete-dialog";
 import {
   Empty,
   EmptyHeader,
@@ -276,10 +276,11 @@ export function AppSidebar() {
         defaultValue={groupName}
         groupUpdateId={groupUpdateId}
       />
-      <DeleteGroup
+      <DeleteDialog
+        type="group"
+        deleteId={groupDeleteId}
         open={openDelete}
         onOpenChange={setOpenDelete}
-        groupDeleteId={groupDeleteId}
       />
     </Sidebar>
   );
