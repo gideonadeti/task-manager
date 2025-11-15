@@ -22,6 +22,13 @@ import { isToday, isTomorrow, isThisWeek, isPast } from "date-fns";
 import AddGroup from "./add-group";
 import DeleteGroup from "./delete-group";
 import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+} from "./ui/empty";
+import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
@@ -163,63 +170,84 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Personal Groups</SidebarGroupLabel>
-          <SidebarGroupAction title="Add Group">
-            <Plus onClick={handleAdd} />
-          </SidebarGroupAction>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {personalGroups.map((personalGroup) => {
-                const numOfTasks = getNumOfTasksPersonal(personalGroup.id);
+          {personalGroups.length === 0 ? (
+            <SidebarGroupContent>
+              <Empty className="border-0 p-4">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <FolderOpen className="text-muted-foreground" />
+                  </EmptyMedia>
+                  <EmptyTitle className="text-sm">No personal groups</EmptyTitle>
+                  <EmptyDescription className="text-xs">
+                    Create a group to organize your tasks
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
+              <SidebarGroupAction title="Add Group">
+                <Plus onClick={handleAdd} />
+              </SidebarGroupAction>
+            </SidebarGroupContent>
+          ) : (
+            <>
+              <SidebarGroupAction title="Add Group">
+                <Plus onClick={handleAdd} />
+              </SidebarGroupAction>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {personalGroups.map((personalGroup) => {
+                    const numOfTasks = getNumOfTasksPersonal(personalGroup.id);
 
-                return (
-                  <SidebarMenuItem key={personalGroup.id}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={groupId === personalGroup.id}
-                    >
-                      <Link href={`/groups/${personalGroup.id}`}>
-                        {groupId === personalGroup.id ? (
-                          <FolderOpen />
-                        ) : (
-                          <FolderClosed />
+                    return (
+                      <SidebarMenuItem key={personalGroup.id}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={groupId === personalGroup.id}
+                        >
+                          <Link href={`/groups/${personalGroup.id}`}>
+                            {groupId === personalGroup.id ? (
+                              <FolderOpen />
+                            ) : (
+                              <FolderClosed />
+                            )}
+                            <span>{personalGroup.name}</span>
+                          </Link>
+                        </SidebarMenuButton>
+
+                        {numOfTasks > 0 && (
+                          <SidebarMenuBadge className="me-5">
+                            {numOfTasks}
+                          </SidebarMenuBadge>
                         )}
-                        <span>{personalGroup.name}</span>
-                      </Link>
-                    </SidebarMenuButton>
 
-                    {numOfTasks > 0 && (
-                      <SidebarMenuBadge className="me-5">
-                        {numOfTasks}
-                      </SidebarMenuBadge>
-                    )}
-
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <SidebarMenuAction showOnHover>
-                          <MoreHorizontal />
-                          <span className="sr-only">More</span>
-                        </SidebarMenuAction>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            handleEdit(personalGroup.name, personalGroup.id)
-                          }
-                        >
-                          <span>Edit</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDelete(personalGroup.id)}
-                        >
-                          <span>Delete</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <SidebarMenuAction showOnHover>
+                              <MoreHorizontal />
+                              <span className="sr-only">More</span>
+                            </SidebarMenuAction>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                handleEdit(personalGroup.name, personalGroup.id)
+                              }
+                            >
+                              <span>Edit</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleDelete(personalGroup.id)}
+                            >
+                              <span>Delete</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </>
+          )}
         </SidebarGroup>
       </SidebarContent>
       <AddGroup
