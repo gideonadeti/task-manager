@@ -155,7 +155,7 @@ export async function deleteGroup(groupId: string, userId: string) {
 export async function createTask(
   title: string,
   description: string,
-  dueDate: Date,
+  dueDate: Date | null | undefined,
   priority: "low" | "medium" | "high",
   groupId: string,
   userId: string
@@ -219,7 +219,7 @@ export async function updateTask(
   taskId: string,
   title: string,
   description: string,
-  dueDate: Date,
+  dueDate: Date | null | undefined,
   priority: "low" | "medium" | "high",
   groupId: string,
   userId: string
