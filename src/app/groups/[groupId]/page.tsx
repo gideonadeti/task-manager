@@ -84,7 +84,10 @@ export default function GroupPage() {
         {(groupsQuery.isPending || tasksQuery.isPending) && <Spinner />}
       </div>
       {filteredTasks.length > 0 ? (
-        <TasksTable columns={columns} data={filteredTasks} />
+        <TasksTable 
+          columns={columns} 
+          data={filteredTasks} 
+        />
       ) : (
         !(groupsQuery.isPending || tasksQuery.isPending) && (
           <NoTasks groupId={groupId as string} />
