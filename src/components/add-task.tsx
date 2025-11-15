@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { Task } from "@prisma/client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import useGroups from "@/hooks/use-groups";
 import useTasks from "@/hooks/use-tasks";
@@ -62,11 +62,7 @@ export default function AddTask({
 }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent 
-        className="sm:max-w-[425px]"
-        hideCloseButton
-        preventClose
-      >
+      <DialogContent className="sm:max-w-[425px]" hideCloseButton preventClose>
         <DialogHeader>
           <DialogTitle>{task ? "Edit Task" : "Add Task"}</DialogTitle>
         </DialogHeader>
@@ -95,9 +91,16 @@ function AddTaskForm({
   const { groupsQuery } = useGroups();
   const { createTaskMutation, updateTaskMutation } = useTasks();
 
+  const defaultDueDate = task?.dueDate ? new Date(task.dueDate) : undefined;
+  const defaultTime = defaultDueDate
+    ? format(defaultDueDate, "HH:mm")
+    : "00:00";
+
+  const [timeValue, setTimeValue] = useState(defaultTime);
+
   const defaultValues = {
     title: task?.title || "",
-    dueDate: task?.dueDate ? new Date(task.dueDate) : undefined,
+    dueDate: defaultDueDate,
     description: task?.description || "",
     groupId:
       task?.groupId ||
@@ -123,20 +126,45 @@ function AddTaskForm({
   useEffect(() => {
     if (!open && !task) {
       form.reset();
+      setTimeValue("00:00");
     }
   }, [open, task, form]);
 
+  // Update time value when task changes
+  useEffect(() => {
+    if (task?.dueDate) {
+      setTimeValue(format(new Date(task.dueDate), "HH:mm"));
+    } else {
+      setTimeValue("00:00");
+    }
+  }, [task]);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
+    // Combine date and time if date is set
+    let combinedDueDate: Date | undefined = undefined;
+    if (values.dueDate) {
+      const date = new Date(values.dueDate);
+      // Set time from time input, defaulting to 00:00 if not provided
+      const [hours, minutes] = (timeValue || "00:00").split(":").map(Number);
+      date.setHours(hours || 0, minutes || 0, 0, 0);
+      combinedDueDate = date;
+    }
+
+    const submitValues = {
+      ...values,
+      dueDate: combinedDueDate,
+    };
+
     if (task) {
       updateTaskMutation.mutate({
-        ...values,
+        ...submitValues,
         id: task.id,
         form,
         setOpen,
       });
     } else {
       createTaskMutation.mutate({
-        ...values,
+        ...submitValues,
         form,
         setOpen,
       });
@@ -225,69 +253,108 @@ function AddTaskForm({
         <FormField
           control={form.control}
           name="dueDate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Due Date</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
+          render={({ field }) => {
+            const handleDateSelect = (date: Date | undefined) => {
+              if (date) {
+                // Set time to start of day (00:00:00) when date is selected
+                const newDate = new Date(date);
+                newDate.setHours(0, 0, 0, 0);
+                field.onChange(newDate);
+                // Reset time to 00:00 when date changes
+                setTimeValue("00:00");
+              } else {
+                field.onChange(undefined);
+                setTimeValue("00:00");
+              }
+            };
+
+            const handleTimeChange = (time: string) => {
+              setTimeValue(time);
+              // Update the date field with the new time
+              if (field.value) {
+                const date = new Date(field.value);
+                const [hours, minutes] = time.split(":").map(Number);
+                date.setHours(hours || 0, minutes || 0, 0, 0);
+                field.onChange(date);
+              }
+            };
+
+            const displayValue = field.value
+              ? `${format(new Date(field.value), "PPP")} at ${timeValue}`
+              : "Pick a due date and time";
+
+            return (
+              <FormItem className="flex flex-col">
+                <FormLabel>Due Date & Time</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {displayValue}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
+                    <Select
+                      onValueChange={(value) => {
+                        const date = new Date();
+                        date.setDate(date.getDate() + parseInt(value, 10));
+                        date.setHours(0, 0, 0, 0);
+                        handleDateSelect(date);
+                      }}
                     >
-                      {field.value ? (
-                        format(new Date(field.value), "PPP")
-                      ) : (
-                        <span>Pick a due date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
-                  <Select
-                    onValueChange={(value) => {
-                      const date = new Date();
-                      date.setDate(date.getDate() + parseInt(value, 10));
-                      field.onChange(date);
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      <SelectItem value="0">Today</SelectItem>
-                      <SelectItem value="1">Tomorrow</SelectItem>
-                      <SelectItem value="3">In 3 days</SelectItem>
-                      <SelectItem value="7">In a week</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <div className="rounded-md border">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                    />
-                  </div>
-                  {field.value && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => field.onChange(undefined)}
-                      className="w-full"
-                    >
-                      Clear
-                    </Button>
-                  )}
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        <SelectItem value="0">Today</SelectItem>
+                        <SelectItem value="1">Tomorrow</SelectItem>
+                        <SelectItem value="3">In 3 days</SelectItem>
+                        <SelectItem value="7">In a week</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <div className="rounded-md border">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={handleDateSelect}
+                      />
+                    </div>
+                    {field.value && (
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <label className="text-sm font-medium">Time:</label>
+                          <Input
+                            type="time"
+                            value={timeValue}
+                            onChange={(e) => handleTimeChange(e.target.value)}
+                            className="flex-1"
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDateSelect(undefined)}
+                          className="w-full"
+                        >
+                          Clear
+                        </Button>
+                      </div>
+                    )}
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
 
         <CustomDialogFooter
