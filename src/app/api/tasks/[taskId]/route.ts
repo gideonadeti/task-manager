@@ -2,18 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { getUserId } from "@/lib/auth/get-user-id";
 import {
-  updateTask,
-  deleteTask,
-  toggleComplete,
-  readTaskById,
-} from "../../../../../prisma/db";
-import {
   updateTaskSchema,
   taskIdParamSchema,
   toggleCompleteSchema,
   validateRequestBody,
   validateParams,
 } from "@/lib/validations";
+import { TaskService } from "@/services/task-service";
 
 export async function PUT(
   req: NextRequest,
@@ -31,39 +26,13 @@ export async function PUT(
     // Validate request body
     const validatedData = validateRequestBody(updateTaskSchema, body);
 
-    // Ensure at least one field is provided for update
-    if (
-      !validatedData.title &&
-      !validatedData.description &&
-      !validatedData.priority &&
-      !validatedData.groupId &&
-      !validatedData.dueDate
-    ) {
-      return NextResponse.json(
-        { error: "At least one field must be provided for update." },
-        { status: 400 }
-      );
-    }
-
-    // Fetch existing task to fill in missing fields
-    const existingTask = await readTaskById(taskId, userId);
-
-    if (!existingTask) {
-      return NextResponse.json(
-        { error: "Task not found or you don't have access to this resource." },
-        { status: 404 }
-      );
-    }
-
-    const task = await updateTask(
-      taskId,
-      validatedData.title ?? existingTask.title,
-      validatedData.description ?? existingTask.description ?? "",
-      validatedData.dueDate ?? existingTask.dueDate ?? new Date(),
-      validatedData.priority ?? existingTask.priority,
-      validatedData.groupId ?? existingTask.groupId,
-      userId
-    );
+    const task = await TaskService.updateTask(userId, taskId, {
+      title: validatedData.title,
+      description: validatedData.description,
+      priority: validatedData.priority,
+      groupId: validatedData.groupId,
+      dueDate: validatedData.dueDate,
+    });
 
     return NextResponse.json({ task });
   } catch (error) {
@@ -85,6 +54,21 @@ export async function PUT(
       return NextResponse.json(
         { error: "Forbidden. You don't have access to this resource." },
         { status: 403 }
+      );
+    }
+
+    // Handle business logic errors from service
+    if (error instanceof Error && error.message.includes("not found")) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 404 }
+      );
+    }
+
+    if (error instanceof Error && error.message.includes("must be provided")) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 400 }
       );
     }
 
@@ -110,7 +94,7 @@ export async function DELETE(
     // Validate route parameters
     const { taskId } = validateParams(taskIdParamSchema, rawParams);
 
-    const task = await deleteTask(taskId, userId);
+    const task = await TaskService.deleteTask(userId, taskId);
 
     return NextResponse.json({ task });
   } catch (error) {
@@ -158,7 +142,7 @@ export async function PATCH(
     // Validate request body
     const validatedData = validateRequestBody(toggleCompleteSchema, body);
 
-    await toggleComplete(taskId, validatedData.previousStatus, userId);
+    await TaskService.toggleComplete(userId, taskId, validatedData.previousStatus);
 
     return NextResponse.json(
       { message: "Task status updated successfully." },

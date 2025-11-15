@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { readTasks, createTask, readTask } from "../../../../prisma/db";
 import { getUserId } from "@/lib/auth/get-user-id";
 import { createTaskSchema, validateRequestBody } from "@/lib/validations";
+import { TaskService } from "@/services/task-service";
 
 export async function GET() {
   try {
     const userId = await getUserId();
-    const tasks = await readTasks(userId);
+    const tasks = await TaskService.getTasks(userId);
 
     return NextResponse.json({ tasks }, { status: 200 });
   } catch (error) {
@@ -40,23 +40,13 @@ export async function POST(req: NextRequest) {
     // Validate request body
     const validatedData = validateRequestBody(createTaskSchema, body);
 
-    const task = await readTask(validatedData.title, userId);
-
-    if (task) {
-      return NextResponse.json(
-        { error: "Task already exists." },
-        { status: 400 }
-      );
-    }
-
-    const createdTask = await createTask(
-      validatedData.title,
-      validatedData.description ?? "",
-      validatedData.dueDate ?? new Date(),
-      validatedData.priority,
-      validatedData.groupId,
-      userId
-    );
+    const createdTask = await TaskService.createTask(userId, {
+      title: validatedData.title,
+      description: validatedData.description ?? "",
+      dueDate: validatedData.dueDate ?? new Date(),
+      priority: validatedData.priority,
+      groupId: validatedData.groupId,
+    });
 
     return NextResponse.json({ task: createdTask }, { status: 201 });
   } catch (error) {
@@ -71,6 +61,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "Unauthorized. Authentication required." },
         { status: 401 }
+      );
+    }
+
+    // Handle business logic errors from service
+    if (error instanceof Error && error.message.includes("already exists")) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 400 }
       );
     }
 
