@@ -15,16 +15,16 @@ export default function Header() {
   const isLightTheme = resolvedTheme === "light";
 
   return (
-    <header className="relative flex items-center border-b py-2 ps-2 pe-4 gap-2">
+    <header className="relative flex items-center justify-between border-b py-2 px-2 sm:px-4 gap-2">
       {/* Left section: Sidebar trigger and theme toggler */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 flex-shrink-0">
         <SidebarTrigger />
-        <Separator orientation="vertical" className="mx-2 h-8" />
+        <Separator orientation="vertical" className="mx-1 sm:mx-2 h-8" />
         <ThemeToggler />
       </div>
 
       {/* Center section: Title */}
-      <div className="absolute left-1/2 transform -translate-x-1/2">
+      <div className="flex-1 flex justify-center min-w-0">
         <Link
           href="/groups/today"
           className="group relative inline-block transition-all"
@@ -40,9 +40,9 @@ export default function Header() {
       </div>
 
       {/* Right section: User button */}
-      <div className="ms-auto flex items-center">
+      <div className="flex items-center flex-shrink-0">
         {!isLoaded ? (
-          <Skeleton className="min-w-28 h-8 rounded-full" />
+          <Skeleton className="min-w-20 sm:min-w-28 h-8 rounded-full" />
         ) : (
           <UserButton
             appearance={{
