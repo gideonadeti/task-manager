@@ -29,8 +29,10 @@ model Task {
 }
 
 model Group {
-  id     String @id @default(cuid())
-  name   String
-  tasks  Task[]
-  userId String
+  id        String   @id @default(cuid())
+  name      String
+  tasks     Task[]
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
