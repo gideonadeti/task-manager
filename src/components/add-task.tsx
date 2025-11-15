@@ -369,7 +369,7 @@ function AddTaskForm({
           isPending={
             createTaskMutation.isPending || updateTaskMutation.isPending
           }
-          disabled={!form.formState.isValid}
+          disabled={!form.formState.isDirty}
           handleCancel={() => {
             setOpen(false);
             form.reset();

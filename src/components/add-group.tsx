@@ -119,7 +119,7 @@ function AddGroupForm({
           isPending={
             createGroupMutation.isPending || updateGroupMutation.isPending
           }
-          disabled={!form.formState.isValid}
+          disabled={!form.formState.isDirty}
           handleCancel={() => {
             onOpenChange(false);
             form.reset();
