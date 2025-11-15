@@ -48,7 +48,7 @@ export default function RootLayout({
             </QCProvider>
           </SignedIn>
           <SignedOut>
-            <div className="max-w-4xl mx-auto flex flex-col min-h-screen">
+            <div className="max-w-4xl mx-auto flex flex-col min-h-svh">
               <H3 className="px-4 py-2">Taskflow</H3>
               <div className="flex-1 flex flex-col md:flex-row items-center justify-center gap-4 p-8">
                 <div className="flex-1 flex flex-col text-center lg:text-left">
