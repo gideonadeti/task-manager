@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const createdTask = await TaskService.createTask(userId, {
       title: validatedData.title,
       description: validatedData.description ?? "",
-      dueDate: validatedData.dueDate ?? new Date(),
+      dueDate: validatedData.dueDate,
       priority: validatedData.priority,
       groupId: validatedData.groupId,
     });
