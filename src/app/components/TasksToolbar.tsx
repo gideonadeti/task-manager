@@ -13,12 +13,14 @@ import {
 import PriorityFilter from "./PriorityFilter";
 import AddTask from "@/components/add-task";
 import useGroups from "@/hooks/use-groups";
+import { Task } from "@prisma/client";
 
 interface TasksToolbarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   selectedPriorities: string[];
   onPrioritiesChange: (priorities: string[]) => void;
+  tasks?: Task[];
 }
 
 export default function TasksToolbar({
@@ -26,6 +28,7 @@ export default function TasksToolbar({
   onSearchChange,
   selectedPriorities,
   onPrioritiesChange,
+  tasks,
 }: TasksToolbarProps) {
   const [openAdd, setOpenAdd] = useState(false);
   const isFiltered = searchQuery.trim() !== "" || selectedPriorities.length > 0;
@@ -82,6 +85,7 @@ export default function TasksToolbar({
           <PriorityFilter
             selectedPriorities={selectedPriorities}
             onPrioritiesChange={onPrioritiesChange}
+            tasks={tasks}
           />
           {isFiltered && (
             <Button
