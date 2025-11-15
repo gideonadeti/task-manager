@@ -272,6 +272,17 @@ function AddTaskForm({
                       onSelect={field.onChange}
                     />
                   </div>
+                  {field.value && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => field.onChange(undefined)}
+                      className="w-full"
+                    >
+                      Clear
+                    </Button>
+                  )}
                 </PopoverContent>
               </Popover>
               <FormMessage />
