@@ -1,21 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { readTasks, createTask, readTask } from "../../../../prisma/db";
+import { getUserId } from "@/lib/auth/get-user-id";
 
-export async function GET(req: NextRequest) {
-  const searchParams = req.nextUrl.searchParams;
-  const userId = searchParams.get("userId");
-
-  if (!userId) {
-    return NextResponse.json({ error: "userId is required" }, { status: 400 });
-  }
-
+export async function GET() {
   try {
+    const userId = await getUserId();
     const tasks = await readTasks(userId);
 
     return NextResponse.json({ tasks }, { status: 200 });
   } catch (error) {
     console.error(error);
+
+    if (error instanceof Error && error.message.includes("Unauthorized")) {
+      return NextResponse.json(
+        { error: "Unauthorized. Authentication required." },
+        { status: 401 }
+      );
+    }
 
     return NextResponse.json(
       { error: "Something went wrong while reading tasks." },
@@ -25,11 +27,11 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const { title, description, dueDate, priority, groupId, userId } =
-    await req.json();
-
   try {
-    const task = await readTask(title.trim());
+    const userId = await getUserId();
+    const { title, description, dueDate, priority, groupId } = await req.json();
+
+    const task = await readTask(title.trim(), userId);
 
     if (task) {
       return NextResponse.json(
@@ -44,12 +46,19 @@ export async function POST(req: NextRequest) {
       dueDate,
       priority.trim(),
       groupId.trim(),
-      userId.trim()
+      userId
     );
 
     return NextResponse.json({ task: createdTask }, { status: 201 });
   } catch (error) {
     console.error(error);
+
+    if (error instanceof Error && error.message.includes("Unauthorized")) {
+      return NextResponse.json(
+        { error: "Unauthorized. Authentication required." },
+        { status: 401 }
+      );
+    }
 
     return NextResponse.json(
       { error: "Something went wrong while creating task." },
