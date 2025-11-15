@@ -1,13 +1,6 @@
 import { ApiErrorResponse, AxiosErrorResponse } from "@/types";
 
 /**
- * Type guard to check if an error is an Error instance
- */
-export function isError(error: unknown): error is Error {
-  return error instanceof Error;
-}
-
-/**
  * Type guard to check if an error has a response property (Axios error)
  */
 export function hasAxiosResponse(
