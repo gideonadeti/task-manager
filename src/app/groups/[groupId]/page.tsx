@@ -6,9 +6,9 @@ import { isToday, isTomorrow, isThisWeek, isPast, compareAsc } from "date-fns";
 
 import useGroups from "@/hooks/use-groups";
 import useTasks from "@/hooks/use-tasks";
-import Spinner from "@/app/components/Spinner";
 import { ExtendedGroup } from "@/types";
 import { TasksList } from "@/app/components/TasksList";
+import TasksListSkeleton from "@/app/components/TasksListSkeleton";
 import NoTasks from "./components/no-tasks";
 
 export default function GroupPage() {
@@ -77,17 +77,16 @@ export default function GroupPage() {
     });
   }, [groupId, groupsQuery.data, tasksQuery.data]);
 
+  if (groupsQuery.isPending || tasksQuery.isPending) {
+    return <TasksListSkeleton />;
+  }
+
   return (
     <div className="flex-1">
-      <div className="flex items-center justify-center">
-        {(groupsQuery.isPending || tasksQuery.isPending) && <Spinner />}
-      </div>
       {filteredTasks.length > 0 ? (
         <TasksList data={filteredTasks} />
       ) : (
-        !(groupsQuery.isPending || tasksQuery.isPending) && (
-          <NoTasks groupId={groupId as string} />
-        )
+        <NoTasks groupId={groupId as string} />
       )}
     </div>
   );
