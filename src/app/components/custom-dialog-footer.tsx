@@ -55,6 +55,7 @@ const CustomDialogFooter = ({
   return (
     <DialogFooter>
       <Button
+        type="button"
         variant="secondary"
         onClick={() => handleCancel()}
         disabled={isPending}
@@ -63,6 +64,7 @@ const CustomDialogFooter = ({
         Cancel
       </Button>
       <Button
+        type="submit"
         onClick={() => handleSubmit()}
         disabled={disabled || isPending}
         className="w-32"
