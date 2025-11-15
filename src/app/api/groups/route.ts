@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { readGroups, createGroup, readGroup } from "../../../../prisma/db";
 import { getUserId } from "@/lib/auth/get-user-id";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const userId = await getUserId();
     const groups = await readGroups(userId);
