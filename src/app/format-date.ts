@@ -1,28 +1,19 @@
-import {
-  isToday,
-  isYesterday,
-  isTomorrow,
-  formatDistanceToNow,
-  format,
-  isThisYear,
-} from "date-fns";
+import { format, isToday, isYesterday, isThisWeek, isThisYear } from "date-fns";
 
-export default function formatDate(date: Date | undefined) {
-  if (!date) {
-    return "undefined";
-  }
-
-  const distanceToNow = formatDistanceToNow(date, { addSuffix: true });
+const formatDate = (date: Date) => {
+  const absolute = format(date, "p");
 
   if (isToday(date)) {
-    return `${format(date, "h:mm a")} (${distanceToNow})`;
-  } else if (isTomorrow(date)) {
-    return `Tomorrow at ${format(date, "h:mm a")} (${distanceToNow})`;
+    return `Today at ${absolute}`;
   } else if (isYesterday(date)) {
-    return `Yesterday at ${format(date, "h:mm a")} (${distanceToNow})`;
+    return `Yesterday at ${absolute}`;
+  } else if (isThisWeek(date)) {
+    return `Last ${format(date, "EEEE")}`;
   } else if (isThisYear(date)) {
-    return `${format(date, "eee, do MMM")} (${distanceToNow})`;
+    return `${format(date, "MMM d")}`;
   } else {
-    return `${format(date, "eee, do MMM, yyyy")} (${distanceToNow})`;
+    return `${format(date, "MMM d, yyyy")}`;
   }
-}
+};
+
+export default formatDate;
