@@ -2,6 +2,7 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Task } from "@prisma/client";
 import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
+import { useCallback } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { toggleComplete } from "@/lib/api/query-functions";
@@ -12,7 +13,7 @@ type TaskCompletionCheckboxProps = {
   completed: boolean;
 };
 
-export default function TaskCompletionCheckbox({
+function TaskCompletionCheckbox({
   taskId,
   completed,
 }: TaskCompletionCheckboxProps) {
@@ -76,9 +77,9 @@ export default function TaskCompletionCheckbox({
     },
   });
 
-  function handleChange() {
+  const handleChange = useCallback(() => {
     mutate(completed);
-  }
+  }, [mutate, completed]);
 
   return (
     <Checkbox
@@ -88,3 +89,5 @@ export default function TaskCompletionCheckbox({
     />
   );
 }
+
+export default TaskCompletionCheckbox;

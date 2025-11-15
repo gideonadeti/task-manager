@@ -9,7 +9,7 @@ interface TasksListProps {
   data: Task[];
 }
 
-export function TasksList({ data }: TasksListProps) {
+function TasksList({ data }: TasksListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
 
@@ -49,4 +49,6 @@ export function TasksList({ data }: TasksListProps) {
     </div>
   );
 }
+
+export { TasksList };
 
