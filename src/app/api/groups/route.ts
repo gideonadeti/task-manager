@@ -1,21 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { readGroups, createGroup, readGroup } from "../../../../prisma/db";
+import { getUserId } from "@/lib/auth/get-user-id";
 
 export async function GET(req: NextRequest) {
-  const searchParams = req.nextUrl.searchParams;
-  const userId = searchParams.get("userId");
-
-  if (!userId) {
-    return NextResponse.json({ error: "userId is required" }, { status: 400 });
-  }
-
   try {
+    const userId = await getUserId();
     const groups = await readGroups(userId);
 
     return NextResponse.json({ groups }, { status: 200 });
   } catch (error) {
     console.error(error);
+
+    if (error instanceof Error && error.message.includes("Unauthorized")) {
+      return NextResponse.json(
+        { error: "Unauthorized. Authentication required." },
+        { status: 401 }
+      );
+    }
 
     return NextResponse.json(
       { error: "Something went wrong while reading groups." },
@@ -25,9 +27,10 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const { name, userId } = await req.json();
-
   try {
+    const userId = await getUserId();
+    const { name } = await req.json();
+
     const group = await readGroup(userId, name.trim());
 
     if (group) {
@@ -37,11 +40,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const createdGroup = await createGroup(name.trim(), userId.trim());
+    const createdGroup = await createGroup(name.trim(), userId);
 
     return NextResponse.json({ group: createdGroup }, { status: 201 });
   } catch (error) {
     console.error(error);
+
+    if (error instanceof Error && error.message.includes("Unauthorized")) {
+      return NextResponse.json(
+        { error: "Unauthorized. Authentication required." },
+        { status: 401 }
+      );
+    }
 
     return NextResponse.json(
       { error: "Something went wrong while creating group." },
