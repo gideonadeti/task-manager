@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AppError } from "./app-error";
 import { logger } from "../logger";
+import { isError } from "../type-guards";
+import { ErrorDetails } from "@/types";
 
 export interface ErrorResponse {
   error: {
     code: string;
     message: string;
-    details?: unknown;
+    details?: ErrorDetails;
   };
 }
 
@@ -41,7 +43,8 @@ export function handleApiError(
   }
 
   // Handle unknown errors
-  logger.error("Unhandled error", error instanceof Error ? error : new Error(String(error)), {
+  const errorInstance = isError(error) ? error : new Error(String(error));
+  logger.error("Unhandled error", errorInstance, {
     path: request?.nextUrl.pathname,
   });
 

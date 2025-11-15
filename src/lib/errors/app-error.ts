@@ -1,3 +1,5 @@
+import { ErrorDetails } from "@/types";
+
 /**
  * Base application error class
  * All custom errors should extend this class
@@ -6,14 +8,14 @@ export class AppError extends Error {
   public readonly code: string;
   public readonly statusCode: number;
   public readonly isOperational: boolean;
-  public readonly details?: unknown;
+  public readonly details?: ErrorDetails;
 
   constructor(
     message: string,
     code: string,
     statusCode: number = 500,
     isOperational: boolean = true,
-    details?: unknown
+    details?: ErrorDetails
   ) {
     super(message);
     this.name = this.constructor.name;
