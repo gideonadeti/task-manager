@@ -55,8 +55,8 @@ export default function TaskCompletionCheckbox({
       return { previousTasks, previousGroups };
     },
     onError: (error, previousStatus, context) => {
-      console.error(error);
-
+      // Error is already handled and shown via toast
+      // Rollback optimistic update on error
       if (context?.previousTasks) {
         queryClient.setQueryData(["tasks"], context.previousTasks);
         queryClient.setQueryData(["groups"], context.previousGroups);
