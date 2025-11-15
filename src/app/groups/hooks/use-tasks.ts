@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
 
 import {
   createTask,
@@ -14,7 +13,6 @@ import { UseFormReturn } from "react-hook-form";
 import { Task } from "@prisma/client";
 
 const useTasks = () => {
-  const { user } = useUser();
 
   const queryClient = useQueryClient();
   const createTaskMutation = useMutation<
@@ -41,14 +39,7 @@ const useTasks = () => {
     }
   >({
     mutationFn: ({ title, description, priority, groupId, dueDate }) => {
-      return createTask(
-        title,
-        description,
-        priority,
-        groupId,
-        user!.id,
-        dueDate
-      );
+      return createTask(title, description, priority, groupId, dueDate);
     },
     onError: (err) => {
       const description =
@@ -147,7 +138,7 @@ const useTasks = () => {
 
   const tasksQuery = useQuery<Task[], AxiosError>({
     queryKey: ["tasks"],
-    queryFn: () => readTasks(user!.id),
+    queryFn: () => readTasks(),
   });
 
   // Error handling effect
