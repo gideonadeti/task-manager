@@ -42,12 +42,20 @@ export default function TaskActions({ task }: TaskActionsProps) {
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem onClick={handleUpdate}>Edit</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => setDeleteOpen(true)}>Delete</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => setDeleteOpen(true)}
+          className="text-destructive bg-destructive/10"
+        >
+          Delete
+        </DropdownMenuItem>
       </DropdownMenuContent>
 
       <AddTask task={taskUpdate} open={updateOpen} setOpen={setUpdateOpen} />
-      <DeleteTask taskDeleteId={task.id} open={deleteOpen} onOpenChange={setDeleteOpen} />
+      <DeleteTask
+        taskDeleteId={task.id}
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+      />
     </DropdownMenu>
   );
 }
-
