@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { ClerkProvider, SignedIn, SignedOut, SignIn } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/next";
 
 import "./globals.css";
 import QCProvider from "./components/QCProvider";
@@ -64,6 +65,7 @@ export default function RootLayout({
             </div>
           </SignedOut>
         </ClerkProvider>
+        <Analytics />
       </body>
     </html>
   );
