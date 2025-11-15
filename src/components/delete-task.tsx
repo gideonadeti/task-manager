@@ -28,7 +28,7 @@ export default function DeleteTask({
       open={open}
       onOpenChange={(isOpen) => isOpen && onOpenChange(isOpen)}
     >
-      <AlertDialogContent>
+      <AlertDialogContent className="max-w-md">
         <AlertDialogHeader>
           <AlertDialogTitle>
             Are you sure you want to delete this task?
