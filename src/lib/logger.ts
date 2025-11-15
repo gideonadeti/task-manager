@@ -1,5 +1,3 @@
-import { isError } from "./type-guards";
-
 /**
  * Simple structured logger
  */
@@ -9,41 +7,41 @@ interface LogContext {
 
 export const logger = {
   error(message: string, error?: Error | unknown, context?: LogContext): void {
-    const log = {
+    const log: Record<string, unknown> = {
       timestamp: new Date().toISOString(),
       level: "error",
       message,
-      ...(isError(error) && {
-        error: {
-          name: error.name,
-          message: error.message,
-          stack: error.stack,
-          ...(("code" in error) && { code: (error as Error & { code?: unknown }).code }),
-        },
-      }),
-      ...(context && { context }),
     };
 
-    if (process.env.NODE_ENV === "production") {
-      console.error(JSON.stringify(log));
-    } else {
-      console.error(log);
+    if (error instanceof Error) {
+      log.error = {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+        ...("code" in error && {
+          code: (error as Error & { code?: unknown }).code,
+        }),
+      };
     }
+
+    if (context) {
+      log.context = context;
+    }
+
+    console.error(log);
   },
 
   warn(message: string, context?: LogContext): void {
-    const log = {
+    const log: Record<string, unknown> = {
       timestamp: new Date().toISOString(),
       level: "warn",
       message,
-      ...(context && { context }),
     };
 
-    if (process.env.NODE_ENV === "production") {
-      console.warn(JSON.stringify(log));
-    } else {
-      console.warn(log);
+    if (context) {
+      log.context = context;
     }
+
+    console.warn(log);
   },
 };
-
