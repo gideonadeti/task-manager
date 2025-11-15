@@ -43,6 +43,7 @@ export function TasksList({ data }: TasksListProps) {
         onSearchChange={setSearchQuery}
         selectedPriorities={selectedPriorities}
         onPrioritiesChange={setSelectedPriorities}
+        tasks={data}
       />
       <TaskCards tasks={filteredTasks} />
     </div>
