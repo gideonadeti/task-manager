@@ -26,18 +26,18 @@ const CustomDialogFooter = ({
 }: CustomDialogFooterProps) => {
   if (variant === "alert") {
     return (
-      <AlertDialogFooter>
+      <AlertDialogFooter className="flex-row justify-end gap-2 sm:space-x-2">
         <AlertDialogCancel
           disabled={isPending}
           onClick={() => handleCancel()}
-          className="w-full sm:w-32 min-h-[44px]"
+          className="flex-1 sm:flex-initial sm:w-32 h-11 sm:h-10 min-h-[44px] sm:min-h-0 mt-0"
         >
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
           disabled={disabled || isPending}
           onClick={() => handleSubmit()}
-          className="w-full sm:w-32 min-h-[44px]"
+          className="flex-1 sm:flex-initial sm:w-32 h-11 sm:h-10 min-h-[44px] sm:min-h-0"
         >
           {isPending ? (
             <>
@@ -53,13 +53,13 @@ const CustomDialogFooter = ({
   }
 
   return (
-    <DialogFooter>
+    <DialogFooter className="flex-row justify-end gap-2 sm:space-x-2">
       <Button
         type="button"
         variant="secondary"
         onClick={() => handleCancel()}
         disabled={isPending}
-        className="w-full sm:w-32 min-h-[44px]"
+        className="flex-1 sm:flex-initial sm:w-32 h-11 sm:h-10 min-h-[44px] sm:min-h-0"
       >
         Cancel
       </Button>
@@ -67,7 +67,7 @@ const CustomDialogFooter = ({
         type="submit"
         onClick={() => handleSubmit()}
         disabled={disabled || isPending}
-        className="w-full sm:w-32 min-h-[44px]"
+        className="flex-1 sm:flex-initial sm:w-32 h-11 sm:h-10 min-h-[44px] sm:min-h-0"
       >
         {isPending ? (
           <>
