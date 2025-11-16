@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { ClerkProvider, SignedIn, SignedOut, SignIn } from "@clerk/nextjs";
+import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
 
 import "./globals.css";
 import QCProvider from "./components/QCProvider";
-import { H1, H3 } from "./ui/CustomTags";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -33,38 +32,25 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ClerkProvider>
-          <SignedIn>
-            <QCProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-              >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ClerkProvider>
+            <SignedIn>
+              <QCProvider>
                 {children}
-              </ThemeProvider>
-              <Toaster richColors />
-            </QCProvider>
-          </SignedIn>
-          <SignedOut>
-            <div className="max-w-4xl mx-auto flex flex-col min-h-svh">
-              <H3 className="px-2 sm:px-4 py-2 text-base sm:text-lg">Taskflow</H3>
-              <div className="flex-1 flex flex-col md:flex-row items-center justify-center gap-4 sm:gap-6 p-4 sm:p-8">
-                <div className="flex-1 flex flex-col text-center lg:text-left">
-                  <H1 className="text-2xl sm:text-3xl lg:text-4xl">Organize Your Life, One Task at a Time</H1>
-                  <p className="text-muted-foreground font-semibold text-base sm:text-lg mt-2 sm:mt-4">
-                    A simple, intuitive task manager that keeps you on track and
-                    boosts productivity.
-                  </p>
-                </div>
-                <div className="flex-1 flex items-center justify-center w-full md:w-auto">
-                  <SignIn />
-                </div>
-              </div>
-            </div>
-          </SignedOut>
-        </ClerkProvider>
+                <Toaster richColors />
+              </QCProvider>
+            </SignedIn>
+            <SignedOut>
+              {/* Unauthenticated users see LandingPage via page.tsx */}
+              {children}
+            </SignedOut>
+          </ClerkProvider>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>
