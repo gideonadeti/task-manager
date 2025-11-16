@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import { Task } from "@prisma/client";
 import TasksToolbar from "./TasksToolbar";
 import TaskCards from "./TaskCards";
+import useBulkTasks from "@/hooks/use-bulk-tasks";
 
 interface TasksListProps {
   data: Task[];
@@ -15,6 +16,19 @@ function TasksList({ data }: TasksListProps) {
   const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(
     new Set()
   );
+
+  const handleDeselectAll = useCallback(() => {
+    setSelectedTaskIds(new Set());
+  }, []);
+
+  const {
+    bulkMarkCompleteMutation,
+    bulkUpdatePriorityMutation,
+    bulkUpdateGroupMutation,
+    bulkDeleteMutation,
+  } = useBulkTasks({
+    onSuccess: handleDeselectAll,
+  });
 
   const filteredTasks = useMemo(() => {
     let filtered = data;
@@ -54,12 +68,34 @@ function TasksList({ data }: TasksListProps) {
     []
   );
 
-  const handleDeselectAll = useCallback(() => {
-    setSelectedTaskIds(new Set());
-  }, []);
+  const handleBulkMarkComplete = useCallback(() => {
+    const taskIdsArray = Array.from(selectedTaskIds);
+    bulkMarkCompleteMutation.mutate(taskIdsArray);
+  }, [selectedTaskIds, bulkMarkCompleteMutation]);
+
+  const handleBulkUpdatePriority = useCallback(
+    (priority: string) => {
+      const taskIdsArray = Array.from(selectedTaskIds);
+      bulkUpdatePriorityMutation.mutate({ taskIds: taskIdsArray, priority });
+    },
+    [selectedTaskIds, bulkUpdatePriorityMutation]
+  );
+
+  const handleBulkUpdateGroup = useCallback(
+    (groupId: string) => {
+      const taskIdsArray = Array.from(selectedTaskIds);
+      bulkUpdateGroupMutation.mutate({ taskIds: taskIdsArray, groupId });
+    },
+    [selectedTaskIds, bulkUpdateGroupMutation]
+  );
+
+  const handleBulkDelete = useCallback(() => {
+    const taskIdsArray = Array.from(selectedTaskIds);
+    bulkDeleteMutation.mutate(taskIdsArray);
+  }, [selectedTaskIds, bulkDeleteMutation]);
 
   return (
-    <div className="h-full overflow-y-auto pb-4 sm:pb-14 space-y-4">
+    <div className="h-full overflow-y-auto p-2 pb-4 sm:pb-14 space-y-4">
       <TasksToolbar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -68,6 +104,11 @@ function TasksList({ data }: TasksListProps) {
         tasks={data}
         selectedTaskCount={selectedTaskIds.size}
         onDeselectAll={handleDeselectAll}
+        onBulkMarkComplete={handleBulkMarkComplete}
+        onBulkUpdatePriority={handleBulkUpdatePriority}
+        onBulkUpdateGroup={handleBulkUpdateGroup}
+        onBulkDelete={handleBulkDelete}
+        isBulkDeletePending={bulkDeleteMutation.isPending}
       />
       <TaskCards
         tasks={filteredTasks}
@@ -79,4 +120,3 @@ function TasksList({ data }: TasksListProps) {
 }
 
 export { TasksList };
-
