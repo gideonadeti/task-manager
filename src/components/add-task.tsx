@@ -42,6 +42,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Check, ChevronsUpDown } from "lucide-react";
 
 export const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
@@ -73,6 +82,7 @@ export default function AddTask({
 
   const [timeValue, setTimeValue] = useState("");
   const [openAddGroup, setOpenAddGroup] = useState(false);
+  const [groupComboboxOpen, setGroupComboboxOpen] = useState(false);
   const prevOpenRef = useRef(false);
   const prevTaskIdRef = useRef<string | undefined>(undefined);
 
@@ -257,43 +267,88 @@ export default function AddTask({
                 <FormField
                   control={form.control}
                   name="groupId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        Group <span className="text-destructive">*</span>
-                      </FormLabel>
-                      <div className="flex gap-2">
-                        <FormControl className="flex-1">
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
+                  render={({ field }) => {
+                    const selectedGroup = groupsQuery.data?.find(
+                      (group) => group.id === field.value
+                    );
+
+                    return (
+                      <FormItem>
+                        <FormLabel>
+                          Group <span className="text-destructive">*</span>
+                        </FormLabel>
+                        <div className="flex gap-2">
+                          <Popover
+                            open={groupComboboxOpen}
+                            onOpenChange={setGroupComboboxOpen}
                           >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select group" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {groupsQuery.data?.map((group) => (
-                                <SelectItem key={group.id} value={group.id}>
-                                  {group.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          onClick={() => setOpenAddGroup(true)}
-                          className="shrink-0"
-                          title="Add new group"
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  role="combobox"
+                                  className={cn(
+                                    "flex-1 justify-between",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                  type="button"
+                                >
+                                  {selectedGroup
+                                    ? selectedGroup.name
+                                    : "Select group"}
+                                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-[200px] p-0"
+                              align="start"
+                            >
+                              <Command>
+                                <CommandInput placeholder="Search groups..." />
+                                <CommandList>
+                                  <CommandEmpty>No groups found.</CommandEmpty>
+                                  <CommandGroup>
+                                    {groupsQuery.data?.map((group) => (
+                                      <CommandItem
+                                        key={group.id}
+                                        value={group.name}
+                                        onSelect={() => {
+                                          field.onChange(group.id);
+                                          setGroupComboboxOpen(false);
+                                        }}
+                                      >
+                                        <Check
+                                          className={cn(
+                                            "mr-2 h-4 w-4",
+                                            field.value === group.id
+                                              ? "opacity-100"
+                                              : "opacity-0"
+                                          )}
+                                        />
+                                        {group.name}
+                                      </CommandItem>
+                                    ))}
+                                  </CommandGroup>
+                                </CommandList>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => setOpenAddGroup(true)}
+                            className="shrink-0"
+                            title="Add new group"
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
                 />
 
                 <FormField
