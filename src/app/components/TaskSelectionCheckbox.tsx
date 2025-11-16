@@ -16,7 +16,6 @@ function TaskSelectionCheckbox({
       checked={checked}
       onCheckedChange={onCheckedChange}
       aria-label="Select Task"
-      onClick={(e) => e.stopPropagation()}
     />
   );
 }

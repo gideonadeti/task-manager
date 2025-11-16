@@ -72,7 +72,15 @@ function TaskCard({
   const priorityColor = getPriorityColor(task.priority);
   const dueDateUrgency = getDueDateUrgency(task.dueDate);
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    // Only trigger if the click is not on the checkbox or actions area
+    const target = e.target as HTMLElement;
+    if (
+      target.closest("[data-selection-checkbox]") ||
+      target.closest("[data-task-actions]")
+    ) {
+      return;
+    }
     onCardClick(task);
   };
 
@@ -131,7 +139,9 @@ function TaskCard({
         <div className="flex items-start gap-3 flex-1 min-w-0">
           <div
             className="mt-1 flex-shrink-0"
+            data-selection-checkbox
             onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
           >
             <TaskSelectionCheckbox
               checked={isSelected}
@@ -157,7 +167,11 @@ function TaskCard({
             )}
           </div>
         </div>
-        <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex-shrink-0"
+          data-task-actions
+          onClick={(e) => e.stopPropagation()}
+        >
           <TaskActions task={task} />
         </div>
       </motion.div>
