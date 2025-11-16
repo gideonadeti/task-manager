@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useState, useMemo, useCallback } from "react";
+import { isToday, isTomorrow, isThisWeek, isPast } from "date-fns";
 import { Group } from "@prisma/client";
-import { useState } from "react";
 import {
   Inbox,
   Sun,
@@ -15,8 +16,8 @@ import {
   MoreHorizontal,
   Plus,
   CheckCircle,
+  LucideIcon,
 } from "lucide-react";
-import { isToday, isTomorrow, isThisWeek, isPast } from "date-fns";
 
 import useGroups from "@/hooks/use-groups";
 import useTasks from "@/hooks/use-tasks";
@@ -50,90 +51,110 @@ import {
   DropdownMenuItem,
 } from "./ui/dropdown-menu";
 
-const defaultGroups = [
+type DefaultGroupConfig = {
+  name: string;
+  href: string;
+  icon: LucideIcon;
+};
+
+const DEFAULT_GROUPS: DefaultGroupConfig[] = [
   { name: "Inbox", href: "/groups/inbox", icon: Inbox },
   { name: "Today", href: "/groups/today", icon: Sun },
   { name: "Tomorrow", href: "/groups/tomorrow", icon: Calendar },
   { name: "This Week", href: "/groups/this-week", icon: CalendarRange },
   { name: "Overdue", href: "/groups/overdue", icon: AlertTriangle },
   { name: "Completed", href: "/groups/completed", icon: CheckCircle },
-];
+] as const;
+
+type DefaultGroupName = (typeof DEFAULT_GROUPS)[number]["name"];
 
 export function AppSidebar() {
   const { groupId } = useParams<{ groupId: string }>();
   const { groupsQuery } = useGroups();
   const { tasksQuery } = useTasks();
-  const groups = groupsQuery.data || [];
-  const tasks = tasksQuery.data || [];
+  const groups = useMemo(() => groupsQuery.data || [], [groupsQuery.data]);
+  const tasks = useMemo(() => tasksQuery.data || [], [tasksQuery.data]);
   const [open, setOpen] = useState(false);
   const [group, setGroup] = useState<Group | undefined>(undefined);
   const [groupDeleteId, setGroupDeleteId] = useState("");
   const [openDelete, setOpenDelete] = useState(false);
-  const personalGroups = groups.filter((group) => group.name !== "Inbox");
+  const personalGroups = useMemo(
+    () => groups.filter((group) => group.name !== "Inbox"),
+    [groups]
+  );
 
-  function handleEdit(groupId: string) {
-    const group = groups.find((group) => group.id === groupId);
+  const handleEdit = useCallback(
+    (groupId: string) => {
+      const group = groups.find((group) => group.id === groupId);
 
-    if (group) {
-      setGroup(group);
-      setOpen(true);
-    }
-  }
+      if (group) {
+        setGroup(group);
+        setOpen(true);
+      }
+    },
+    [groups]
+  );
 
-  function handleAdd() {
+  const handleAdd = useCallback(() => {
     setGroup(undefined);
     setOpen(true);
-  }
+  }, []);
 
-  function handleDelete(groupDeleteId: string) {
+  const handleDelete = useCallback((groupDeleteId: string) => {
     setGroupDeleteId(groupDeleteId);
     setOpenDelete(true);
-  }
+  }, []);
 
-  function getNumOfTasksDefault(groupName: string) {
-    if (!tasks) return 0;
+  const getNumOfTasksDefault = useCallback(
+    (groupName: DefaultGroupName): number => {
+      if (!tasks.length) return 0;
 
-    switch (groupName) {
-      case "Inbox": {
-        const inboxGroupId = groups?.find(
-          (group) => group.name === "Inbox"
-        )?.id;
-        return tasks
-          .filter((task) => task.groupId === inboxGroupId)
-          .filter((task) => !task.completed).length;
-      }
-      case "Today":
-        return tasks
-          .filter((task) => task.dueDate && isToday(task.dueDate))
-          .filter((task) => !task.completed).length;
-      case "Tomorrow":
-        return tasks
-          .filter((task) => task.dueDate && isTomorrow(task.dueDate))
-          .filter((task) => !task.completed).length;
-      case "This Week":
-        return tasks
-          .filter((task) => task.dueDate && isThisWeek(task.dueDate))
-          .filter((task) => !task.completed).length;
-      case "Overdue":
-        return tasks
-          .filter(
+      switch (groupName) {
+        case "Inbox": {
+          const inboxGroupId = groups.find((g) => g.name === "Inbox")?.id;
+          if (!inboxGroupId) return 0;
+          return tasks.filter(
+            (task) => task.groupId === inboxGroupId && !task.completed
+          ).length;
+        }
+        case "Today":
+          return tasks.filter(
+            (task) => task.dueDate && isToday(task.dueDate) && !task.completed
+          ).length;
+        case "Tomorrow":
+          return tasks.filter(
             (task) =>
-              task.dueDate && isPast(task.dueDate) && !isToday(task.dueDate)
-          )
-          .filter((task) => !task.completed).length;
-      case "Completed":
-        return tasks.filter((task) => task.completed).length;
-      default:
-        return 0;
-    }
-  }
+              task.dueDate && isTomorrow(task.dueDate) && !task.completed
+          ).length;
+        case "This Week":
+          return tasks.filter(
+            (task) =>
+              task.dueDate && isThisWeek(task.dueDate) && !task.completed
+          ).length;
+        case "Overdue":
+          return tasks.filter(
+            (task) =>
+              task.dueDate &&
+              isPast(task.dueDate) &&
+              !isToday(task.dueDate) &&
+              !task.completed
+          ).length;
+        case "Completed":
+          return tasks.filter((task) => task.completed).length;
+        default:
+          return 0;
+      }
+    },
+    [tasks, groups]
+  );
 
-  function getNumOfTasksPersonal(groupId: string) {
-    return tasks
-      ? tasks.filter((task) => task.groupId === groupId && !task.completed)
-          .length
-      : 0;
-  }
+  const getNumOfTasksPersonal = useCallback(
+    (groupId: string): number => {
+      return tasks.filter((task) => task.groupId === groupId && !task.completed)
+        .length;
+    },
+    [tasks]
+  );
 
   return (
     <Sidebar>
@@ -142,23 +163,24 @@ export function AppSidebar() {
           <SidebarGroupLabel>Default Groups</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {defaultGroups.map((defaultGroup) => {
+              {DEFAULT_GROUPS.map((defaultGroup) => {
+                const normalizedGroupId = groupId?.toString().toLowerCase();
+                const normalizedGroupName = defaultGroup.name.toLowerCase();
                 const isActive =
-                  groupId === defaultGroup.name.toLowerCase() ||
-                  (groupId === "this-week" &&
+                  normalizedGroupId === normalizedGroupName ||
+                  (normalizedGroupId === "this-week" &&
                     defaultGroup.name === "This Week");
-                const numOfTasks = getNumOfTasksDefault(defaultGroup.name);
+                const numOfTasks = getNumOfTasksDefault(
+                  defaultGroup.name as DefaultGroupName
+                );
+                const shouldAnimate = defaultGroup.name === "Today" && isActive;
 
                 return (
                   <SidebarMenuItem key={defaultGroup.name}>
                     <SidebarMenuButton asChild isActive={isActive}>
                       <Link href={defaultGroup.href}>
                         <defaultGroup.icon
-                          className={`${
-                            defaultGroup.name === "Today" && isActive
-                              ? "animate-spin"
-                              : ""
-                          }`}
+                          className={shouldAnimate ? "animate-spin" : ""}
                         />
                         <span>{defaultGroup.name}</span>
                       </Link>
