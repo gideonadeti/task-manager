@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { Task } from "@prisma/client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 
 import useGroups from "@/hooks/use-groups";
 import useTasks from "@/hooks/use-tasks";
@@ -73,6 +73,8 @@ export default function AddTask({
 
   const [timeValue, setTimeValue] = useState("");
   const [openAddGroup, setOpenAddGroup] = useState(false);
+  const prevOpenRef = useRef(false);
+  const prevTaskIdRef = useRef<string | undefined>(undefined);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -85,9 +87,12 @@ export default function AddTask({
     },
   });
 
-  // Reset form when dialog opens or task changes
+  // Reset form when dialog opens or task changes (but not when groupsQuery.data changes)
   useEffect(() => {
-    if (open) {
+    const isFreshOpen = open && !prevOpenRef.current;
+    const taskChanged = task?.id !== prevTaskIdRef.current;
+
+    if (open && (isFreshOpen || taskChanged)) {
       const defaultDueDate = task?.dueDate ? new Date(task.dueDate) : undefined;
       const defaultTime = defaultDueDate
         ? format(defaultDueDate, "HH:mm")
@@ -111,7 +116,30 @@ export default function AddTask({
         form.setValue("groupId", defaultGroupId);
       }
     }
+
+    prevOpenRef.current = open;
+    prevTaskIdRef.current = task?.id;
   }, [open, task, defaultGroupId, groupsQuery.data, form, getCurrentTime]);
+
+  // Update groupId options when groupsQuery.data changes, but preserve form values
+  useEffect(() => {
+    if (open && groupsQuery.data) {
+      // Only update groupId if it's not set or if we need to set a default for new tasks
+      const currentGroupId = form.getValues("groupId");
+      if (!currentGroupId && !task) {
+        // Set default groupId for new tasks if not already set
+        const defaultId =
+          defaultGroupId ||
+          groupsQuery.data.find((group) => group.name === "Inbox")?.id ||
+          "";
+        if (defaultId) {
+          form.setValue("groupId", defaultId);
+        }
+      }
+      // If currentGroupId doesn't exist in groups, we might want to handle it,
+      // but we'll preserve user input so they can continue editing
+    }
+  }, [open, groupsQuery.data, form, task, defaultGroupId]);
 
   // Handle group creation success - auto-select in form
   const handleGroupCreated = (groupId: string) => {
