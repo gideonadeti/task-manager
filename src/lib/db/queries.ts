@@ -189,18 +189,19 @@ export async function createTask(
   }
 }
 
-export async function readTask(name: string, userId: string) {
+export async function readTask(name: string, userId: string, groupId?: string) {
   try {
     const task = await prisma.task.findFirst({
       where: {
         title: name,
         userId,
+        ...(groupId && { groupId }),
       },
     });
 
     return task;
   } catch (error) {
-    logger.error("Error reading task", error, { name, userId });
+    logger.error("Error reading task", error, { name, userId, groupId });
     throw error;
   }
 }
@@ -338,7 +339,7 @@ export async function toggleComplete(
         where: { id: taskId },
         select: { id: true, userId: true },
       });
-      
+
       if (!taskExists || taskExists.userId !== userId) {
         throw new AuthorizationError();
       }
