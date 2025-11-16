@@ -14,7 +14,6 @@ import {
 } from "@/lib/api/query-functions";
 import { Task, Group } from "@prisma/client";
 import { handleApiError } from "@/lib/api/error-handler";
-import { ExtendedGroup } from "@/types";
 import { formSchema } from "@/components/add-task";
 
 const useTasks = () => {
@@ -128,7 +127,6 @@ const useTasks = () => {
     { taskId: string; previousStatus: boolean },
     {
       previousTasks: Task[] | undefined;
-      previousGroups: ExtendedGroup[] | undefined;
     }
   >({
     mutationFn: ({ taskId, previousStatus }) => {
@@ -136,12 +134,8 @@ const useTasks = () => {
     },
     onMutate: async ({ taskId, previousStatus }) => {
       await queryClient.cancelQueries({ queryKey: ["tasks"] });
-      await queryClient.cancelQueries({ queryKey: ["groups"] });
 
       const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
-      const previousGroups = queryClient.getQueryData<ExtendedGroup[]>([
-        "groups",
-      ]);
 
       queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
         oldTasks?.map((t) =>
@@ -149,31 +143,16 @@ const useTasks = () => {
         )
       );
 
-      queryClient.setQueryData<ExtendedGroup[]>(["groups"], (oldGroups) =>
-        oldGroups?.map((group) =>
-          group.tasks.some((t) => t.id === taskId)
-            ? {
-                ...group,
-                tasks: group.tasks.map((t) =>
-                  t.id === taskId ? { ...t, completed: !previousStatus } : t
-                ),
-              }
-            : group
-        )
-      );
-
-      return { previousTasks, previousGroups };
+      return { previousTasks };
     },
     onError: (error, variables, context) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(["tasks"], context.previousTasks);
-        queryClient.setQueryData(["groups"], context.previousGroups);
       }
       handleApiError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
     },
   });
 
