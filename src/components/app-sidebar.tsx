@@ -49,6 +49,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "./ui/dropdown-menu";
 
 type DefaultGroupConfig = {
@@ -275,8 +276,10 @@ export function AppSidebar() {
                             >
                               <span>Edit</span>
                             </DropdownMenuItem>
+                            <DropdownMenuSeparator />
                             <DropdownMenuItem
                               onClick={() => handleDelete(personalGroup.id)}
+                              className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
                             >
                               <span>Delete</span>
                             </DropdownMenuItem>
