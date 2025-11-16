@@ -1,8 +1,18 @@
+"use client";
+
+import { motion } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TaskCardSkeleton() {
   return (
-    <div className="border rounded-lg p-4 shadow-sm bg-card">
+    <motion.div
+      className="border rounded-lg p-4 shadow-sm bg-card"
+      variants={{
+        hidden: { opacity: 0, scale: 0.95 },
+        visible: { opacity: 1, scale: 1 },
+      }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    >
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="flex items-start gap-3 flex-1 min-w-0">
           <div className="mt-1 flex-shrink-0">
@@ -25,7 +35,7 @@ export default function TaskCardSkeleton() {
           <Skeleton className="h-4 w-20" />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
