@@ -7,7 +7,6 @@ import {
   updateTask,
   deleteTask,
 } from "@/lib/api/query-functions";
-import { ExtendedGroup } from "@/types";
 
 interface UseBulkTasksProps {
   onSuccess?: () => void; // Callback to clear selection after success
@@ -35,12 +34,8 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
     },
     onMutate: async (taskIds) => {
       await queryClient.cancelQueries({ queryKey: ["tasks"] });
-      await queryClient.cancelQueries({ queryKey: ["groups"] });
 
       const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
-      const previousGroups = queryClient.getQueryData<ExtendedGroup[]>([
-        "groups",
-      ]);
 
       queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
         oldTasks?.map((task) =>
@@ -50,23 +45,11 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
         )
       );
 
-      queryClient.setQueryData<ExtendedGroup[]>(["groups"], (oldGroups) =>
-        oldGroups?.map((group) => ({
-          ...group,
-          tasks: group.tasks.map((task) =>
-            taskIds.includes(task.id) && !task.completed
-              ? { ...task, completed: true }
-              : task
-          ),
-        }))
-      );
-
-      return { previousTasks, previousGroups };
+      return { previousTasks };
     },
     onError: (error, taskIds, context) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(["tasks"], context.previousTasks);
-        queryClient.setQueryData(["groups"], context.previousGroups);
       }
 
       const description =
@@ -117,12 +100,8 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
     },
     onMutate: async ({ taskIds, priority }) => {
       await queryClient.cancelQueries({ queryKey: ["tasks"] });
-      await queryClient.cancelQueries({ queryKey: ["groups"] });
 
       const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
-      const previousGroups = queryClient.getQueryData<ExtendedGroup[]>([
-        "groups",
-      ]);
 
       queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
         oldTasks?.map((task) =>
@@ -132,23 +111,11 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
         )
       );
 
-      queryClient.setQueryData<ExtendedGroup[]>(["groups"], (oldGroups) =>
-        oldGroups?.map((group) => ({
-          ...group,
-          tasks: group.tasks.map((task) =>
-            taskIds.includes(task.id)
-              ? { ...task, priority: priority as "low" | "medium" | "high" }
-              : task
-          ),
-        }))
-      );
-
-      return { previousTasks, previousGroups };
+      return { previousTasks };
     },
     onError: (error, variables, context) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(["tasks"], context.previousTasks);
-        queryClient.setQueryData(["groups"], context.previousGroups);
       }
 
       const description =
@@ -161,7 +128,6 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
     },
     onSuccess: ({ taskIds, priority }) => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
       onSuccess?.();
       toast({
         description: `Priority updated to ${priority} for ${
@@ -199,12 +165,8 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
     },
     onMutate: async ({ taskIds, groupId }) => {
       await queryClient.cancelQueries({ queryKey: ["tasks"] });
-      await queryClient.cancelQueries({ queryKey: ["groups"] });
 
       const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
-      const previousGroups = queryClient.getQueryData<ExtendedGroup[]>([
-        "groups",
-      ]);
 
       queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
         oldTasks?.map((task) =>
@@ -212,32 +174,11 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
         )
       );
 
-      queryClient.setQueryData<ExtendedGroup[]>(["groups"], (oldGroups) =>
-        oldGroups
-          ?.map((group) => ({
-            ...group,
-            tasks: group.tasks.filter((task) => !taskIds.includes(task.id)),
-          }))
-          .map((group) => {
-            if (group.id === groupId) {
-              const movedTasks = (
-                queryClient.getQueryData<Task[]>(["tasks"]) || []
-              ).filter((t) => taskIds.includes(t.id) && t.groupId === groupId);
-              return {
-                ...group,
-                tasks: [...group.tasks, ...movedTasks],
-              };
-            }
-            return group;
-          })
-      );
-
-      return { previousTasks, previousGroups };
+      return { previousTasks };
     },
     onError: (error, variables, context) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(["tasks"], context.previousTasks);
-        queryClient.setQueryData(["groups"], context.previousGroups);
       }
 
       const description =
@@ -250,7 +191,6 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
     },
     onSuccess: ({ taskIds }) => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
       onSuccess?.();
       toast({
         description: `Moved ${taskIds.length} task${
@@ -269,30 +209,18 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
     },
     onMutate: async (taskIds) => {
       await queryClient.cancelQueries({ queryKey: ["tasks"] });
-      await queryClient.cancelQueries({ queryKey: ["groups"] });
 
       const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
-      const previousGroups = queryClient.getQueryData<ExtendedGroup[]>([
-        "groups",
-      ]);
 
       queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
         oldTasks?.filter((task) => !taskIds.includes(task.id))
       );
 
-      queryClient.setQueryData<ExtendedGroup[]>(["groups"], (oldGroups) =>
-        oldGroups?.map((group) => ({
-          ...group,
-          tasks: group.tasks.filter((task) => !taskIds.includes(task.id)),
-        }))
-      );
-
-      return { previousTasks, previousGroups };
+      return { previousTasks };
     },
     onError: (error, taskIds, context) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(["tasks"], context.previousTasks);
-        queryClient.setQueryData(["groups"], context.previousGroups);
       }
 
       const description =
@@ -305,7 +233,6 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
     },
     onSuccess: (taskIds) => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
       onSuccess?.();
       toast({
         description: `${taskIds.length} task${
