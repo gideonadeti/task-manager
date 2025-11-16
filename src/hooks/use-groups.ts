@@ -102,7 +102,6 @@ const useGroups = () => {
     },
     onSuccess: (updatedGroup) => {
       queryClient.invalidateQueries({ queryKey: ["groups"] });
-      toast.success("Group updated successfully");
 
       // Navigate to the updated group (server response is authoritative)
       const isInboxGroup = updatedGroup.name === "Inbox";
@@ -163,7 +162,6 @@ const useGroups = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["groups"] });
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      toast.success("Group deleted successfully");
     },
   });
 

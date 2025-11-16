@@ -13,11 +13,7 @@ import {
   deleteTask,
 } from "@/lib/api/query-functions";
 
-interface UseBulkTasksProps {
-  onSuccess?: () => void; // Callback to clear selection after success
-}
-
-const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
+const useBulkTasks = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const router = useRouter();
@@ -87,24 +83,8 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
 
       toast({ description, variant: "destructive" });
     },
-    onSuccess: ({ markedComplete, count }) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      onSuccess?.();
-
-      // Show appropriate toast message based on what was done
-      if (markedComplete) {
-        toast({
-          description: `${count} task${
-            count === 1 ? "" : "s"
-          } marked as complete`,
-        });
-      } else {
-        toast({
-          description: `${count} task${
-            count === 1 ? "" : "s"
-          } marked as incomplete`,
-        });
-      }
     },
   });
 
@@ -162,14 +142,8 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
 
       toast({ description, variant: "destructive" });
     },
-    onSuccess: ({ taskIds, priority }) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      onSuccess?.();
-      toast({
-        description: `Priority updated to ${priority} for ${
-          taskIds.length
-        } task${taskIds.length === 1 ? "" : "s"}`,
-      });
     },
   });
 
@@ -256,14 +230,8 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
 
       toast({ description, variant: "destructive" });
     },
-    onSuccess: ({ taskIds }) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      onSuccess?.();
-      toast({
-        description: `Moved ${taskIds.length} task${
-          taskIds.length === 1 ? "" : "s"
-        } to group`,
-      });
     },
   });
 
@@ -298,14 +266,8 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
 
       toast({ description, variant: "destructive" });
     },
-    onSuccess: (taskIds) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      onSuccess?.();
-      toast({
-        description: `${taskIds.length} task${
-          taskIds.length === 1 ? "" : "s"
-        } deleted`,
-      });
     },
   });
 
