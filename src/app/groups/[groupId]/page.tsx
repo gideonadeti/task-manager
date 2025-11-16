@@ -82,7 +82,7 @@ export default function GroupPage() {
   }
 
   return (
-    <div className="flex-1 px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+    <div className="flex-1 px-2 sm:px-4 lg:px-6 py-2 sm:py-4">
       {filteredTasks.length > 0 ? (
         <TasksList data={filteredTasks} />
       ) : (
