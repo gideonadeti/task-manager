@@ -6,7 +6,6 @@ import { isToday, isTomorrow, isThisWeek, isPast, compareAsc } from "date-fns";
 
 import useGroups from "@/hooks/use-groups";
 import useTasks from "@/hooks/use-tasks";
-import { ExtendedGroup } from "@/types";
 import { TasksList } from "@/app/components/TasksList";
 import TasksListSkeleton from "@/app/components/TasksListSkeleton";
 import NoTasks from "./components/no-tasks";
@@ -24,7 +23,7 @@ export default function GroupPage() {
       case "inbox": {
         const inboxGroup = groupsQuery.data?.find(
           (group) => group.name === "Inbox"
-        ) as ExtendedGroup | undefined;
+        );
         result = tasksQuery.data.filter(
           (task) => task.groupId === inboxGroup?.id && !task.completed
         );
