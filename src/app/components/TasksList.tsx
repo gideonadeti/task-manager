@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Task } from "@prisma/client";
 import TasksToolbar from "./TasksToolbar";
 import TaskCards from "./TaskCards";
@@ -12,6 +12,9 @@ interface TasksListProps {
 function TasksList({ data }: TasksListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
+  const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(
+    new Set()
+  );
 
   const filteredTasks = useMemo(() => {
     let filtered = data;
@@ -36,6 +39,25 @@ function TasksList({ data }: TasksListProps) {
     return filtered;
   }, [data, searchQuery, selectedPriorities]);
 
+  const handleSelectionChange = useCallback(
+    (taskId: string, checked: boolean) => {
+      setSelectedTaskIds((prev) => {
+        const newSet = new Set(prev);
+        if (checked) {
+          newSet.add(taskId);
+        } else {
+          newSet.delete(taskId);
+        }
+        return newSet;
+      });
+    },
+    []
+  );
+
+  const handleDeselectAll = useCallback(() => {
+    setSelectedTaskIds(new Set());
+  }, []);
+
   return (
     <div className="h-full overflow-y-auto pb-4 sm:pb-14 space-y-4">
       <TasksToolbar
@@ -44,8 +66,14 @@ function TasksList({ data }: TasksListProps) {
         selectedPriorities={selectedPriorities}
         onPrioritiesChange={setSelectedPriorities}
         tasks={data}
+        selectedTaskCount={selectedTaskIds.size}
+        onDeselectAll={handleDeselectAll}
       />
-      <TaskCards tasks={filteredTasks} />
+      <TaskCards
+        tasks={filteredTasks}
+        selectedTaskIds={selectedTaskIds}
+        onSelectionChange={handleSelectionChange}
+      />
     </div>
   );
 }

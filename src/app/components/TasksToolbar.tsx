@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { Cross2Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +26,8 @@ interface TasksToolbarProps {
   selectedPriorities: string[];
   onPrioritiesChange: (priorities: string[]) => void;
   tasks?: Task[];
+  selectedTaskCount?: number;
+  onDeselectAll?: () => void;
 }
 
 export default function TasksToolbar({
@@ -34,6 +36,8 @@ export default function TasksToolbar({
   selectedPriorities,
   onPrioritiesChange,
   tasks,
+  selectedTaskCount = 0,
+  onDeselectAll,
 }: TasksToolbarProps) {
   const [openAdd, setOpenAdd] = useState(false);
   const isFiltered = searchQuery.trim() !== "" || selectedPriorities.length > 0;
@@ -106,15 +110,33 @@ export default function TasksToolbar({
             </Button>
           )}
         </div>
-        {/* Create Task Button */}
-        <Button 
-          onClick={() => setOpenAdd(true)} 
-          className="h-11 sm:h-8 min-h-[44px] sm:min-h-0 gap-2 w-full sm:w-auto"
-        >
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Create Task</span>
-          <span className="sm:hidden">Create</span>
-        </Button>
+        {/* Selected Tasks Counter and Create Task Button */}
+        <div className="flex items-center gap-2">
+          {selectedTaskCount > 0 && (
+            <div className="flex items-center gap-2 h-11 sm:h-8 min-h-[44px] sm:min-h-0 px-3 rounded-md bg-muted border border-border">
+              <span className="text-sm text-muted-foreground">
+                {selectedTaskCount} {selectedTaskCount === 1 ? "task" : "tasks"} selected
+              </span>
+              {onDeselectAll && (
+                <button
+                  onClick={onDeselectAll}
+                  className="ml-1 p-0.5 rounded-sm hover:bg-muted-foreground/20 transition-colors"
+                  aria-label="Deselect all tasks"
+                >
+                  <X className="h-3.5 w-3.5 text-muted-foreground" />
+                </button>
+              )}
+            </div>
+          )}
+          <Button 
+            onClick={() => setOpenAdd(true)} 
+            className="h-11 sm:h-8 min-h-[44px] sm:min-h-0 gap-2 w-full sm:w-auto"
+          >
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">Create Task</span>
+            <span className="sm:hidden">Create</span>
+          </Button>
+        </div>
       </div>
       <AddTask
         open={openAdd}

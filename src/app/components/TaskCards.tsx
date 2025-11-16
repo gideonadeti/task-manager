@@ -25,6 +25,8 @@ const TaskDetailsDialog = dynamic(() => import("./TaskDetailsDialog"), {
 
 interface TaskCardsProps {
   tasks: Task[];
+  selectedTaskIds: Set<string>;
+  onSelectionChange: (taskId: string, checked: boolean) => void;
 }
 
 // Memoized priority color function using useMemo pattern
@@ -202,12 +204,13 @@ function TaskCard({
   );
 }
 
-function TaskCards({ tasks }: TaskCardsProps) {
+function TaskCards({
+  tasks,
+  selectedTaskIds,
+  onSelectionChange,
+}: TaskCardsProps) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(
-    new Set()
-  );
 
   const handleCardClick = useCallback((task: Task) => {
     setSelectedTask(task);
@@ -220,21 +223,6 @@ function TaskCards({ tasks }: TaskCardsProps) {
       setSelectedTask(null);
     }
   }, []);
-
-  const handleSelectionChange = useCallback(
-    (taskId: string, checked: boolean) => {
-      setSelectedTaskIds((prev) => {
-        const newSet = new Set(prev);
-        if (checked) {
-          newSet.add(taskId);
-        } else {
-          newSet.delete(taskId);
-        }
-        return newSet;
-      });
-    },
-    []
-  );
 
   if (tasks.length === 0) {
     return (
@@ -276,7 +264,7 @@ function TaskCards({ tasks }: TaskCardsProps) {
               task={task}
               onCardClick={handleCardClick}
               isSelected={selectedTaskIds.has(task.id)}
-              onSelectionChange={handleSelectionChange}
+              onSelectionChange={onSelectionChange}
             />
           ))}
         </AnimatePresence>
