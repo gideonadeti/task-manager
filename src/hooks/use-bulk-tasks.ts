@@ -236,8 +236,16 @@ const useBulkTasks = () => {
   });
 
   // Bulk delete mutation
-  const bulkDeleteMutation = useMutation({
-    mutationFn: async (taskIds: string[]) => {
+  const bulkDeleteMutation = useMutation<
+    string[],
+    AxiosError,
+    {
+      taskIds: string[];
+      onOpenChange: (open: boolean) => void;
+      handleDeselectAll: () => void;
+    }
+  >({
+    mutationFn: async ({ taskIds }) => {
       const promises = taskIds.map((id) => deleteTask(id));
       await Promise.all(promises);
       return taskIds;
@@ -251,13 +259,17 @@ const useBulkTasks = () => {
 
       toast({ description, variant: "destructive" });
     },
-    onSuccess: (taskIds) => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    onSuccess: (taskIds, { onOpenChange, handleDeselectAll }) => {
+      handleDeselectAll();
+      onOpenChange(false);
+
       toast({
         description: `${taskIds.length} task${
           taskIds.length === 1 ? "" : "s"
         } deleted`,
       });
+
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
 
