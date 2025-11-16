@@ -5,6 +5,9 @@ import { useState } from "react";
 import { isToday, isTomorrow, isPast } from "date-fns";
 import { Calendar, Clock, CheckCircle2, Circle, Tag } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { AxiosError } from "axios";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +18,8 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import useGroups from "@/hooks/use-groups";
+import { toggleComplete } from "@/lib/api/query-functions";
+import { ExtendedGroup } from "@/types";
 import formatDate from "../format-date";
 
 // Dynamically import heavy dialog components to reduce initial bundle size
@@ -41,6 +46,71 @@ export default function TaskDetailsDialog({
   const [taskUpdate, setTaskUpdate] = useState<Task | undefined>();
   const [updateOpen, setUpdateOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const { mutate: toggleCompletion } = useMutation({
+    mutationFn: (previousStatus: boolean) => {
+      if (!task) throw new Error("Task is not available");
+      return toggleComplete(task.id, previousStatus);
+    },
+
+    onMutate: async (previousStatus) => {
+      await queryClient.cancelQueries({ queryKey: ["tasks"] });
+      await queryClient.cancelQueries({ queryKey: ["groups"] });
+
+      const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
+      const previousGroups = queryClient.getQueryData<ExtendedGroup[]>([
+        "groups",
+      ]);
+
+      if (!task) return { previousTasks, previousGroups };
+
+      queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
+        oldTasks?.map((t) =>
+          t.id === task.id ? { ...t, completed: !previousStatus } : t
+        )
+      );
+
+      queryClient.setQueryData<ExtendedGroup[]>(["groups"], (oldGroups) =>
+        oldGroups?.map((group) =>
+          group.tasks.some((t) => t.id === task.id)
+            ? {
+                ...group,
+                tasks: group.tasks.map((t) =>
+                  t.id === task.id ? { ...t, completed: !previousStatus } : t
+                ),
+              }
+            : group
+        )
+      );
+
+      return { previousTasks, previousGroups };
+    },
+    onError: (error, previousStatus, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(["tasks"], context.previousTasks);
+        queryClient.setQueryData(["groups"], context.previousGroups);
+      }
+
+      const description =
+        error instanceof AxiosError && error.response
+          ? (error.response.data as { error: string }).error ||
+            "Something went wrong"
+          : "Something went wrong";
+
+      toast({ description, variant: "destructive" });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+    },
+  });
+
+  function handleToggleCompletion() {
+    if (!task) return;
+    toggleCompletion(task.completed);
+  }
 
   if (!task) return null;
 
@@ -187,7 +257,24 @@ export default function TaskDetailsDialog({
 
           {/* Fixed footer with action buttons */}
           <div className="flex-shrink-0 border-t px-4 sm:px-6 py-3 sm:py-4 mt-auto">
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button
+                variant={task.completed ? "outline" : "default"}
+                onClick={handleToggleCompletion}
+                className="flex-1 h-11 sm:h-10 min-h-[44px] sm:min-h-0"
+              >
+                {task.completed ? (
+                  <>
+                    <Circle className="mr-2 h-4 w-4" />
+                    Mark as Incomplete
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                    Mark as Complete
+                  </>
+                )}
+              </Button>
               <Button
                 variant="outline"
                 onClick={handleEdit}
