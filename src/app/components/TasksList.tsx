@@ -37,7 +37,7 @@ function TasksList({ data }: TasksListProps) {
   }, [data, searchQuery, selectedPriorities]);
 
   return (
-    <div className="h-screen overflow-y-auto pb-4 sm:pb-14 space-y-4 px-2 sm:px-4 lg:px-8 pt-4">
+    <div className="h-full overflow-y-auto pb-4 sm:pb-14 space-y-4">
       <TasksToolbar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
