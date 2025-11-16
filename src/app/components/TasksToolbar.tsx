@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { Cross2Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import {
@@ -89,6 +89,33 @@ export default function TasksToolbar({
   const isFiltered = searchQuery.trim() !== "" || selectedPriorities.length > 0;
   const { groupId } = useParams();
   const { groupsQuery } = useGroups();
+
+  // Keyboard shortcut: Ctrl/Cmd + Alt/Option + T to add new task
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key === "t" &&
+        (event.metaKey || event.ctrlKey) &&
+        event.altKey &&
+        !event.shiftKey
+      ) {
+        // Don't trigger if user is typing in an input field
+        const target = event.target as HTMLElement;
+        if (
+          target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable
+        ) {
+          return;
+        }
+        event.preventDefault();
+        setOpenAdd(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Determine the label and icon for the bulk mark complete action
   // Since tasks are filtered by completion status, we can determine the action based on the route

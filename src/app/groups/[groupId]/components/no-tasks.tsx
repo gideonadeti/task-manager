@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import {
   Sun,
@@ -45,22 +45,57 @@ const NoTasks = ({ groupId }: NoTasksProps) => {
   const [addTaskOpen, setAddTaskOpen] = useState(false);
 
   // Special views that don't have a single group
-  const specialViews = ["today", "tomorrow", "this-week", "overdue", "completed"];
+  const specialViews = [
+    "today",
+    "tomorrow",
+    "this-week",
+    "overdue",
+    "completed",
+  ];
   const isValidGroup = !specialViews.includes(groupId);
 
   // Get the actual group ID
   const getActualGroupId = (): string | undefined => {
     if (!isValidGroup) return undefined;
-    
+
     if (groupId === "inbox") {
       return groupsQuery.data?.find((group) => group.name === "Inbox")?.id;
     }
-    
+
     // For actual group IDs (UUIDs), return as is
     return groupId;
   };
 
   const actualGroupId = getActualGroupId();
+
+  // Keyboard shortcut: Ctrl/Cmd + Alt/Option + T to add new task
+  useEffect(() => {
+    if (!isValidGroup || !actualGroupId) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key === "t" &&
+        (event.metaKey || event.ctrlKey) &&
+        event.altKey &&
+        !event.shiftKey
+      ) {
+        // Don't trigger if user is typing in an input field
+        const target = event.target as HTMLElement;
+        if (
+          target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable
+        ) {
+          return;
+        }
+        event.preventDefault();
+        setAddTaskOpen(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isValidGroup, actualGroupId]);
 
   const messages: Record<string, MessageConfig> = {
     inbox: {
@@ -107,8 +142,12 @@ const NoTasks = ({ groupId }: NoTasksProps) => {
     icon: FolderOpen,
   };
 
-  const { title, description, icon: Icon, includeUserName } =
-    messages[groupId] || defaultMessage;
+  const {
+    title,
+    description,
+    icon: Icon,
+    includeUserName,
+  } = messages[groupId] || defaultMessage;
 
   const displayTitle = includeUserName
     ? `${title}, ${user?.firstName || ""}`
@@ -130,9 +169,7 @@ const NoTasks = ({ groupId }: NoTasksProps) => {
         </EmptyHeader>
         {isValidGroup && actualGroupId && (
           <EmptyContent>
-            <Button onClick={() => setAddTaskOpen(true)}>
-              Add Task
-            </Button>
+            <Button onClick={() => setAddTaskOpen(true)}>Add Task</Button>
           </EmptyContent>
         )}
       </Empty>
