@@ -3,7 +3,6 @@ import { DialogFooter } from "@/components/ui/dialog";
 import {
   AlertDialogFooter,
   AlertDialogCancel,
-  AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -34,7 +33,7 @@ const CustomDialogFooter = ({
         >
           Cancel
         </AlertDialogCancel>
-        <AlertDialogAction
+        <Button
           disabled={disabled || isPending}
           onClick={() => handleSubmit()}
           className="flex-1 sm:flex-initial sm:w-32 h-11 sm:h-10 min-h-[44px] sm:min-h-0"
@@ -47,7 +46,7 @@ const CustomDialogFooter = ({
           ) : (
             submitText
           )}
-        </AlertDialogAction>
+        </Button>
       </AlertDialogFooter>
     );
   }
