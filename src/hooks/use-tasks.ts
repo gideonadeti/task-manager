@@ -2,7 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useRouter } from "next/navigation";
+import { z } from "zod";
 
 import {
   createTask,
@@ -11,66 +12,55 @@ import {
   deleteTask,
   toggleComplete,
 } from "@/lib/api/query-functions";
-import { UseFormReturn } from "react-hook-form";
-import { Task } from "@prisma/client";
+import { Task, Group } from "@prisma/client";
 import { handleApiError } from "@/lib/api/error-handler";
 import { ExtendedGroup } from "@/types";
-
-type TaskFormData = {
-  title: string;
-  description: string;
-  priority: string;
-  groupId: string;
-  dueDate?: Date;
-};
+import { formSchema } from "@/components/add-task";
 
 const useTasks = () => {
+  const router = useRouter();
   const queryClient = useQueryClient();
+  const tasksQuery = useQuery<Task[], AxiosError>({
+    queryKey: ["tasks"],
+    queryFn: () => readTasks(),
+  });
+
+  // Error handling effect
+  useEffect(() => {
+    if (tasksQuery.isError && tasksQuery.error) {
+      handleApiError(tasksQuery.error);
+    }
+  }, [tasksQuery.error, tasksQuery.isError]);
+
   const createTaskMutation = useMutation<
     Task,
     AxiosError,
     {
-      title: string;
-      description: string;
-      priority: string;
-      groupId: string;
-      dueDate?: Date;
-      form: UseFormReturn<TaskFormData, TaskFormData, undefined>;
-      setOpen: (open: boolean) => void;
-      router?: AppRouterInstance;
-      currentGroupId?: string;
-      groups?: Array<{ id: string; name: string }>;
+      formValues: z.infer<typeof formSchema>;
+      onOpenChange: (open: boolean) => void;
     }
   >({
-    mutationFn: ({ title, description, priority, groupId, dueDate }) => {
+    mutationFn: ({ formValues }) => {
+      const { title, description, priority, groupId, dueDate } = formValues;
       return createTask(title, description, priority, groupId, dueDate);
     },
     onError: (err) => {
       handleApiError(err);
     },
-    onSuccess: (
-      createdTask,
-      { form, setOpen, router, currentGroupId, groups }
-    ) => {
-      setOpen(false);
+    onSuccess: (createdTask, { onOpenChange }) => {
+      onOpenChange(false);
 
       toast.success("Task created successfully");
-      form.reset();
       queryClient.setQueryData<Task[]>(["tasks"], (prevTasks) => {
         return [createdTask, ...(prevTasks || [])];
       });
 
-      // Navigate to the task's group if it's different from the current one
-      if (router && currentGroupId && groups) {
-        const taskGroup = groups.find((g) => g.id === createdTask.groupId);
-        const isInboxGroup = taskGroup?.name === "Inbox";
-        const targetGroupId = isInboxGroup ? "inbox" : createdTask.groupId;
-
-        // Only redirect if we're not already on that group's page
-        if (currentGroupId !== targetGroupId) {
-          router.push(`/groups/${targetGroupId}`);
-        }
-      }
+      // Navigate to the task's group
+      const groups = queryClient.getQueryData<Group[]>(["groups"]);
+      const taskGroup = groups?.find((g) => g.id === createdTask.groupId);
+      const isInboxGroup = taskGroup?.name === "Inbox";
+      const targetGroupId = isInboxGroup ? "inbox" : createdTask.groupId;
+      router.push(`/groups/${targetGroupId}`);
     },
   });
 
@@ -79,51 +69,33 @@ const useTasks = () => {
     AxiosError,
     {
       id: string;
-      title: string;
-      description: string;
-      priority: string;
-      groupId: string;
-      dueDate?: Date;
-      form: UseFormReturn<TaskFormData, TaskFormData, undefined>;
-      setOpen: (open: boolean) => void;
-      router?: AppRouterInstance;
-      currentGroupId?: string;
-      groups?: Array<{ id: string; name: string }>;
-      originalGroupId?: string;
+      formValues: z.infer<typeof formSchema>;
+      onOpenChange: (open: boolean) => void;
     }
   >({
-    mutationFn: ({ id, title, description, priority, groupId, dueDate }) => {
+    mutationFn: ({ id, formValues }) => {
+      const { title, description, priority, groupId, dueDate } = formValues;
       return updateTask(id, title, description, priority, groupId, dueDate);
     },
     onError: (err) => {
       handleApiError(err);
     },
-    onSuccess: (updatedTask, { form, setOpen, router, currentGroupId, groups, originalGroupId }) => {
-      setOpen(false);
+    onSuccess: (updatedTask, { onOpenChange }) => {
+      onOpenChange(false);
 
       toast.success("Task updated successfully");
-      form.reset();
       queryClient.setQueryData<Task[]>(["tasks"], (prevTasks) => {
         return prevTasks?.map((task) =>
           task.id === updatedTask.id ? updatedTask : task
         );
       });
 
-      // Navigate to the new group if it's different from the current one and different from original
-      if (router && currentGroupId && groups && originalGroupId) {
-        const newGroupId = updatedTask.groupId;
-        // Only navigate if group actually changed
-        if (newGroupId !== originalGroupId) {
-          const taskGroup = groups.find((g) => g.id === newGroupId);
-          const isInboxGroup = taskGroup?.name === "Inbox";
-          const targetGroupId = isInboxGroup ? "inbox" : newGroupId;
-
-          // Only redirect if we're not already on that group's page
-          if (currentGroupId !== targetGroupId) {
-            router.push(`/groups/${targetGroupId}`);
-          }
-        }
-      }
+      // Navigate to the task's group
+      const groups = queryClient.getQueryData<Group[]>(["groups"]);
+      const taskGroup = groups?.find((g) => g.id === updatedTask.groupId);
+      const isInboxGroup = taskGroup?.name === "Inbox";
+      const targetGroupId = isInboxGroup ? "inbox" : updatedTask.groupId;
+      router.push(`/groups/${targetGroupId}`);
     },
   });
 
@@ -204,18 +176,6 @@ const useTasks = () => {
       queryClient.invalidateQueries({ queryKey: ["groups"] });
     },
   });
-
-  const tasksQuery = useQuery<Task[], AxiosError>({
-    queryKey: ["tasks"],
-    queryFn: () => readTasks(),
-  });
-
-  // Error handling effect
-  useEffect(() => {
-    if (tasksQuery.isError && tasksQuery.error) {
-      handleApiError(tasksQuery.error);
-    }
-  }, [tasksQuery.error, tasksQuery.isError]);
 
   return {
     createTaskMutation,
