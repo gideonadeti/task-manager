@@ -147,6 +147,7 @@ export default function TaskActions({ task }: TaskActionsProps) {
         open={groupOpen}
         onOpenChange={setGroupOpen}
         onSelectGroup={handleGroupChange}
+        excludeGroupId={task.groupId}
       />
       <DeleteDialog
         type="task"

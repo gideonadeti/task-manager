@@ -20,12 +20,14 @@ interface BulkGroupDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelectGroup: (groupId: string) => void;
+  excludeGroupId?: string;
 }
 
 export default function BulkGroupDialog({
   open,
   onOpenChange,
   onSelectGroup,
+  excludeGroupId,
 }: BulkGroupDialogProps) {
   const { groupsQuery } = useGroups();
 
@@ -33,6 +35,10 @@ export default function BulkGroupDialog({
     onSelectGroup(groupId);
     onOpenChange(false);
   };
+
+  const filteredGroups = groupsQuery.data?.filter(
+    (group) => group.id !== excludeGroupId
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -45,7 +51,7 @@ export default function BulkGroupDialog({
           <CommandList className="max-h-[60vh]">
             <CommandEmpty>No groups found.</CommandEmpty>
             <CommandGroup>
-              {groupsQuery.data?.map((group) => (
+              {filteredGroups?.map((group) => (
                 <CommandItem
                   key={group.id}
                   onSelect={() => handleSelect(group.id)}
