@@ -54,9 +54,7 @@ function TasksList({ data }: TasksListProps) {
     bulkUpdatePriorityMutation,
     bulkUpdateGroupMutation,
     bulkDeleteMutation,
-  } = useBulkTasks({
-    onSuccess: handleDeselectAll,
-  });
+  } = useBulkTasks();
 
   const handleSelectionChange = useCallback(
     (taskId: string, checked: boolean) => {
@@ -75,29 +73,37 @@ function TasksList({ data }: TasksListProps) {
 
   const handleBulkMarkComplete = useCallback(() => {
     const taskIdsArray = Array.from(selectedTaskIds);
+    // Optimistically deselect immediately
+    handleDeselectAll();
     bulkMarkCompleteMutation.mutate(taskIdsArray);
-  }, [selectedTaskIds, bulkMarkCompleteMutation]);
+  }, [selectedTaskIds, bulkMarkCompleteMutation, handleDeselectAll]);
 
   const handleBulkUpdatePriority = useCallback(
     (priority: string) => {
       const taskIdsArray = Array.from(selectedTaskIds);
+      // Optimistically deselect immediately
+      handleDeselectAll();
       bulkUpdatePriorityMutation.mutate({ taskIds: taskIdsArray, priority });
     },
-    [selectedTaskIds, bulkUpdatePriorityMutation]
+    [selectedTaskIds, bulkUpdatePriorityMutation, handleDeselectAll]
   );
 
   const handleBulkUpdateGroup = useCallback(
     (groupId: string) => {
       const taskIdsArray = Array.from(selectedTaskIds);
+      // Optimistically deselect immediately
+      handleDeselectAll();
       bulkUpdateGroupMutation.mutate({ taskIds: taskIdsArray, groupId });
     },
-    [selectedTaskIds, bulkUpdateGroupMutation]
+    [selectedTaskIds, bulkUpdateGroupMutation, handleDeselectAll]
   );
 
   const handleBulkDelete = useCallback(() => {
     const taskIdsArray = Array.from(selectedTaskIds);
+    // Optimistically deselect immediately
+    handleDeselectAll();
     bulkDeleteMutation.mutate(taskIdsArray);
-  }, [selectedTaskIds, bulkDeleteMutation]);
+  }, [selectedTaskIds, bulkDeleteMutation, handleDeselectAll]);
 
   return (
     <div className="h-full overflow-y-auto p-2 pb-4 sm:pb-14 space-y-4">
