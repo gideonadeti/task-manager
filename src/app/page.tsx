@@ -1,15 +1,14 @@
-import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
+import LandingPage from "./components/LandingPage";
+import Dashboard from "./components/Dashboard";
 
 export default async function Home() {
   const { userId } = await auth();
 
-  // Only redirect if user is authenticated
-  // Unauthenticated users will see the sign-in page via layout's <SignedOut>
+  // Show dashboard for authenticated users, landing page for unauthenticated
   if (userId) {
-    redirect("/groups/today");
+    return <Dashboard />;
   }
 
-  // Return null for unauthenticated users - layout will show sign-in page
-  return null;
+  return <LandingPage />;
 }
