@@ -187,6 +187,10 @@ function AddTaskForm({
         id: task.id,
         form,
         setOpen,
+        router,
+        currentGroupId,
+        groups: groupsQuery.data?.map((g) => ({ id: g.id, name: g.name })) || [],
+        originalGroupId: task.groupId,
       });
     } else {
       createTaskMutation.mutate({
