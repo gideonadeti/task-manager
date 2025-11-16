@@ -1,7 +1,7 @@
 import useTasks from "@/hooks/use-tasks";
 import useGroups from "./use-groups";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { Task } from "@prisma/client";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,6 @@ import {
 
 const useBulkTasks = () => {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
   const router = useRouter();
   const params = useParams();
   const { tasksQuery } = useTasks();
@@ -81,7 +80,7 @@ const useBulkTasks = () => {
             "Something went wrong"
           : "Something went wrong";
 
-      toast({ description, variant: "destructive" });
+      toast.error(description, { id: "bulk-mark-complete-error" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
@@ -140,7 +139,7 @@ const useBulkTasks = () => {
             "Something went wrong"
           : "Something went wrong";
 
-      toast({ description, variant: "destructive" });
+      toast.error(description, { id: "bulk-update-priority-error" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
@@ -228,7 +227,7 @@ const useBulkTasks = () => {
             "Something went wrong"
           : "Something went wrong";
 
-      toast({ description, variant: "destructive" });
+      toast.error(description, { id: "bulk-update-group-error" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
@@ -257,17 +256,15 @@ const useBulkTasks = () => {
             "Something went wrong"
           : "Something went wrong";
 
-      toast({ description, variant: "destructive" });
+      toast.error(description, { id: "bulk-delete-error" });
     },
     onSuccess: (taskIds, { onOpenChange, handleDeselectAll }) => {
       handleDeselectAll();
       onOpenChange(false);
 
-      toast({
-        description: `${taskIds.length} task${
-          taskIds.length === 1 ? "" : "s"
-        } deleted`,
-      });
+      toast.success(
+        `${taskIds.length} task${taskIds.length === 1 ? "" : "s"} deleted`
+      );
 
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
