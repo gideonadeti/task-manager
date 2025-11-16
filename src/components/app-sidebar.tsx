@@ -187,7 +187,9 @@ export function AppSidebar() {
                       </Link>
                     </SidebarMenuButton>
                     {numOfTasks > 0 && (
-                      <SidebarMenuBadge>{numOfTasks}</SidebarMenuBadge>
+                      <SidebarMenuBadge>
+                        {numOfTasks > 99 ? "99+" : numOfTasks}
+                      </SidebarMenuBadge>
                     )}
                   </SidebarMenuItem>
                 );
@@ -259,7 +261,7 @@ export function AppSidebar() {
 
                         {numOfTasks > 0 && (
                           <SidebarMenuBadge className="me-5">
-                            {numOfTasks}
+                            {numOfTasks > 99 ? "99+" : numOfTasks}
                           </SidebarMenuBadge>
                         )}
 
