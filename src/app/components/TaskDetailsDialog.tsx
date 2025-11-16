@@ -171,7 +171,7 @@ export default function TaskDetailsDialog({
           </DialogHeader>
 
           {/* Scrollable content */}
-          <ScrollArea className="flex-1 px-4 sm:px-6">
+          <ScrollArea className="h-[68vh] px-4 sm:px-6">
             <div className="space-y-4 pr-4">
               {task.description && (
                 <div>
