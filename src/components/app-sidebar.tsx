@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { isToday, isTomorrow, isThisWeek, isPast } from "date-fns";
 import { Group } from "@prisma/client";
 import {
@@ -100,6 +100,33 @@ export function AppSidebar() {
     setGroup(undefined);
     setOpen(true);
   }, []);
+
+  // Keyboard shortcut: Ctrl/Cmd + Alt/Option + G to add new group
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key === "g" &&
+        (event.metaKey || event.ctrlKey) &&
+        event.altKey &&
+        !event.shiftKey
+      ) {
+        // Don't trigger if user is typing in an input field
+        const target = event.target as HTMLElement;
+        if (
+          target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable
+        ) {
+          return;
+        }
+        event.preventDefault();
+        handleAdd();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleAdd]);
 
   const handleDelete = useCallback((groupDeleteId: string) => {
     setGroupDeleteId(groupDeleteId);
