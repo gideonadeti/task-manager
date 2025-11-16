@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { Group, Task } from "@prisma/client";
+import { Group } from "@prisma/client";
 import { useState } from "react";
 import {
   Inbox,
@@ -19,6 +18,8 @@ import {
 } from "lucide-react";
 import { isToday, isTomorrow, isThisWeek, isPast } from "date-fns";
 
+import useGroups from "@/hooks/use-groups";
+import useTasks from "@/hooks/use-tasks";
 import AddGroup from "./add-group";
 import DeleteDialog from "./delete-dialog";
 import {
@@ -59,28 +60,28 @@ const defaultGroups = [
 ];
 
 export function AppSidebar() {
-  const { groupId } = useParams() as { groupId: string };
-  const { data: groups, isPending: groupsPending } = useQuery<Group[]>({
-    queryKey: ["groups"],
-  });
-  const { data: tasks } = useQuery<Task[]>({ queryKey: ["tasks"] });
+  const { groupId } = useParams<{ groupId: string }>();
+  const { groupsQuery } = useGroups();
+  const { tasksQuery } = useTasks();
+  const groups = groupsQuery.data || [];
+  const tasks = tasksQuery.data || [];
   const [open, setOpen] = useState(false);
-  const [groupName, setGroupName] = useState("");
-  const [groupUpdateId, setGroupUpdateId] = useState("");
+  const [group, setGroup] = useState<Group | undefined>(undefined);
   const [groupDeleteId, setGroupDeleteId] = useState("");
   const [openDelete, setOpenDelete] = useState(false);
+  const personalGroups = groups.filter((group) => group.name !== "Inbox");
 
-  const personalGroups =
-    groups?.filter((group) => group.name !== "Inbox") || [];
+  function handleEdit(groupId: string) {
+    const group = groups.find((group) => group.id === groupId);
 
-  function handleEdit(groupName: string, groupUpdateId: string) {
-    setGroupName(groupName);
-    setGroupUpdateId(groupUpdateId);
-    setOpen(true);
+    if (group) {
+      setGroup(group);
+      setOpen(true);
+    }
   }
 
   function handleAdd() {
-    setGroupName("");
+    setGroup(undefined);
     setOpen(true);
   }
 
@@ -173,7 +174,7 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Personal Groups</SidebarGroupLabel>
-          {groupsPending ? (
+          {groupsQuery.isPending ? (
             <>
               <SidebarGroupAction title="Add Group" onClick={handleAdd}>
                 <Plus />
@@ -248,9 +249,7 @@ export function AppSidebar() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
                             <DropdownMenuItem
-                              onClick={() =>
-                                handleEdit(personalGroup.name, personalGroup.id)
-                              }
+                              onClick={() => handleEdit(personalGroup.id)}
                             >
                               <span>Edit</span>
                             </DropdownMenuItem>
@@ -270,12 +269,7 @@ export function AppSidebar() {
           )}
         </SidebarGroup>
       </SidebarContent>
-      <AddGroup
-        open={open}
-        onOpenChange={setOpen}
-        defaultValue={groupName}
-        groupUpdateId={groupUpdateId}
-      />
+      <AddGroup open={open} onOpenChange={setOpen} group={group} />
       <DeleteDialog
         type="group"
         deleteId={groupDeleteId}
