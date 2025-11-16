@@ -61,25 +61,53 @@ const useGroups = () => {
       id: string;
       name: string;
       onOpenChange: (open: boolean) => void;
+    },
+    {
+      previousGroups: Group[] | undefined;
     }
   >({
     mutationFn: ({ id, name }) => {
       return updateGroup(id, name);
     },
-    onError: (err) => {
-      handleApiError(err);
-    },
-    onSuccess: (updatedGroup, { onOpenChange }) => {
+    onMutate: async ({ id, name, onOpenChange }) => {
+      await queryClient.cancelQueries({ queryKey: ["groups"] });
+
+      const previousGroups = queryClient.getQueryData<Group[]>(["groups"]);
+
+      // Optimistically update the group name
+      queryClient.setQueryData<Group[]>(["groups"], (oldGroups) =>
+        oldGroups?.map((group) =>
+          group.id === id ? { ...group, name } : group
+        )
+      );
+
+      // Close dialog immediately
       onOpenChange(false);
 
-      toast.success("Group updated successfully");
-      queryClient.setQueryData<Group[]>(["groups"], (prevGroups) => {
-        return prevGroups?.map((group) =>
-          group.id === updatedGroup.id ? updatedGroup : group
-        );
-      });
+      // Navigate immediately - check if new name is "Inbox" to use special route
+      const isInboxGroup = name === "Inbox";
+      const targetGroupId = isInboxGroup ? "inbox" : id;
+      router.push(`/groups/${targetGroupId}`);
 
-      router.push(`/groups/${updatedGroup.id}`);
+      return { previousGroups };
+    },
+    onError: (err, variables, context) => {
+      // Rollback on error
+      if (context?.previousGroups) {
+        queryClient.setQueryData(["groups"], context.previousGroups);
+      }
+      // Reopen dialog on error
+      variables.onOpenChange(true);
+      handleApiError(err);
+    },
+    onSuccess: (updatedGroup) => {
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+      toast.success("Group updated successfully");
+
+      // Navigate to the updated group (server response is authoritative)
+      const isInboxGroup = updatedGroup.name === "Inbox";
+      const targetGroupId = isInboxGroup ? "inbox" : updatedGroup.id;
+      router.push(`/groups/${targetGroupId}`);
     },
   });
 
