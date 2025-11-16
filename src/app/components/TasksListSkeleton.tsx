@@ -3,7 +3,7 @@ import TaskCardSkeleton from "./TaskCardSkeleton";
 
 export default function TasksListSkeleton() {
   return (
-    <div className="h-screen overflow-y-auto pb-14 space-y-4 px-2 md:px-4 lg:px-8 pt-4">
+    <div className="h-full overflow-y-auto pb-14 space-y-4 px-2 md:px-4 lg:px-8 pt-4">
       {/* Toolbar Skeleton */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex flex-1 items-center space-x-2">
