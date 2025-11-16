@@ -67,7 +67,7 @@ const AddGroup = ({ open, group, onOpenChange }: AddGroupProps) => {
         preventClose
       >
         <DialogHeader>
-          <DialogTitle>{group ? "Update Group" : "Add Group"}</DialogTitle>
+          <DialogTitle>{group ? "Edit Group" : "Add Group"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
