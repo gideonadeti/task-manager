@@ -9,10 +9,12 @@ import {
   readTasks,
   updateTask,
   deleteTask,
+  toggleComplete,
 } from "@/lib/api/query-functions";
 import { UseFormReturn } from "react-hook-form";
 import { Task } from "@prisma/client";
 import { handleApiError } from "@/lib/api/error-handler";
+import { ExtendedGroup } from "@/types";
 
 type TaskFormData = {
   title: string;
@@ -46,7 +48,10 @@ const useTasks = () => {
     onError: (err) => {
       handleApiError(err);
     },
-    onSuccess: (createdTask, { form, setOpen, router, currentGroupId, groups }) => {
+    onSuccess: (
+      createdTask,
+      { form, setOpen, router, currentGroupId, groups }
+    ) => {
       setOpen(false);
 
       toast.success("Task created successfully");
@@ -125,6 +130,61 @@ const useTasks = () => {
     },
   });
 
+  const toggleTaskCompletionMutation = useMutation<
+    string,
+    AxiosError,
+    { taskId: string; previousStatus: boolean },
+    {
+      previousTasks: Task[] | undefined;
+      previousGroups: ExtendedGroup[] | undefined;
+    }
+  >({
+    mutationFn: ({ taskId, previousStatus }) => {
+      return toggleComplete(taskId, previousStatus);
+    },
+    onMutate: async ({ taskId, previousStatus }) => {
+      await queryClient.cancelQueries({ queryKey: ["tasks"] });
+      await queryClient.cancelQueries({ queryKey: ["groups"] });
+
+      const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
+      const previousGroups = queryClient.getQueryData<ExtendedGroup[]>([
+        "groups",
+      ]);
+
+      queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
+        oldTasks?.map((t) =>
+          t.id === taskId ? { ...t, completed: !previousStatus } : t
+        )
+      );
+
+      queryClient.setQueryData<ExtendedGroup[]>(["groups"], (oldGroups) =>
+        oldGroups?.map((group) =>
+          group.tasks.some((t) => t.id === taskId)
+            ? {
+                ...group,
+                tasks: group.tasks.map((t) =>
+                  t.id === taskId ? { ...t, completed: !previousStatus } : t
+                ),
+              }
+            : group
+        )
+      );
+
+      return { previousTasks, previousGroups };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(["tasks"], context.previousTasks);
+        queryClient.setQueryData(["groups"], context.previousGroups);
+      }
+      handleApiError(error);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+    },
+  });
+
   const tasksQuery = useQuery<Task[], AxiosError>({
     queryKey: ["tasks"],
     queryFn: () => readTasks(),
@@ -141,6 +201,7 @@ const useTasks = () => {
     createTaskMutation,
     updateTaskMutation,
     deleteTaskMutation,
+    toggleTaskCompletionMutation,
     tasksQuery,
   };
 };
