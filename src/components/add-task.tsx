@@ -191,7 +191,7 @@ function AddTaskForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
         {/* Scrollable form content */}
         <ScrollArea className="h-[68vh]">
-          <div className="space-y-3 sm:space-y-4 p-4 sm:p-0">
+          <div className="space-y-3 sm:space-y-4 p-2 pr-4 sm:pr-2">
             <FormField
               control={form.control}
               name="title"
@@ -390,17 +390,19 @@ function AddTaskForm({
           </div>
         </ScrollArea>
 
-        <CustomDialogFooter
-          isPending={
-            createTaskMutation.isPending || updateTaskMutation.isPending
-          }
-          disabled={!form.formState.isDirty}
-          handleCancel={() => {
-            setOpen(false);
-            form.reset();
-          }}
-          handleSubmit={form.handleSubmit(onSubmit)}
-        />
+        <div className="p-2 sm:p-0">
+          <CustomDialogFooter
+            isPending={
+              createTaskMutation.isPending || updateTaskMutation.isPending
+            }
+            disabled={!form.formState.isDirty}
+            handleCancel={() => {
+              setOpen(false);
+              form.reset();
+            }}
+            handleSubmit={form.handleSubmit(onSubmit)}
+          />
+        </div>
       </form>
     </Form>
   );
