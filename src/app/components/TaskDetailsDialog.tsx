@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -123,6 +124,7 @@ export default function TaskDetailsDialog({
     return "text-gray-600 dark:text-gray-400";
   };
 
+
   function handleEdit() {
     if (!task) return;
     setTaskUpdate(task);
@@ -167,13 +169,20 @@ export default function TaskDetailsDialog({
                     <Tag className="h-4 w-4" />
                     Priority
                   </h4>
-                  <Badge
-                    variant="outline"
-                    className={`text-xs ${getPriorityColor(task.priority)}`}
+                  <motion.div
+                    key={task.priority}
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
                   >
-                    {task.priority.charAt(0).toUpperCase() +
-                      task.priority.slice(1)}
-                  </Badge>
+                    <Badge
+                      variant="outline"
+                      className={`text-xs ${getPriorityColor(task.priority)}`}
+                    >
+                      {task.priority.charAt(0).toUpperCase() +
+                        task.priority.slice(1)}
+                    </Badge>
+                  </motion.div>
                 </div>
 
                 {task.dueDate && (
@@ -182,9 +191,20 @@ export default function TaskDetailsDialog({
                       <Calendar className="h-4 w-4" />
                       Due Date
                     </h4>
-                    <p className={`text-sm ${getDueDateUrgency(task.dueDate)}`}>
+                    <motion.p
+                      key={task.dueDate.toString()}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className={`text-sm ${getDueDateUrgency(task.dueDate)} ${
+                        !task.completed && task.dueDate && (
+                          isToday(new Date(task.dueDate)) || 
+                          (isPast(new Date(task.dueDate)) && !isToday(new Date(task.dueDate)))
+                        ) ? "animate-pulse" : ""
+                      }`}
+                    >
                       {formatDate(new Date(task.dueDate))}
-                    </p>
+                    </motion.p>
                   </div>
                 )}
 
