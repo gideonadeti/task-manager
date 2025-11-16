@@ -117,6 +117,35 @@ export default function TasksToolbar({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Keyboard shortcut: Ctrl/Cmd + Alt/Option + C to toggle selected tasks completion
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key === "c" &&
+        (event.metaKey || event.ctrlKey) &&
+        event.altKey &&
+        !event.shiftKey &&
+        selectedTaskCount > 0 &&
+        onBulkMarkComplete
+      ) {
+        // Don't trigger if user is typing in an input field
+        const target = event.target as HTMLElement;
+        if (
+          target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable
+        ) {
+          return;
+        }
+        event.preventDefault();
+        onBulkMarkComplete();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedTaskCount, onBulkMarkComplete]);
+
   // Determine the label and icon for the bulk mark complete action
   // Since tasks are filtered by completion status, we can determine the action based on the route
   // In "completed" view, all tasks are complete, so action should be "Mark as Incomplete"
