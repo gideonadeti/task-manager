@@ -5,9 +5,10 @@ export default function Loading() {
     <div className="flex items-center justify-center min-h-dvh">
       <div className="flex flex-col items-center gap-4">
         <Spinner size={48} className="text-primary" />
-        <p className="text-muted-foreground text-sm">Loading...</p>
+        <p className="text-muted-foreground text-sm animate-pulse">
+          Loading...
+        </p>
       </div>
     </div>
   );
 }
-
