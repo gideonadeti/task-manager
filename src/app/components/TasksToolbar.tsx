@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Cross2Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import {
@@ -8,6 +8,7 @@ import {
   X,
   Trash2,
   CheckCircle2,
+  Circle,
   Tag,
   FolderInput,
   ChevronDown,
@@ -55,6 +56,7 @@ interface TasksToolbarProps {
   onPrioritiesChange: (priorities: string[]) => void;
   tasks?: Task[];
   selectedTaskCount?: number;
+  selectedTaskIds?: Set<string>;
   onDeselectAll?: () => void;
   onBulkMarkComplete?: () => void;
   onBulkUpdatePriority?: (priority: string) => void;
@@ -70,6 +72,7 @@ export default function TasksToolbar({
   onPrioritiesChange,
   tasks,
   selectedTaskCount = 0,
+  selectedTaskIds,
   onDeselectAll,
   onBulkMarkComplete,
   onBulkUpdatePriority,
@@ -84,6 +87,38 @@ export default function TasksToolbar({
   const isFiltered = searchQuery.trim() !== "" || selectedPriorities.length > 0;
   const { groupId } = useParams();
   const { groupsQuery } = useGroups();
+
+  // Determine the label and icon for the bulk mark complete action
+  // Since tasks are filtered by completion status, we can determine the action based on the route
+  // In "completed" view, all tasks are complete, so action should be "Mark as Incomplete"
+  // In other views, all tasks are incomplete, so action should be "Mark as Complete"
+  const bulkToggleLabel = useMemo(() => {
+    if (groupId === "completed") {
+      return "Mark as Incomplete";
+    }
+    // Check selected tasks' actual state as fallback (if we have selectedTaskIds and tasks)
+    if (selectedTaskIds && tasks && selectedTaskIds.size > 0) {
+      const selectedTasks = tasks.filter((t) => selectedTaskIds.has(t.id));
+      if (selectedTasks.length > 0) {
+        // If all selected tasks are complete, show "Mark as Incomplete"
+        const allComplete = selectedTasks.every((t) => t.completed);
+        if (allComplete) {
+          return "Mark as Incomplete";
+        }
+        // If all selected tasks are incomplete, show "Mark as Complete"
+        const allIncomplete = selectedTasks.every((t) => !t.completed);
+        if (allIncomplete) {
+          return "Mark as Complete";
+        }
+      }
+    }
+    // Default: "Mark as Complete" (for regular views where tasks are incomplete)
+    return "Mark as Complete";
+  }, [groupId, selectedTaskIds, tasks]);
+
+  const bulkToggleIcon = useMemo(() => {
+    return bulkToggleLabel === "Mark as Incomplete" ? Circle : CheckCircle2;
+  }, [bulkToggleLabel]);
 
   // Get the actual group ID to prefill the form
   // Handles special routes like "inbox" and regular group IDs
@@ -200,8 +235,10 @@ export default function TasksToolbar({
                       onBulkMarkComplete?.();
                     }}
                   >
-                    <CheckCircle2 className="mr-2 h-4 w-4" />
-                    Mark as Complete
+                    {React.createElement(bulkToggleIcon, {
+                      className: "mr-2 h-4 w-4",
+                    })}
+                    {bulkToggleLabel}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => {
