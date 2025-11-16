@@ -1,6 +1,8 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useTheme } from "next-themes";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -12,7 +14,14 @@ import { ThemeToggler } from "@/components/theme-toggler";
 export default function Header() {
   const { resolvedTheme } = useTheme();
   const { isLoaded } = useUser();
-  const isLightTheme = resolvedTheme === "light";
+  const [mounted, setMounted] = React.useState(false);
+
+  // Avoid hydration mismatch
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isLightTheme = mounted && resolvedTheme === "light";
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-between border-b py-2 px-2 sm:px-4 gap-2">
@@ -23,14 +32,41 @@ export default function Header() {
         <ThemeToggler />
       </div>
 
-      {/* Center section: Title */}
+      {/* Center section: Logo and Title */}
       <div className="flex-1 flex justify-center min-w-0">
         <Link
           href="/groups/today"
-          className="group relative inline-block transition-all"
+          className="group relative inline-flex items-center gap-2 transition-all"
         >
           {/* Background glow effect */}
           <span className="absolute inset-0 blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-500 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 rounded-lg -z-10" />
+
+          {/* Logo */}
+          <div className="relative z-10 transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] group-hover:dark:drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]">
+            {!mounted ? (
+              <div className="h-8 w-8" />
+            ) : isLightTheme ? (
+              <Image
+                key="light"
+                src="/images/logo-light.png"
+                alt="Taskflow"
+                width={32}
+                height={32}
+                className="h-8 w-8"
+                priority
+              />
+            ) : (
+              <Image
+                key="dark"
+                src="/images/logo-dark.png"
+                alt="Taskflow"
+                width={32}
+                height={32}
+                className="h-8 w-8"
+                priority
+              />
+            )}
+          </div>
 
           {/* Main text */}
           <span className="relative z-10 block text-xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient group-hover:drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] group-hover:dark:drop-shadow-[0_0_8px_rgba(96,165,250,0.5)] transition-all duration-300">
