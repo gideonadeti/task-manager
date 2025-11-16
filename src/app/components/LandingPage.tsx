@@ -2,49 +2,89 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { SignIn } from "@clerk/nextjs";
+import Link from "next/link";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 import {
   CheckCircle2,
   FolderTree,
   Calendar,
   Target,
   ArrowRight,
+  Edit,
+  Search,
+  Shield,
+  Smartphone,
 } from "lucide-react";
-import { H1, H3 } from "../ui/CustomTags";
+import { H1 } from "../ui/CustomTags";
 import { Button } from "@/components/ui/button";
 import { ThemeToggler } from "@/components/theme-toggler";
 import { Separator } from "@/components/ui/separator";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const features = [
   {
     icon: FolderTree,
     title: "Organize with Groups",
     description:
-      "Create custom groups to organize your tasks by project, category, or any way you prefer.",
+      "Create custom groups to organize your tasks by project, category, or any way you prefer. Keep your workspace structured and find what you need instantly.",
   },
   {
     icon: Target,
     title: "Priority Levels",
     description:
-      "Set priority levels (low, medium, high) to focus on what matters most.",
+      "Set priority levels (low, medium, high) to focus on what matters most. Visual indicators help you identify urgent tasks at a glance.",
   },
   {
     icon: Calendar,
     title: "Due Dates",
     description:
-      "Never miss a deadline with due date tracking and smart reminders.",
+      "Never miss a deadline with due date tracking. Set deadlines for your tasks and stay on top of your schedule with visual date indicators.",
+  },
+  {
+    icon: Edit,
+    title: "Full CRUD Operations",
+    description:
+      "Complete task management with create, read, update, and delete operations. Edit task details, descriptions, and status with ease.",
   },
   {
     icon: CheckCircle2,
-    title: "Task Management",
+    title: "Task Completion",
     description:
-      "Full CRUD functionality to create, update, and complete tasks effortlessly.",
+      "Easily toggle task completion status. Track your progress and celebrate your achievements as you complete tasks.",
+  },
+  {
+    icon: Search,
+    title: "Search & Filter",
+    description:
+      "Quickly find tasks with powerful search functionality. Filter by priority, group, completion status, or due date to focus on what you need.",
+  },
+  {
+    icon: Shield,
+    title: "Secure Authentication",
+    description:
+      "Your data is protected with secure authentication powered by Clerk. Sign in safely and access your tasks from anywhere.",
+  },
+  {
+    icon: Smartphone,
+    title: "Responsive Design",
+    description:
+      "Access Taskflow seamlessly on any device. Beautiful, responsive design that works perfectly on desktop, tablet, and mobile.",
   },
 ];
 
 export default function LandingPage() {
   const prefersReducedMotion = useReducedMotion();
   const featuresRef = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isLightTheme = mounted && resolvedTheme === "light";
 
   // Smooth scroll to features section
   const scrollToFeatures = () => {
@@ -69,22 +109,137 @@ export default function LandingPage() {
         Skip to main content
       </a>
 
-      {/* Enhanced Header */}
+      {/* Header with Logo */}
       <header
         className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b"
         role="banner"
         aria-label="Site header"
       >
         <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center justify-between gap-4">
+          {/* Logo and Title - Left */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={getTransition()}
+            className="relative inline-flex items-center gap-2"
+            whileHover="hover"
           >
-            <H3 className="text-base sm:text-lg bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent">
-              Taskflow
-            </H3>
+            <Link href="/" className="relative inline-flex items-center gap-2">
+              {/* Background glow effect */}
+              <motion.span
+                className="absolute inset-0 blur-xl bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 rounded-lg -z-10"
+                variants={{
+                  initial: { opacity: 0, scale: 0.95, filter: "blur(16px)" },
+                  hover: {
+                    opacity: 0.6,
+                    scale: 1.05,
+                    filter: "blur(24px)",
+                  },
+                }}
+                transition={{
+                  duration: 0.5,
+                  ease: "easeOut",
+                }}
+              />
+              {/* Logo */}
+              <motion.div
+                className="relative z-10"
+                variants={{
+                  initial: {
+                    scale: 1,
+                    filter: isLightTheme
+                      ? "drop-shadow(0 0 0px rgba(59,130,246,0))"
+                      : "drop-shadow(0 0 0px rgba(96,165,250,0))",
+                  },
+                  hover: {
+                    scale: [1, 1.1, 1.05],
+                    filter: isLightTheme
+                      ? [
+                          "drop-shadow(0 0 0px rgba(59,130,246,0))",
+                          "drop-shadow(0 0 12px rgba(59,130,246,0.6))",
+                          "drop-shadow(0 0 8px rgba(59,130,246,0.5))",
+                        ]
+                      : [
+                          "drop-shadow(0 0 0px rgba(96,165,250,0))",
+                          "drop-shadow(0 0 12px rgba(96,165,250,0.6))",
+                          "drop-shadow(0 0 8px rgba(96,165,250,0.5))",
+                        ],
+                  },
+                }}
+                transition={{
+                  duration: 0.4,
+                  ease: "easeOut",
+                }}
+              >
+                {!mounted ? (
+                  <div className="h-8 w-8" />
+                ) : isLightTheme ? (
+                  <Image
+                    key="light"
+                    src="/images/logo-light.png"
+                    alt="Taskflow"
+                    width={32}
+                    height={32}
+                    className="h-8 w-8"
+                    priority
+                  />
+                ) : (
+                  <Image
+                    key="dark"
+                    src="/images/logo-dark.png"
+                    alt="Taskflow"
+                    width={32}
+                    height={32}
+                    className="h-8 w-8"
+                    priority
+                  />
+                )}
+              </motion.div>
+              {/* Title */}
+              <motion.span
+                className="relative z-10 block text-xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]"
+                style={{
+                  backgroundPosition: "0% 50%",
+                }}
+                animate={
+                  prefersReducedMotion
+                    ? {}
+                    : {
+                        backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                      }
+                }
+                transition={{
+                  duration: 3,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                }}
+                variants={{
+                  initial: {
+                    filter: isLightTheme
+                      ? "drop-shadow(0 0 0px rgba(59,130,246,0))"
+                      : "drop-shadow(0 0 0px rgba(96,165,250,0))",
+                  },
+                  hover: {
+                    filter: isLightTheme
+                      ? [
+                          "drop-shadow(0 0 0px rgba(59,130,246,0))",
+                          "drop-shadow(0 0 12px rgba(59,130,246,0.6))",
+                          "drop-shadow(0 0 8px rgba(59,130,246,0.5))",
+                        ]
+                      : [
+                          "drop-shadow(0 0 0px rgba(96,165,250,0))",
+                          "drop-shadow(0 0 12px rgba(96,165,250,0.6))",
+                          "drop-shadow(0 0 8px rgba(96,165,250,0.5))",
+                        ],
+                  },
+                }}
+              >
+                Taskflow
+              </motion.span>
+            </Link>
           </motion.div>
+
+          {/* Right Section - Learn More & Theme Toggle */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -108,169 +263,159 @@ export default function LandingPage() {
       </header>
 
       {/* Main Content */}
-      <main
-        id="main-content"
-        className="flex-1 flex flex-col md:flex-row items-center justify-center gap-12 sm:gap-16 lg:gap-20 p-6 sm:p-8 lg:p-12 max-w-7xl mx-auto w-full"
-        role="main"
-      >
-        {/* Left Section - Hero Content */}
-        <div className="flex-1 flex flex-col text-center md:text-left space-y-8 sm:space-y-10 lg:space-y-12">
-          {/* Hero Title with Enhanced Gradient Animation */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={getTransition()}
-          >
-            <H1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-tight">
-              <motion.span
-                className="block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]"
-                style={{
-                  backgroundPosition: "0% 50%",
-                }}
-                animate={
-                  prefersReducedMotion
-                    ? {}
-                    : {
-                        backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                      }
-                }
-                transition={{
-                  duration: 3,
-                  ease: "easeInOut",
-                  repeat: Infinity,
-                }}
-              >
-                Organize Your Life,
-              </motion.span>
-              <span className="block mt-3 sm:mt-4">One Task at a Time</span>
-            </H1>
-          </motion.div>
-
-          {/* Enhanced Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={getTransition(0.1)}
-            className="text-muted-foreground font-semibold text-lg sm:text-xl lg:text-2xl max-w-2xl leading-relaxed"
-          >
-            A simple, intuitive task manager that keeps you on track and boosts
-            productivity.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={getTransition(0.15)}
-            className="flex flex-col sm:flex-row items-center md:items-start gap-4 pt-4"
-          >
-            <Button
-              size="lg"
-              onClick={scrollToFeatures}
-              className="w-full sm:w-auto min-h-[44px] text-base px-8 group"
-              aria-label="Get started with Taskflow"
-            >
-              Get Started Free
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={scrollToFeatures}
-              className="w-full sm:w-auto min-h-[44px] text-base px-8"
-              aria-label="Learn more about features"
-            >
-              Learn More
-            </Button>
-          </motion.div>
-
-          {/* Features Grid with Scroll Animation */}
-          <motion.div
-            ref={featuresRef}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={getTransition(0.2)}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 mt-12 sm:mt-16 lg:mt-20"
-            aria-label="Features"
-          >
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  whileInView={
-                    prefersReducedMotion ? {} : { opacity: 1, y: 0, scale: 1 }
-                  }
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{
-                    duration: 0.4,
-                    delay: 0.3 + index * 0.1,
-                    ease: "easeOut",
-                  }}
-                  whileHover={
-                    prefersReducedMotion ? {} : { scale: 1.02, y: -2 }
-                  }
-                  className="flex flex-col sm:flex-row items-start gap-4 p-5 sm:p-6 rounded-xl border border-border bg-card/50 hover:bg-card hover:shadow-md hover:border-primary/20 transition-all duration-300 cursor-default focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
-                  tabIndex={0}
-                  role="article"
-                  aria-label={`Feature: ${feature.title}`}
-                >
-                  <div className="flex-shrink-0 p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                    <Icon
-                      className="h-6 w-6 sm:h-7 sm:w-7 text-primary"
-                      aria-hidden="true"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-base sm:text-lg mb-2">
-                      {feature.title}
-                    </h3>
-                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                      {feature.description}
-                    </p>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-
-        {/* Right Section - Enhanced Sign In */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={getTransition(0.3)}
-          className="flex-1 flex items-center justify-center w-full md:w-auto"
-        >
-          <div className="relative w-full max-w-md">
-            {/* Enhanced Background glow effect */}
+      <main id="main-content" className="flex-1 flex flex-col" role="main">
+        {/* Hero Section */}
+        <section className="flex flex-col md:flex-row items-center justify-center gap-12 sm:gap-16 lg:gap-20 p-6 sm:p-8 lg:p-12 max-w-7xl mx-auto w-full min-h-[70vh]">
+          {/* Left Section - Hero Content */}
+          <div className="flex-1 flex flex-col text-center md:text-left space-y-6 sm:space-y-8">
+            {/* Hero Title */}
             <motion.div
-              className="absolute inset-0 blur-2xl bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-blue-500/30 dark:from-blue-400/30 dark:via-purple-400/30 dark:to-blue-400/30 rounded-2xl -z-10"
-              animate={
-                prefersReducedMotion
-                  ? {}
-                  : {
-                      opacity: [0.3, 0.6, 0.3],
-                      scale: [1, 1.08, 1],
-                    }
-              }
-              transition={{
-                duration: 4,
-                ease: "easeInOut",
-                repeat: Infinity,
-              }}
-            />
-            <div
-              className="relative bg-card border-2 border-border rounded-xl p-6 sm:p-8 shadow-xl hover:shadow-2xl transition-shadow duration-300"
-              role="region"
-              aria-label="Sign in to Taskflow"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={getTransition()}
             >
+              <H1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-tight">
+                <motion.span
+                  className="block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]"
+                  style={{
+                    backgroundPosition: "0% 50%",
+                  }}
+                  animate={
+                    prefersReducedMotion
+                      ? {}
+                      : {
+                          backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                        }
+                  }
+                  transition={{
+                    duration: 3,
+                    ease: "easeInOut",
+                    repeat: Infinity,
+                  }}
+                >
+                  Streamline Your Workflow,
+                </motion.span>
+                <span className="block mt-3 sm:mt-4">Master Your Tasks</span>
+              </H1>
+            </motion.div>
+
+            {/* Hero Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={getTransition(0.1)}
+              className="text-muted-foreground text-base sm:text-lg lg:text-xl max-w-2xl leading-relaxed"
+            >
+              Taskflow is a modern, full-stack task management application that
+              helps you organize your work, track priorities, and stay
+              productive. Built with Next.js, TypeScript, and PostgreSQL for a
+              seamless, reliable experience.
+            </motion.p>
+
+            {/* Optional CTA Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={getTransition(0.15)}
+              className="flex items-center md:items-start gap-4 pt-2"
+            >
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={scrollToFeatures}
+                className="w-full sm:w-auto min-h-[44px] text-base px-8"
+                aria-label="Learn more about features"
+              >
+                Learn More
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </motion.div>
+          </div>
+
+          {/* Right Section - Sign In (No Wrapper) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={getTransition(0.2)}
+            className="flex-1 flex items-center justify-center w-full md:w-auto"
+          >
+            <div className="w-full max-w-md">
               <SignIn />
             </div>
+          </motion.div>
+        </section>
+
+        {/* Features Section */}
+        <section
+          ref={featuresRef}
+          className="py-12 sm:py-16 lg:py-20 px-6 sm:px-8 lg:px-12 bg-muted/30"
+        >
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={getTransition()}
+              className="text-center mb-12 sm:mb-16"
+            >
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+                Powerful Features for{" "}
+                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent">
+                  Modern Productivity
+                </span>
+              </h2>
+              <p className="text-muted-foreground text-lg sm:text-xl max-w-2xl mx-auto">
+                Everything you need to manage your tasks efficiently and stay
+                organized.
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <motion.div
+                    key={feature.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={
+                      prefersReducedMotion
+                        ? { opacity: 1, y: 0 }
+                        : { opacity: 1, y: 0, scale: 1 }
+                    }
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{
+                      duration: 0.4,
+                      delay: index * 0.1,
+                      ease: "easeOut",
+                    }}
+                    whileHover={
+                      prefersReducedMotion ? {} : { scale: 1.02, y: -2 }
+                    }
+                    className="flex flex-col gap-4 p-5 sm:p-6 rounded-xl border border-border bg-card hover:bg-card/80 hover:shadow-md hover:border-primary/20 transition-all duration-300 cursor-default focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
+                    tabIndex={0}
+                    role="article"
+                    aria-label={`Feature: ${feature.title}`}
+                  >
+                    <div className="flex-shrink-0 p-3 rounded-lg bg-primary/10 w-fit">
+                      <Icon
+                        className="h-6 w-6 sm:h-7 sm:w-7 text-primary"
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-base sm:text-lg mb-2">
+                        {feature.title}
+                      </h3>
+                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
-        </motion.div>
+        </section>
       </main>
 
       {/* Enhanced Decorative Elements with Reduced Motion Support */}
