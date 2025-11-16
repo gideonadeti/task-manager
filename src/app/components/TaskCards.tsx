@@ -74,6 +74,12 @@ function TaskCard({
   const priorityColor = getPriorityColor(task.priority);
   const dueDateUrgency = getDueDateUrgency(task.dueDate);
 
+  // Check if due date should pulse (overdue or today, and not completed)
+  const shouldPulse =
+    task.dueDate &&
+    !task.completed &&
+    (isToday(task.dueDate) || (isPast(task.dueDate) && !isToday(task.dueDate)));
+
   const handleClick = (e: React.MouseEvent) => {
     // Only trigger if the click is not on the checkbox or actions area
     const target = e.target as HTMLElement;
@@ -180,23 +186,32 @@ function TaskCard({
 
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
+          {/* Priority badge with smooth appearance */}
           <motion.div
             key={task.priority}
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            layout
           >
-            <Badge
-              variant="outline"
-              className={`text-xs transition-colors duration-300 ${priorityColor}`}
-            >
+            <Badge variant="outline" className={`text-xs ${priorityColor}`}>
               {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
             </Badge>
           </motion.div>
+
+          {/* Due date with smooth appearance */}
           {task.dueDate && (
-            <span className={`text-xs ${dueDateUrgency}`}>
+            <motion.span
+              key={task.dueDate.toString()}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className={`text-xs ${dueDateUrgency} ${
+                shouldPulse ? "animate-pulse" : ""
+              }`}
+            >
               {formatDate(task.dueDate)}
-            </span>
+            </motion.span>
           )}
         </div>
       </div>
