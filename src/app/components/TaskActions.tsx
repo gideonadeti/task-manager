@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal, CheckCircle2, Circle } from "lucide-react";
+import { MoreHorizontal, CheckCircle2, Circle, Pencil } from "lucide-react";
 import { useState } from "react";
 import { Task } from "@prisma/client";
 import dynamic from "next/dynamic";
@@ -129,8 +129,10 @@ export default function TaskActions({ task }: TaskActionsProps) {
             </>
           )}
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleUpdate}>Edit</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleUpdate}>
+          <Pencil className="mr-2 size-4" />
+          Edit
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => setDeleteOpen(true)}
