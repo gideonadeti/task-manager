@@ -19,7 +19,6 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import useGroups from "@/hooks/use-groups";
 import { toggleComplete } from "@/lib/api/query-functions";
-import { ExtendedGroup } from "@/types";
 import formatDate from "../format-date";
 
 // Dynamically import heavy dialog components to reduce initial bundle size
@@ -57,14 +56,10 @@ export default function TaskDetailsDialog({
 
     onMutate: async (previousStatus) => {
       await queryClient.cancelQueries({ queryKey: ["tasks"] });
-      await queryClient.cancelQueries({ queryKey: ["groups"] });
 
       const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
-      const previousGroups = queryClient.getQueryData<ExtendedGroup[]>([
-        "groups",
-      ]);
 
-      if (!task) return { previousTasks, previousGroups };
+      if (!task) return { previousTasks };
 
       queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
         oldTasks?.map((t) =>
@@ -72,25 +67,11 @@ export default function TaskDetailsDialog({
         )
       );
 
-      queryClient.setQueryData<ExtendedGroup[]>(["groups"], (oldGroups) =>
-        oldGroups?.map((group) =>
-          group.tasks.some((t) => t.id === task.id)
-            ? {
-                ...group,
-                tasks: group.tasks.map((t) =>
-                  t.id === task.id ? { ...t, completed: !previousStatus } : t
-                ),
-              }
-            : group
-        )
-      );
-
-      return { previousTasks, previousGroups };
+      return { previousTasks };
     },
     onError: (error, previousStatus, context) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(["tasks"], context.previousTasks);
-        queryClient.setQueryData(["groups"], context.previousGroups);
       }
 
       const description =
@@ -103,7 +84,6 @@ export default function TaskDetailsDialog({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
     },
   });
 
