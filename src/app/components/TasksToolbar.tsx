@@ -3,9 +3,25 @@
 import { useState, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { Cross2Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { Plus, X } from "lucide-react";
+import {
+  Plus,
+  X,
+  Trash2,
+  CheckCircle2,
+  Tag,
+  FolderInput,
+  ChevronDown,
+} from "lucide-react";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 import {
   InputGroup,
   InputGroupAddon,
@@ -113,23 +129,80 @@ export default function TasksToolbar({
         {/* Selected Tasks Counter and Create Task Button */}
         <div className="flex items-center gap-2">
           {selectedTaskCount > 0 && (
-            <div className="flex items-center gap-2 h-11 sm:h-8 min-h-[44px] sm:min-h-0 px-3 rounded-md bg-muted border border-border">
-              <span className="text-sm text-muted-foreground">
-                {selectedTaskCount} {selectedTaskCount === 1 ? "task" : "tasks"} selected
-              </span>
-              {onDeselectAll && (
-                <button
-                  onClick={onDeselectAll}
-                  className="ml-1 p-0.5 rounded-sm hover:bg-muted-foreground/20 transition-colors"
-                  aria-label="Deselect all tasks"
-                >
-                  <X className="h-3.5 w-3.5 text-muted-foreground" />
-                </button>
-              )}
-            </div>
+            <>
+              <div className="flex items-center gap-2 h-11 sm:h-8 min-h-[44px] sm:min-h-0 px-3 rounded-md bg-muted border border-border">
+                <span className="text-sm text-muted-foreground">
+                  {selectedTaskCount}{" "}
+                  {selectedTaskCount === 1 ? "task" : "tasks"} selected
+                </span>
+                {onDeselectAll && (
+                  <button
+                    onClick={onDeselectAll}
+                    className="ml-1 p-0.5 rounded-sm hover:bg-muted-foreground/20 transition-colors"
+                    aria-label="Deselect all tasks"
+                  >
+                    <X className="h-3.5 w-3.5 text-muted-foreground" />
+                  </button>
+                )}
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="h-11 sm:h-8 min-h-[44px] sm:min-h-0 gap-2"
+                  >
+                    <span className="hidden sm:inline">Bulk Actions</span>
+                    <span className="sm:hidden">Actions</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Bulk Actions</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      // TODO: Implement mark as complete
+                      console.log("Mark as complete");
+                    }}
+                  >
+                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                    Mark as Complete
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      // TODO: Implement change priority
+                      console.log("Change priority");
+                    }}
+                  >
+                    <Tag className="mr-2 h-4 w-4" />
+                    Change Priority
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      // TODO: Implement move to group
+                      console.log("Move to group");
+                    }}
+                  >
+                    <FolderInput className="mr-2 h-4 w-4" />
+                    Move to Group
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      // TODO: Implement delete
+                      console.log("Delete");
+                    }}
+                    className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
           )}
-          <Button 
-            onClick={() => setOpenAdd(true)} 
+          <Button
+            onClick={() => setOpenAdd(true)}
             className="h-11 sm:h-8 min-h-[44px] sm:min-h-0 gap-2 w-full sm:w-auto"
           >
             <Plus className="h-4 w-4" />
