@@ -387,20 +387,9 @@ export default function LandingPage() {
                   <motion.div
                     key={feature.title}
                     initial={{ opacity: 0, y: 20 }}
-                    whileInView={
-                      prefersReducedMotion
-                        ? { opacity: 1, y: 0 }
-                        : { opacity: 1, y: 0, scale: 1 }
-                    }
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
-                    transition={{
-                      duration: 0.4,
-                      delay: index * 0.1,
-                      ease: "easeOut",
-                    }}
-                    whileHover={
-                      prefersReducedMotion ? {} : { scale: 1.02, y: -2 }
-                    }
+                    transition={getTransition(index * 0.05)}
                     className="flex flex-col gap-4 p-5 sm:p-6 rounded-xl border border-border bg-card hover:bg-card/80 hover:shadow-md hover:border-primary/20 transition-all duration-300 cursor-default focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
                     tabIndex={0}
                     role="article"
