@@ -16,6 +16,18 @@ import { handleApiError } from "@/lib/api/error-handler";
 const useGroups = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const groupsQuery = useQuery<Group[], AxiosError>({
+    queryKey: ["groups"],
+    queryFn: () => readGroups(),
+  });
+
+  // Error handling effect
+  useEffect(() => {
+    if (groupsQuery.isError) {
+      handleApiError(groupsQuery.error);
+    }
+  }, [groupsQuery.isError, groupsQuery.error]);
+
   const createGroupMutation = useMutation<
     Group,
     AxiosError,
@@ -95,18 +107,6 @@ const useGroups = () => {
       });
     },
   });
-
-  const groupsQuery = useQuery<Group[], AxiosError>({
-    queryKey: ["groups"],
-    queryFn: () => readGroups(),
-  });
-
-  // Error handling effect
-  useEffect(() => {
-    if (groupsQuery.status === "error" && groupsQuery.error) {
-      handleApiError(groupsQuery.error);
-    }
-  }, [groupsQuery.error, groupsQuery.status]);
 
   return {
     createGroupMutation,
