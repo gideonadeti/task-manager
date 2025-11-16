@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Cross2Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import {
@@ -36,6 +36,18 @@ const AddTask = dynamic(() => import("@/components/add-task"), {
   loading: () => null, // No loading indicator needed as it's only shown when dialog is open
 });
 
+const BulkPriorityDialog = dynamic(() => import("./BulkPriorityDialog"), {
+  loading: () => null,
+});
+
+const BulkGroupDialog = dynamic(() => import("./BulkGroupDialog"), {
+  loading: () => null,
+});
+
+const BulkDeleteDialog = dynamic(() => import("./BulkDeleteDialog"), {
+  loading: () => null,
+});
+
 interface TasksToolbarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
@@ -44,6 +56,11 @@ interface TasksToolbarProps {
   tasks?: Task[];
   selectedTaskCount?: number;
   onDeselectAll?: () => void;
+  onBulkMarkComplete?: () => void;
+  onBulkUpdatePriority?: (priority: string) => void;
+  onBulkUpdateGroup?: (groupId: string) => void;
+  onBulkDelete?: () => void;
+  isBulkDeletePending?: boolean;
 }
 
 export default function TasksToolbar({
@@ -54,8 +71,16 @@ export default function TasksToolbar({
   tasks,
   selectedTaskCount = 0,
   onDeselectAll,
+  onBulkMarkComplete,
+  onBulkUpdatePriority,
+  onBulkUpdateGroup,
+  onBulkDelete,
+  isBulkDeletePending = false,
 }: TasksToolbarProps) {
   const [openAdd, setOpenAdd] = useState(false);
+  const [openPriorityDialog, setOpenPriorityDialog] = useState(false);
+  const [openGroupDialog, setOpenGroupDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const isFiltered = searchQuery.trim() !== "" || selectedPriorities.length > 0;
   const { groupId } = useParams();
   const { groupsQuery } = useGroups();
@@ -90,6 +115,17 @@ export default function TasksToolbar({
     onSearchChange("");
     onPrioritiesChange([]);
   };
+
+  // Close delete dialog when mutation completes successfully
+  useEffect(() => {
+    if (!isBulkDeletePending && openDeleteDialog) {
+      // Close dialog after a brief delay to allow UI to update
+      const timer = setTimeout(() => {
+        setOpenDeleteDialog(false);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isBulkDeletePending, openDeleteDialog]);
 
   return (
     <>
@@ -161,8 +197,7 @@ export default function TasksToolbar({
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={() => {
-                      // TODO: Implement mark as complete
-                      console.log("Mark as complete");
+                      onBulkMarkComplete?.();
                     }}
                   >
                     <CheckCircle2 className="mr-2 h-4 w-4" />
@@ -170,8 +205,7 @@ export default function TasksToolbar({
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => {
-                      // TODO: Implement change priority
-                      console.log("Change priority");
+                      setOpenPriorityDialog(true);
                     }}
                   >
                     <Tag className="mr-2 h-4 w-4" />
@@ -179,8 +213,7 @@ export default function TasksToolbar({
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => {
-                      // TODO: Implement move to group
-                      console.log("Move to group");
+                      setOpenGroupDialog(true);
                     }}
                   >
                     <FolderInput className="mr-2 h-4 w-4" />
@@ -189,8 +222,7 @@ export default function TasksToolbar({
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={() => {
-                      // TODO: Implement delete
-                      console.log("Delete");
+                      setOpenDeleteDialog(true);
                     }}
                     className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
                   >
@@ -216,6 +248,36 @@ export default function TasksToolbar({
         setOpen={setOpenAdd}
         defaultGroupId={defaultGroupId}
       />
+      {onBulkUpdatePriority && (
+        <BulkPriorityDialog
+          open={openPriorityDialog}
+          onOpenChange={setOpenPriorityDialog}
+          onSelectPriority={onBulkUpdatePriority}
+        />
+      )}
+      {onBulkUpdateGroup && (
+        <BulkGroupDialog
+          open={openGroupDialog}
+          onOpenChange={setOpenGroupDialog}
+          onSelectGroup={onBulkUpdateGroup}
+        />
+      )}
+      {onBulkDelete && (
+        <BulkDeleteDialog
+          open={openDeleteDialog}
+          onOpenChange={(open) => {
+            if (!isBulkDeletePending) {
+              setOpenDeleteDialog(open);
+            }
+          }}
+          onConfirm={() => {
+            onBulkDelete();
+            // Close dialog on success will be handled by watching isPending
+          }}
+          taskCount={selectedTaskCount}
+          isPending={isBulkDeletePending}
+        />
+      )}
     </>
   );
 }
