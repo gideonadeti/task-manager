@@ -98,12 +98,17 @@ function TasksList({ data }: TasksListProps) {
     [selectedTaskIds, bulkUpdateGroupMutation, handleDeselectAll]
   );
 
-  const handleBulkDelete = useCallback(() => {
-    const taskIdsArray = Array.from(selectedTaskIds);
-    // Optimistically deselect immediately
-    handleDeselectAll();
-    bulkDeleteMutation.mutate(taskIdsArray);
-  }, [selectedTaskIds, bulkDeleteMutation, handleDeselectAll]);
+  const handleBulkDelete = useCallback(
+    (onOpenChange: (open: boolean) => void) => {
+      const taskIdsArray = Array.from(selectedTaskIds);
+      bulkDeleteMutation.mutate({
+        taskIds: taskIdsArray,
+        onOpenChange,
+        handleDeselectAll,
+      });
+    },
+    [selectedTaskIds, bulkDeleteMutation, handleDeselectAll]
+  );
 
   return (
     <div className="h-full overflow-y-auto p-2 pb-4 sm:pb-14 space-y-4">
