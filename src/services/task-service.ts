@@ -34,7 +34,7 @@ export class TaskService {
 
   /**
    * Create a new task
-   * Validates that the task title doesn't already exist
+   * Validates that the task title doesn't already exist in the same group
    */
   static async createTask(
     userId: string,
@@ -46,10 +46,10 @@ export class TaskService {
       dueDate?: Date | null;
     }
   ): Promise<Task> {
-    // Check if task already exists
-    const existingTask = await dbReadTask(data.title, userId);
+    // Check if task already exists in the same group
+    const existingTask = await dbReadTask(data.title, userId, data.groupId);
     if (existingTask) {
-      throw new ConflictError("Task already exists.");
+      throw new ConflictError("Task already exists in this group.");
     }
 
     return await dbCreateTask(
@@ -65,6 +65,7 @@ export class TaskService {
   /**
    * Update a task
    * Validates that the task belongs to the user
+   * Validates that the task title doesn't already exist in the target group
    * Merges provided fields with existing task data
    */
   static async updateTask(
@@ -95,13 +96,33 @@ export class TaskService {
       throw new NotFoundError("Task", taskId);
     }
 
+    // Determine the target group (new groupId if provided, otherwise existing)
+    const targetGroupId = data.groupId ?? existingTask.groupId;
+    const newTitle = data.title ?? existingTask.title;
+    const isTitleChanging = data.title && data.title !== existingTask.title;
+    const isGroupChanging = data.groupId && data.groupId !== existingTask.groupId;
+
+    // If title or group is being changed, check if the new title already exists in the target group
+    // (excluding the current task)
+    if (isTitleChanging || isGroupChanging) {
+      const existingTaskWithSameName = await dbReadTask(
+        newTitle,
+        userId,
+        targetGroupId
+      );
+      // If found a task with the same name in the same group, and it's not the current task
+      if (existingTaskWithSameName && existingTaskWithSameName.id !== taskId) {
+        throw new ConflictError("Task with this name already exists in this group.");
+      }
+    }
+
     return await dbUpdateTask(
       taskId,
-      data.title ?? existingTask.title,
+      newTitle,
       data.description ?? existingTask.description ?? "",
       data.dueDate !== undefined ? data.dueDate : existingTask.dueDate,
       data.priority ?? existingTask.priority,
-      data.groupId ?? existingTask.groupId,
+      targetGroupId,
       userId
     );
   }
