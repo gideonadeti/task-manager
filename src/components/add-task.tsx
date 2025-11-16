@@ -20,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import CustomDialogFooter from "@/app/components/custom-dialog-footer";
 import {
   Form,
@@ -63,16 +64,22 @@ export default function AddTask({
 }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-[95vw] sm:max-w-[425px]" hideCloseButton preventClose>
-        <DialogHeader>
+      <DialogContent
+        className="max-w-[95vw] sm:max-w-[425px] max-h-[95vh] sm:max-h-[90vh] flex flex-col p-0"
+        hideCloseButton
+        preventClose
+      >
+        <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4 flex-shrink-0">
           <DialogTitle>{task ? "Edit Task" : "Add Task"}</DialogTitle>
         </DialogHeader>
-        <AddTaskForm
-          task={task}
-          open={open}
-          setOpen={setOpen}
-          defaultGroupId={defaultGroupId}
-        />
+        <div className="flex-1 min-h-0">
+          <AddTaskForm
+            task={task}
+            open={open}
+            setOpen={setOpen}
+            defaultGroupId={defaultGroupId}
+          />
+        </div>
       </DialogContent>
     </Dialog>
   );
@@ -181,195 +188,207 @@ function AddTaskForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Title <span className="text-destructive">*</span>
-              </FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
+        {/* Scrollable form content */}
+        <ScrollArea className="h-[68vh]">
+          <div className="space-y-3 sm:space-y-4 p-4 sm:p-0">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Title <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description (optional)</FormLabel>
-              <FormControl>
-                <Textarea className="resize-none" rows={3} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description (optional)</FormLabel>
+                  <FormControl>
+                    <Textarea className="resize-none" rows={3} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="priority"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Priority <span className="text-destructive">*</span>
-              </FormLabel>
-              <FormControl>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select priority" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="groupId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Group <span className="text-destructive">*</span>
-              </FormLabel>
-              <FormControl>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select group" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {groupsQuery.data?.map((group) => (
-                      <SelectItem key={group.id} value={group.id}>
-                        {group.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="dueDate"
-          render={({ field }) => {
-            const handleDateSelect = (date: Date | undefined) => {
-              if (date) {
-                // Set time to start of day (00:00:00) when date is selected
-                const newDate = new Date(date);
-                newDate.setHours(0, 0, 0, 0);
-                field.onChange(newDate);
-                // Reset time to 00:00 when date changes
-                setTimeValue("00:00");
-              } else {
-                field.onChange(undefined);
-                setTimeValue("00:00");
-              }
-            };
-
-            const handleTimeChange = (time: string) => {
-              setTimeValue(time);
-              // Update the date field with the new time
-              if (field.value) {
-                const date = new Date(field.value);
-                const [hours, minutes] = time.split(":").map(Number);
-                date.setHours(hours || 0, minutes || 0, 0, 0);
-                field.onChange(date);
-              }
-            };
-
-            const displayValue = field.value
-              ? `${format(new Date(field.value), "PPP")} at ${timeValue}`
-              : "Pick a due date and time";
-
-            return (
-              <FormItem className="flex flex-col">
-                <FormLabel>Due Date & Time (optional)</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {displayValue}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="flex w-auto max-w-[95vw] sm:max-w-none flex-col space-y-2 p-2" align="start">
-                    <Select
-                      onValueChange={(value) => {
-                        const date = new Date();
-                        date.setDate(date.getDate() + parseInt(value, 10));
-                        date.setHours(0, 0, 0, 0);
-                        handleDateSelect(date);
-                      }}
-                    >
+            <FormField
+              control={form.control}
+              name="priority"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Priority <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select" />
+                        <SelectValue placeholder="Select priority" />
                       </SelectTrigger>
-                      <SelectContent position="popper">
-                        <SelectItem value="0">Today</SelectItem>
-                        <SelectItem value="1">Tomorrow</SelectItem>
-                        <SelectItem value="3">In 3 days</SelectItem>
-                        <SelectItem value="7">In a week</SelectItem>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
                       </SelectContent>
                     </Select>
-                    <div className="rounded-md border">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={handleDateSelect}
-                      />
-                    </div>
-                    {field.value && (
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <label className="text-sm font-medium">Time:</label>
-                          <Input
-                            type="time"
-                            value={timeValue}
-                            onChange={(e) => handleTimeChange(e.target.value)}
-                            className="flex-1"
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="groupId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Group <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select group" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {groupsQuery.data?.map((group) => (
+                          <SelectItem key={group.id} value={group.id}>
+                            {group.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="dueDate"
+              render={({ field }) => {
+                const handleDateSelect = (date: Date | undefined) => {
+                  if (date) {
+                    // Set time to start of day (00:00:00) when date is selected
+                    const newDate = new Date(date);
+                    newDate.setHours(0, 0, 0, 0);
+                    field.onChange(newDate);
+                    // Reset time to 00:00 when date changes
+                    setTimeValue("00:00");
+                  } else {
+                    field.onChange(undefined);
+                    setTimeValue("00:00");
+                  }
+                };
+
+                const handleTimeChange = (time: string) => {
+                  setTimeValue(time);
+                  // Update the date field with the new time
+                  if (field.value) {
+                    const date = new Date(field.value);
+                    const [hours, minutes] = time.split(":").map(Number);
+                    date.setHours(hours || 0, minutes || 0, 0, 0);
+                    field.onChange(date);
+                  }
+                };
+
+                const displayValue = field.value
+                  ? `${format(new Date(field.value), "PPP")} at ${timeValue}`
+                  : "Pick a due date and time";
+
+                return (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Due Date & Time (optional)</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {displayValue}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="flex w-auto max-w-[95vw] sm:max-w-none flex-col space-y-2 p-2"
+                        align="start"
+                      >
+                        <Select
+                          onValueChange={(value) => {
+                            const date = new Date();
+                            date.setDate(date.getDate() + parseInt(value, 10));
+                            date.setHours(0, 0, 0, 0);
+                            handleDateSelect(date);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent position="popper">
+                            <SelectItem value="0">Today</SelectItem>
+                            <SelectItem value="1">Tomorrow</SelectItem>
+                            <SelectItem value="3">In 3 days</SelectItem>
+                            <SelectItem value="7">In a week</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <div className="rounded-md border">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={handleDateSelect}
                           />
                         </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDateSelect(undefined)}
-                          className="w-full"
-                        >
-                          Clear
-                        </Button>
-                      </div>
-                    )}
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
+                        {field.value && (
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <label className="text-sm font-medium">
+                                Time:
+                              </label>
+                              <Input
+                                type="time"
+                                value={timeValue}
+                                onChange={(e) =>
+                                  handleTimeChange(e.target.value)
+                                }
+                                className="flex-1"
+                              />
+                            </div>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDateSelect(undefined)}
+                              className="w-full"
+                            >
+                              Clear
+                            </Button>
+                          </div>
+                        )}
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+          </div>
+        </ScrollArea>
 
         <CustomDialogFooter
           isPending={
