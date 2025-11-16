@@ -5,16 +5,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { UserButton, useUser } from "@clerk/nextjs";
+import { Keyboard } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggler } from "@/components/theme-toggler";
+import { Button } from "@/components/ui/button";
+import { KeyboardShortcutsDialog } from "./KeyboardShortcutsDialog";
 
 export default function Header() {
   const { resolvedTheme } = useTheme();
   const { isLoaded } = useUser();
   const [mounted, setMounted] = React.useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
 
   // Avoid hydration mismatch
   React.useEffect(() => {
@@ -30,6 +34,17 @@ export default function Header() {
         <SidebarTrigger />
         <Separator orientation="vertical" className="mx-1 sm:mx-2 h-8" />
         <ThemeToggler />
+        <Separator orientation="vertical" className="mx-1 sm:mx-2 h-8" />
+        <Button
+          variant="outline"
+          size="icon"
+          className="size-8 rounded-full"
+          onClick={() => setShortcutsOpen(true)}
+          title="Keyboard shortcuts"
+        >
+          <Keyboard className="h-[1.2rem] w-[1.2rem]" />
+          <span className="sr-only">Keyboard shortcuts</span>
+        </Button>
       </div>
 
       {/* Center section: Logo and Title */}
@@ -92,6 +107,11 @@ export default function Header() {
           />
         )}
       </div>
+
+      <KeyboardShortcutsDialog
+        open={shortcutsOpen}
+        onOpenChange={setShortcutsOpen}
+      />
     </header>
   );
 }
