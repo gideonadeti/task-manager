@@ -62,7 +62,7 @@ interface TasksToolbarProps {
   onBulkMarkComplete?: () => void;
   onBulkUpdatePriority?: (priority: string) => void;
   onBulkUpdateGroup?: (groupId: string) => void;
-  onBulkDelete?: () => void;
+  onBulkDelete?: (onOpenChange: (open: boolean) => void) => void;
   isBulkDeletePending?: boolean;
 }
 
@@ -338,8 +338,7 @@ export default function TasksToolbar({
           open={openDeleteDialog}
           onOpenChange={setOpenDeleteDialog}
           onConfirm={() => {
-            onBulkDelete();
-            // Close dialog on success will be handled by watching isPending
+            onBulkDelete(setOpenDeleteDialog);
           }}
           taskCount={selectedTaskCount}
           isPending={isBulkDeletePending}
