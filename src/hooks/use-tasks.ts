@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { z } from "zod";
 
 import {
@@ -18,6 +19,7 @@ import { formSchema } from "@/components/add-task";
 
 const useTasks = () => {
   const router = useRouter();
+  const params = useParams();
   const queryClient = useQueryClient();
   const tasksQuery = useQuery<Task[], AxiosError>({
     queryKey: ["tasks"],
@@ -156,11 +158,143 @@ const useTasks = () => {
     },
   });
 
+  const updateTaskPriorityMutation = useMutation<
+    Task,
+    AxiosError,
+    { taskId: string; priority: string },
+    {
+      previousTasks: Task[] | undefined;
+    }
+  >({
+    mutationFn: async ({ taskId, priority }) => {
+      const tasks = queryClient.getQueryData<Task[]>(["tasks"]) || [];
+      const task = tasks.find((t) => t.id === taskId);
+      if (!task) {
+        throw new Error("Task not found");
+      }
+      return updateTask(
+        task.id,
+        task.title,
+        task.description || "",
+        priority,
+        task.groupId,
+        task.dueDate || undefined
+      );
+    },
+    onMutate: async ({ taskId, priority }) => {
+      await queryClient.cancelQueries({ queryKey: ["tasks"] });
+
+      const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
+
+      queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
+        oldTasks?.map((t) =>
+          t.id === taskId
+            ? { ...t, priority: priority as "low" | "medium" | "high" }
+            : t
+        )
+      );
+
+      return { previousTasks };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(["tasks"], context.previousTasks);
+      }
+      handleApiError(error);
+    },
+    onSuccess: (updatedTask) => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.setQueryData<Task[]>(["tasks"], (prevTasks) =>
+        prevTasks?.map((task) =>
+          task.id === updatedTask.id ? updatedTask : task
+        )
+      );
+    },
+  });
+
+  const updateTaskGroupMutation = useMutation<
+    Task,
+    AxiosError,
+    { taskId: string; groupId: string },
+    {
+      previousTasks: Task[] | undefined;
+    }
+  >({
+    mutationFn: async ({ taskId, groupId }) => {
+      const tasks = queryClient.getQueryData<Task[]>(["tasks"]) || [];
+      const task = tasks.find((t) => t.id === taskId);
+      if (!task) {
+        throw new Error("Task not found");
+      }
+      return updateTask(
+        task.id,
+        task.title,
+        task.description || "",
+        task.priority,
+        groupId,
+        task.dueDate || undefined
+      );
+    },
+    onMutate: async ({ taskId, groupId }) => {
+      await queryClient.cancelQueries({ queryKey: ["tasks"] });
+
+      const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
+
+      queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
+        oldTasks?.map((t) => (t.id === taskId ? { ...t, groupId } : t))
+      );
+
+      // Navigate immediately to the new group if it's different from current
+      const currentGroupId = params?.groupId as string | undefined;
+      const groups = queryClient.getQueryData<Group[]>(["groups"]);
+      const newGroup = groups?.find((g) => g.id === groupId);
+      const isInboxGroup = newGroup?.name === "Inbox";
+      const targetGroupId = isInboxGroup ? "inbox" : groupId;
+
+      const specialViews = [
+        "today",
+        "tomorrow",
+        "this-week",
+        "overdue",
+        "completed",
+      ];
+      const isSpecialView = currentGroupId
+        ? specialViews.includes(currentGroupId)
+        : false;
+
+      if (
+        isSpecialView ||
+        !currentGroupId ||
+        currentGroupId !== targetGroupId
+      ) {
+        router.push(`/groups/${targetGroupId}`);
+      }
+
+      return { previousTasks };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(["tasks"], context.previousTasks);
+      }
+      handleApiError(error);
+    },
+    onSuccess: (updatedTask) => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.setQueryData<Task[]>(["tasks"], (prevTasks) =>
+        prevTasks?.map((task) =>
+          task.id === updatedTask.id ? updatedTask : task
+        )
+      );
+    },
+  });
+
   return {
     createTaskMutation,
     updateTaskMutation,
     deleteTaskMutation,
     toggleTaskCompletionMutation,
+    updateTaskPriorityMutation,
+    updateTaskGroupMutation,
     tasksQuery,
   };
 };
