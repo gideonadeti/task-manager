@@ -17,19 +17,6 @@ function TasksList({ data }: TasksListProps) {
     new Set()
   );
 
-  const handleDeselectAll = useCallback(() => {
-    setSelectedTaskIds(new Set());
-  }, []);
-
-  const {
-    bulkMarkCompleteMutation,
-    bulkUpdatePriorityMutation,
-    bulkUpdateGroupMutation,
-    bulkDeleteMutation,
-  } = useBulkTasks({
-    onSuccess: handleDeselectAll,
-  });
-
   const filteredTasks = useMemo(() => {
     let filtered = data;
 
@@ -52,6 +39,24 @@ function TasksList({ data }: TasksListProps) {
 
     return filtered;
   }, [data, searchQuery, selectedPriorities]);
+
+  const handleSelectAll = useCallback(() => {
+    const allTaskIds = new Set(filteredTasks.map((task) => task.id));
+    setSelectedTaskIds(allTaskIds);
+  }, [filteredTasks]);
+
+  const handleDeselectAll = useCallback(() => {
+    setSelectedTaskIds(new Set());
+  }, []);
+
+  const {
+    bulkMarkCompleteMutation,
+    bulkUpdatePriorityMutation,
+    bulkUpdateGroupMutation,
+    bulkDeleteMutation,
+  } = useBulkTasks({
+    onSuccess: handleDeselectAll,
+  });
 
   const handleSelectionChange = useCallback(
     (taskId: string, checked: boolean) => {
@@ -104,6 +109,7 @@ function TasksList({ data }: TasksListProps) {
         tasks={data}
         selectedTaskCount={selectedTaskIds.size}
         selectedTaskIds={selectedTaskIds}
+        onSelectAll={handleSelectAll}
         onDeselectAll={handleDeselectAll}
         onBulkMarkComplete={handleBulkMarkComplete}
         onBulkUpdatePriority={handleBulkUpdatePriority}
