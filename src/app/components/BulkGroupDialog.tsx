@@ -6,8 +6,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import useGroups from "@/hooks/use-groups";
 
 interface BulkGroupDialogProps {
@@ -30,24 +36,27 @@ export default function BulkGroupDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md max-h-[80vh] flex flex-col">
-        <DialogHeader>
+      <DialogContent className="max-w-md max-h-[80vh] flex flex-col p-0">
+        <DialogHeader className="px-6 pt-6 pb-4">
           <DialogTitle>Move to Group</DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-[68vh] pr-4">
-          <div className="space-y-2 py-4">
-            {groupsQuery.data?.map((group) => (
-              <Button
-                key={group.id}
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => handleSelect(group.id)}
-              >
-                {group.name}
-              </Button>
-            ))}
-          </div>
-        </ScrollArea>
+        <Command className="rounded-lg border-none">
+          <CommandInput placeholder="Search groups..." />
+          <CommandList className="max-h-[60vh]">
+            <CommandEmpty>No groups found.</CommandEmpty>
+            <CommandGroup>
+              {groupsQuery.data?.map((group) => (
+                <CommandItem
+                  key={group.id}
+                  onSelect={() => handleSelect(group.id)}
+                  className="cursor-pointer"
+                >
+                  {group.name}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
       </DialogContent>
     </Dialog>
   );
