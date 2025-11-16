@@ -169,7 +169,9 @@ function AddTaskForm({
     if (values.dueDate) {
       const date = new Date(values.dueDate);
       // Set time from time input, defaulting to current time if not provided
-      const [hours, minutes] = (timeValue || getCurrentTime()).split(":").map(Number);
+      const [hours, minutes] = (timeValue || getCurrentTime())
+        .split(":")
+        .map(Number);
       date.setHours(hours || 0, minutes || 0, 0, 0);
       combinedDueDate = date;
     }
@@ -308,14 +310,25 @@ function AddTaskForm({
               render={({ field }) => {
                 const handleDateSelect = (date: Date | undefined) => {
                   if (date) {
-                    // Set time to current time when date is selected
                     const newDate = new Date(date);
-                    const currentTime = getCurrentTime();
-                    const [hours, minutes] = currentTime.split(":").map(Number);
+                    // If editing an existing task, preserve the original time
+                    // Otherwise use current time for new tasks
+                    let timeToUse: string;
+                    if (task && field.value) {
+                      // Editing: preserve original time
+                      timeToUse = format(new Date(field.value), "HH:mm");
+                    } else if (timeValue) {
+                      // Use existing timeValue if available
+                      timeToUse = timeValue;
+                    } else {
+                      // New task: use current time
+                      timeToUse = getCurrentTime();
+                    }
+
+                    const [hours, minutes] = timeToUse.split(":").map(Number);
                     newDate.setHours(hours || 0, minutes || 0, 0, 0);
                     field.onChange(newDate);
-                    // Update time input to current time when date changes
-                    setTimeValue(currentTime);
+                    setTimeValue(timeToUse);
                   } else {
                     field.onChange(undefined);
                     setTimeValue(getCurrentTime());
@@ -363,10 +376,7 @@ function AddTaskForm({
                           onValueChange={(value) => {
                             const date = new Date();
                             date.setDate(date.getDate() + parseInt(value, 10));
-                            // Use current time instead of 00:00
-                            const currentTime = getCurrentTime();
-                            const [hours, minutes] = currentTime.split(":").map(Number);
-                            date.setHours(hours || 0, minutes || 0, 0, 0);
+                            // handleDateSelect will preserve time if editing, or use current time for new tasks
                             handleDateSelect(date);
                           }}
                         >
