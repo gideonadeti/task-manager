@@ -103,6 +103,7 @@ function TasksList({ data }: TasksListProps) {
         onPrioritiesChange={setSelectedPriorities}
         tasks={data}
         selectedTaskCount={selectedTaskIds.size}
+        selectedTaskIds={selectedTaskIds}
         onDeselectAll={handleDeselectAll}
         onBulkMarkComplete={handleBulkMarkComplete}
         onBulkUpdatePriority={handleBulkUpdatePriority}
