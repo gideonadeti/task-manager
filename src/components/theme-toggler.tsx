@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { motion, AnimatePresence } from "motion/react";
 
 import { Button } from "@/components/ui/button";
 
@@ -57,15 +58,46 @@ export function ThemeToggler() {
     );
   }
 
+  const isDark = resolvedTheme === "dark";
+
   return (
     <Button
       variant="outline"
       size="icon"
-      className="size-8 rounded-full"
+      className="size-8 rounded-full relative overflow-hidden"
       onClick={toggleTheme}
     >
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <AnimatePresence mode="wait" initial={false}>
+        {isDark ? (
+          <motion.div
+            key="moon"
+            initial={{ rotate: 90, scale: 0, opacity: 0 }}
+            animate={{ rotate: 0, scale: 1, opacity: 1 }}
+            exit={{ rotate: -90, scale: 0, opacity: 0 }}
+            transition={{
+              duration: 0.3,
+              ease: "easeInOut",
+            }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <Moon className="h-[1.2rem] w-[1.2rem]" />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="sun"
+            initial={{ rotate: -90, scale: 0, opacity: 0 }}
+            animate={{ rotate: 0, scale: 1, opacity: 1 }}
+            exit={{ rotate: 90, scale: 0, opacity: 0 }}
+            transition={{
+              duration: 0.3,
+              ease: "easeInOut",
+            }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <Sun className="h-[1.2rem] w-[1.2rem]" />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <span className="sr-only">Toggle theme</span>
     </Button>
   );
