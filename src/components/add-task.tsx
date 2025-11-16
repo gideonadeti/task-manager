@@ -74,7 +74,7 @@ export default function AddTask({
   const { groupsQuery } = useGroups();
   const { createTaskMutation, updateTaskMutation } = useTasks();
 
-  // Get current time in HH:mm format
+  // Get current time in 24-hour format (HH:mm) for HTML input
   const getCurrentTime = useCallback(() => {
     const now = new Date();
     return format(now, "HH:mm");
@@ -161,10 +161,8 @@ export default function AddTask({
     let combinedDueDate: Date | undefined = undefined;
     if (values.dueDate) {
       const date = new Date(values.dueDate);
-      // Set time from time input, defaulting to current time if not provided
-      const [hours, minutes] = (timeValue || getCurrentTime())
-        .split(":")
-        .map(Number);
+      const time24 = timeValue || getCurrentTime();
+      const [hours, minutes] = time24.split(":").map(Number);
       date.setHours(hours || 0, minutes || 0, 0, 0);
       combinedDueDate = date;
     }
@@ -360,17 +358,10 @@ export default function AddTask({
                         const newDate = new Date(date);
                         // If editing an existing task, preserve the original time
                         // Otherwise use current time for new tasks
-                        let timeToUse: string;
-                        if (task && field.value) {
-                          // Editing: preserve original time
-                          timeToUse = format(new Date(field.value), "HH:mm");
-                        } else if (timeValue) {
-                          // Use existing timeValue if available
-                          timeToUse = timeValue;
-                        } else {
-                          // New task: use current time
-                          timeToUse = getCurrentTime();
-                        }
+                        const timeToUse =
+                          (task && field.value
+                            ? format(new Date(field.value), "HH:mm")
+                            : timeValue) || getCurrentTime();
 
                         const [hours, minutes] = timeToUse
                           .split(":")
@@ -396,10 +387,10 @@ export default function AddTask({
                     };
 
                     const displayValue = field.value
-                      ? `${format(
+                      ? `${format(new Date(field.value), "PPP")} at ${format(
                           new Date(field.value),
-                          "PPP"
-                        )} at ${timeValue}`
+                          "h:mm a"
+                        )}`
                       : "Pick a due date and time";
 
                     return (
