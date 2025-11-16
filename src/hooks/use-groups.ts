@@ -105,6 +105,9 @@ const useGroups = () => {
       queryClient.setQueryData<Group[]>(["groups"], (prevGroups) => {
         return prevGroups?.filter((group) => group.id !== deletedGroup.id);
       });
+
+      // Navigate to inbox group after deletion
+      router.push("/groups/inbox");
     },
   });
 
