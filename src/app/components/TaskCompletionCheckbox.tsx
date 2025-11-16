@@ -6,7 +6,6 @@ import { useCallback } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { toggleComplete } from "@/lib/api/query-functions";
-import { ExtendedGroup } from "@/types";
 
 type TaskCompletionCheckboxProps = {
   taskId: string;
@@ -25,12 +24,8 @@ function TaskCompletionCheckbox({
 
     onMutate: async (previousStatus) => {
       await queryClient.cancelQueries({ queryKey: ["tasks"] });
-      await queryClient.cancelQueries({ queryKey: ["groups"] });
 
       const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
-      const previousGroups = queryClient.getQueryData<ExtendedGroup[]>([
-        "groups",
-      ]);
 
       queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
         oldTasks?.map((task) =>
@@ -38,29 +33,13 @@ function TaskCompletionCheckbox({
         )
       );
 
-      queryClient.setQueryData<ExtendedGroup[]>(["groups"], (oldGroups) =>
-        oldGroups?.map((group) =>
-          group.tasks.some((task) => task.id === taskId)
-            ? {
-                ...group,
-                tasks: group.tasks.map((task) =>
-                  task.id === taskId
-                    ? { ...task, completed: !previousStatus }
-                    : task
-                ),
-              }
-            : group
-        )
-      );
-
-      return { previousTasks, previousGroups };
+      return { previousTasks };
     },
     onError: (error, previousStatus, context) => {
       // Error is already handled and shown via toast
       // Rollback optimistic update on error
       if (context?.previousTasks) {
         queryClient.setQueryData(["tasks"], context.previousTasks);
-        queryClient.setQueryData(["groups"], context.previousGroups);
       }
 
       const description =
@@ -73,7 +52,6 @@ function TaskCompletionCheckbox({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
     },
   });
 
