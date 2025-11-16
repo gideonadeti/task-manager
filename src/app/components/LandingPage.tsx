@@ -86,9 +86,19 @@ export default function LandingPage() {
 
   const isLightTheme = mounted && resolvedTheme === "light";
 
-  // Smooth scroll to features section
+  // Smooth scroll to features section (accounting for sticky header)
   const scrollToFeatures = () => {
-    featuresRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (featuresRef.current) {
+      const headerOffset = 80; // Approximate header height
+      const elementPosition = featuresRef.current.getBoundingClientRect().top;
+      const offsetPosition =
+        elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
   };
 
   // Handle reduced motion preference
@@ -118,14 +128,12 @@ export default function LandingPage() {
         <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center justify-between gap-4">
           {/* Logo and Title - Left */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={getTransition()}
             className="relative inline-flex items-center gap-2"
             whileHover="hover"
+            initial="initial"
           >
             <Link href="/" className="relative inline-flex items-center gap-2">
-              {/* Background glow effect */}
+              {/* Background glow effect with Motion animation */}
               <motion.span
                 className="absolute inset-0 blur-xl bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 rounded-lg -z-10"
                 variants={{
@@ -141,7 +149,8 @@ export default function LandingPage() {
                   ease: "easeOut",
                 }}
               />
-              {/* Logo */}
+
+              {/* Logo with scale/pulse animation */}
               <motion.div
                 className="relative z-10"
                 variants={{
@@ -195,7 +204,8 @@ export default function LandingPage() {
                   />
                 )}
               </motion.div>
-              {/* Title */}
+
+              {/* Main text with Motion gradient animation */}
               <motion.span
                 className="relative z-10 block text-xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]"
                 style={{
@@ -348,7 +358,7 @@ export default function LandingPage() {
         {/* Features Section */}
         <section
           ref={featuresRef}
-          className="py-12 sm:py-16 lg:py-20 px-6 sm:px-8 lg:px-12 bg-muted/30"
+          className="py-12 sm:py-16 lg:py-20 pb-20 sm:pb-24 lg:pb-28 px-6 sm:px-8 lg:px-12 bg-muted/30"
         >
           <div className="max-w-7xl mx-auto">
             <motion.div
@@ -370,7 +380,7 @@ export default function LandingPage() {
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 mt-8 sm:mt-12">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
