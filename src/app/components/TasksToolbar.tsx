@@ -57,6 +57,7 @@ interface TasksToolbarProps {
   tasks?: Task[];
   selectedTaskCount?: number;
   selectedTaskIds?: Set<string>;
+  onSelectAll?: () => void;
   onDeselectAll?: () => void;
   onBulkMarkComplete?: () => void;
   onBulkUpdatePriority?: (priority: string) => void;
@@ -73,6 +74,7 @@ export default function TasksToolbar({
   tasks,
   selectedTaskCount = 0,
   selectedTaskIds,
+  onSelectAll,
   onDeselectAll,
   onBulkMarkComplete,
   onBulkUpdatePriority,
@@ -199,75 +201,91 @@ export default function TasksToolbar({
         </div>
         {/* Selected Tasks Counter and Create Task Button */}
         <div className="flex items-center gap-2">
-          {selectedTaskCount > 0 && (
+          {tasks && tasks.length > 0 && (
             <>
-              <div className="flex items-center gap-2 h-11 sm:h-8 min-h-[44px] sm:min-h-0 px-3 rounded-md bg-muted border border-border">
-                <span className="text-sm text-muted-foreground">
-                  {selectedTaskCount}{" "}
-                  {selectedTaskCount === 1 ? "task" : "tasks"} selected
-                </span>
-                {onDeselectAll && (
-                  <button
-                    onClick={onDeselectAll}
-                    className="ml-1 p-0.5 rounded-sm hover:bg-muted-foreground/20 transition-colors"
-                    aria-label="Deselect all tasks"
-                  >
-                    <X className="h-3.5 w-3.5 text-muted-foreground" />
-                  </button>
-                )}
-              </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+              {selectedTaskCount > 0 ? (
+                <div className="flex items-center gap-2 h-11 sm:h-8 min-h-[44px] sm:min-h-0 px-3 rounded-md bg-muted border border-border">
+                  <span className="text-sm text-muted-foreground">
+                    {selectedTaskCount}{" "}
+                    {selectedTaskCount === 1 ? "task" : "tasks"} selected
+                  </span>
+                  {onDeselectAll && (
+                    <button
+                      onClick={onDeselectAll}
+                      className="ml-1 p-0.5 rounded-sm hover:bg-muted-foreground/20 transition-colors"
+                      aria-label="Deselect all tasks"
+                    >
+                      <X className="h-3.5 w-3.5 text-muted-foreground" />
+                    </button>
+                  )}
+                </div>
+              ) : (
+                onSelectAll && (
                   <Button
                     variant="outline"
-                    className="h-11 sm:h-8 min-h-[44px] sm:min-h-0 gap-2"
+                    onClick={onSelectAll}
+                    className="h-11 sm:h-8 min-h-[44px] sm:min-h-0"
+                    aria-label="Select all tasks"
                   >
-                    <span className="hidden sm:inline">Bulk Actions</span>
-                    <span className="sm:hidden">Actions</span>
-                    <ChevronDown className="h-4 w-4" />
+                    <span className="hidden sm:inline">Select All</span>
+                    <span className="sm:hidden">Select All</span>
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>Bulk Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => {
-                      onBulkMarkComplete?.();
-                    }}
-                  >
-                    {React.createElement(bulkToggleIcon, {
-                      className: "mr-2 h-4 w-4",
-                    })}
-                    {bulkToggleLabel}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setOpenPriorityDialog(true);
-                    }}
-                  >
-                    <Tag className="mr-2 h-4 w-4" />
-                    Change Priority
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setOpenGroupDialog(true);
-                    }}
-                  >
-                    <FolderInput className="mr-2 h-4 w-4" />
-                    Move to Group
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setOpenDeleteDialog(true);
-                    }}
-                    className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                )
+              )}
+              {selectedTaskCount > 0 && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="h-11 sm:h-8 min-h-[44px] sm:min-h-0 gap-2"
+                    >
+                      <span className="hidden sm:inline">Bulk Actions</span>
+                      <span className="sm:hidden">Actions</span>
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>Bulk Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => {
+                        onBulkMarkComplete?.();
+                      }}
+                    >
+                      {React.createElement(bulkToggleIcon, {
+                        className: "mr-2 h-4 w-4",
+                      })}
+                      {bulkToggleLabel}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setOpenPriorityDialog(true);
+                      }}
+                    >
+                      <Tag className="mr-2 h-4 w-4" />
+                      Change Priority
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setOpenGroupDialog(true);
+                      }}
+                    >
+                      <FolderInput className="mr-2 h-4 w-4" />
+                      Move to Group
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setOpenDeleteDialog(true);
+                      }}
+                      className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </>
           )}
           <Button
