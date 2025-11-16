@@ -181,11 +181,11 @@ export default function AddTask({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        className="max-w-[95vw] sm:max-w-[425px] max-h-[95vh] sm:max-h-[90vh] flex flex-col p-0"
+        className="max-w-[95vw] sm:max-w-[425px] max-h-[95vh] sm:max-h-[90vh] flex flex-col"
         hideCloseButton
         preventClose
       >
-        <DialogHeader className="px-4 sm:px-2 pt-2 sm:pt-4 pb-3 flex-shrink-0">
+        <DialogHeader className="px-2">
           <DialogTitle>{task ? "Edit Task" : "Add Task"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -194,8 +194,8 @@ export default function AddTask({
             className="flex flex-col"
           >
             {/* Scrollable form content */}
-            <ScrollArea className="h-[68vh] flex-1">
-              <div className="space-y-3 sm:space-y-4 p-2 pr-4 sm:pr-2">
+            <ScrollArea className="h-[68vh]">
+              <div className="space-y-3 sm:space-y-4 p-2 pr-4">
                 <FormField
                   control={form.control}
                   name="title"
@@ -219,7 +219,7 @@ export default function AddTask({
                     <FormItem>
                       <FormLabel>Description (optional)</FormLabel>
                       <FormControl>
-                        <Textarea className="resize-none" rows={3} {...field} />
+                        <Textarea rows={3} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -432,7 +432,7 @@ export default function AddTask({
               </div>
             </ScrollArea>
 
-            <div className="p-2 sm:p-0">
+            <div>
               <CustomDialogFooter
                 isPending={
                   createTaskMutation.isPending || updateTaskMutation.isPending
