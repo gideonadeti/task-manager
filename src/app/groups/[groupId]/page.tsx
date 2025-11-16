@@ -15,6 +15,27 @@ export default function GroupPage() {
   const { groupsQuery } = useGroups();
   const { tasksQuery } = useTasks();
 
+  const pageTitle = useMemo(() => {
+    switch (groupId) {
+      case "inbox":
+        return "Inbox";
+      case "today":
+        return "Today";
+      case "tomorrow":
+        return "Tomorrow";
+      case "this-week":
+        return "This Week";
+      case "overdue":
+        return "Overdue";
+      case "completed":
+        return "Completed";
+      default: {
+        const group = groupsQuery.data?.find((g) => g.id === groupId);
+        return group?.name || "Tasks";
+      }
+    }
+  }, [groupId, groupsQuery.data]);
+
   const filteredTasks = useMemo(() => {
     if (!tasksQuery.data?.length) return [];
 
@@ -82,6 +103,12 @@ export default function GroupPage() {
 
   return (
     <div className="flex-1 px-2 sm:px-4 lg:px-6 py-2 sm:py-4">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-2">
+        {pageTitle}
+      </h1>
+      <p className="text-sm text-muted-foreground mb-4 sm:mb-6">
+        {filteredTasks.length} {filteredTasks.length === 1 ? "task" : "tasks"}
+      </p>
       {filteredTasks.length > 0 ? (
         <TasksList data={filteredTasks} />
       ) : (
