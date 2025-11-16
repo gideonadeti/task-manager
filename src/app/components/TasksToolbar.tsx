@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { Cross2Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import {
@@ -179,17 +179,6 @@ export default function TasksToolbar({
     onPrioritiesChange([]);
   };
 
-  // Close delete dialog when mutation completes successfully
-  useEffect(() => {
-    if (!isBulkDeletePending && openDeleteDialog) {
-      // Close dialog after a brief delay to allow UI to update
-      const timer = setTimeout(() => {
-        setOpenDeleteDialog(false);
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [isBulkDeletePending, openDeleteDialog]);
-
   return (
     <>
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-2">
@@ -347,11 +336,7 @@ export default function TasksToolbar({
       {onBulkDelete && (
         <BulkDeleteDialog
           open={openDeleteDialog}
-          onOpenChange={(open) => {
-            if (!isBulkDeletePending) {
-              setOpenDeleteDialog(open);
-            }
-          }}
+          onOpenChange={setOpenDeleteDialog}
           onConfirm={() => {
             onBulkDelete();
             // Close dialog on success will be handled by watching isPending

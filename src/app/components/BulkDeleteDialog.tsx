@@ -27,7 +27,7 @@ export default function BulkDeleteDialog({
   return (
     <AlertDialog
       open={open}
-      onOpenChange={(isOpen) => isOpen && onOpenChange(isOpen)}
+      onOpenChange={onOpenChange}
     >
       <AlertDialogContent className="max-w-md">
         <AlertDialogHeader>
