@@ -103,10 +103,16 @@ function AddTaskForm({
   const params = useParams();
   const currentGroupId = params?.groupId as string | undefined;
 
+  // Get current time in HH:mm format
+  const getCurrentTime = () => {
+    const now = new Date();
+    return format(now, "HH:mm");
+  };
+
   const defaultDueDate = task?.dueDate ? new Date(task.dueDate) : undefined;
   const defaultTime = defaultDueDate
     ? format(defaultDueDate, "HH:mm")
-    : "00:00";
+    : getCurrentTime();
 
   const [timeValue, setTimeValue] = useState(defaultTime);
   const [openAddGroup, setOpenAddGroup] = useState(false);
@@ -139,7 +145,7 @@ function AddTaskForm({
   useEffect(() => {
     if (!open && !task) {
       form.reset();
-      setTimeValue("00:00");
+      setTimeValue(getCurrentTime());
     }
   }, [open, task, form]);
 
@@ -148,7 +154,7 @@ function AddTaskForm({
     if (task?.dueDate) {
       setTimeValue(format(new Date(task.dueDate), "HH:mm"));
     } else {
-      setTimeValue("00:00");
+      setTimeValue(getCurrentTime());
     }
   }, [task]);
 
@@ -162,8 +168,8 @@ function AddTaskForm({
     let combinedDueDate: Date | undefined = undefined;
     if (values.dueDate) {
       const date = new Date(values.dueDate);
-      // Set time from time input, defaulting to 00:00 if not provided
-      const [hours, minutes] = (timeValue || "00:00").split(":").map(Number);
+      // Set time from time input, defaulting to current time if not provided
+      const [hours, minutes] = (timeValue || getCurrentTime()).split(":").map(Number);
       date.setHours(hours || 0, minutes || 0, 0, 0);
       combinedDueDate = date;
     }
@@ -302,15 +308,17 @@ function AddTaskForm({
               render={({ field }) => {
                 const handleDateSelect = (date: Date | undefined) => {
                   if (date) {
-                    // Set time to start of day (00:00:00) when date is selected
+                    // Set time to current time when date is selected
                     const newDate = new Date(date);
-                    newDate.setHours(0, 0, 0, 0);
+                    const currentTime = getCurrentTime();
+                    const [hours, minutes] = currentTime.split(":").map(Number);
+                    newDate.setHours(hours || 0, minutes || 0, 0, 0);
                     field.onChange(newDate);
-                    // Reset time to 00:00 when date changes
-                    setTimeValue("00:00");
+                    // Update time input to current time when date changes
+                    setTimeValue(currentTime);
                   } else {
                     field.onChange(undefined);
-                    setTimeValue("00:00");
+                    setTimeValue(getCurrentTime());
                   }
                 };
 
@@ -355,7 +363,10 @@ function AddTaskForm({
                           onValueChange={(value) => {
                             const date = new Date();
                             date.setDate(date.getDate() + parseInt(value, 10));
-                            date.setHours(0, 0, 0, 0);
+                            // Use current time instead of 00:00
+                            const currentTime = getCurrentTime();
+                            const [hours, minutes] = currentTime.split(":").map(Number);
+                            date.setHours(hours || 0, minutes || 0, 0, 0);
                             handleDateSelect(date);
                           }}
                         >
