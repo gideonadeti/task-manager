@@ -1,6 +1,13 @@
 "use client";
 
-import { MoreHorizontal, CheckCircle2, Circle, Pencil } from "lucide-react";
+import {
+  MoreHorizontal,
+  CheckCircle2,
+  Circle,
+  Pencil,
+  Tag,
+  FolderInput,
+} from "lucide-react";
 import { useState } from "react";
 import { Task } from "@prisma/client";
 import dynamic from "next/dynamic";
@@ -16,6 +23,21 @@ const AddTask = dynamic(() => import("@/components/add-task"), {
 const DeleteDialog = dynamic(() => import("@/components/delete-dialog"), {
   loading: () => null, // No loading indicator needed as it's only shown when dialog is open
 });
+
+const BulkPriorityDialog = dynamic(
+  () => import("@/app/components/BulkPriorityDialog"),
+  {
+    loading: () => null,
+  }
+);
+
+const BulkGroupDialog = dynamic(
+  () => import("@/app/components/BulkGroupDialog"),
+  {
+    loading: () => null,
+  }
+);
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,7 +55,13 @@ export default function TaskActions({ task }: TaskActionsProps) {
   const [taskUpdate, setTaskUpdate] = useState<Task | undefined>();
   const [updateOpen, setUpdateOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const { toggleTaskCompletionMutation } = useTasks();
+  const [priorityOpen, setPriorityOpen] = useState(false);
+  const [groupOpen, setGroupOpen] = useState(false);
+  const {
+    toggleTaskCompletionMutation,
+    updateTaskPriorityMutation,
+    updateTaskGroupMutation,
+  } = useTasks();
 
   function handleUpdate() {
     setTaskUpdate(task);
@@ -44,6 +72,20 @@ export default function TaskActions({ task }: TaskActionsProps) {
     toggleTaskCompletionMutation.mutate({
       taskId: task.id,
       previousStatus: task.completed,
+    });
+  }
+
+  function handlePriorityChange(priority: string) {
+    updateTaskPriorityMutation.mutate({
+      taskId: task.id,
+      priority,
+    });
+  }
+
+  function handleGroupChange(groupId: string) {
+    updateTaskGroupMutation.mutate({
+      taskId: task.id,
+      groupId,
     });
   }
 
@@ -73,6 +115,15 @@ export default function TaskActions({ task }: TaskActionsProps) {
             </>
           )}
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setPriorityOpen(true)}>
+          <Tag className="mr-2 h-4 w-4" />
+          Change Priority
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setGroupOpen(true)}>
+          <FolderInput className="mr-2 h-4 w-4" />
+          Move to Group
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleUpdate}>
           <Pencil className="mr-2 size-4" />
           Edit
@@ -87,6 +138,16 @@ export default function TaskActions({ task }: TaskActionsProps) {
       </DropdownMenuContent>
 
       <AddTask task={taskUpdate} open={updateOpen} setOpen={setUpdateOpen} />
+      <BulkPriorityDialog
+        open={priorityOpen}
+        onOpenChange={setPriorityOpen}
+        onSelectPriority={handlePriorityChange}
+      />
+      <BulkGroupDialog
+        open={groupOpen}
+        onOpenChange={setGroupOpen}
+        onSelectGroup={handleGroupChange}
+      />
       <DeleteDialog
         type="task"
         deleteId={task.id}
