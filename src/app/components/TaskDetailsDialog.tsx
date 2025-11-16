@@ -159,12 +159,7 @@ export default function TaskDetailsDialog({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-[95vw] sm:max-w-[500px] max-h-[95vh] sm:max-h-[90vh] flex flex-col p-0">
           <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4 flex-shrink-0">
-            <DialogTitle className="flex items-center gap-2">
-              {task.completed ? (
-                <CheckCircle2 className="h-5 w-5 shrink-0 text-green-600 dark:text-green-400" />
-              ) : (
-                <Circle className="h-5 w-5 shrink-0 text-gray-400" />
-              )}
+            <DialogTitle>
               <span
                 className={
                   task.completed ? "line-through text-muted-foreground" : ""
