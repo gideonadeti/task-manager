@@ -34,7 +34,7 @@ export default function BulkGroupDialog({
         <DialogHeader>
           <DialogTitle>Move to Group</DialogTitle>
         </DialogHeader>
-        <ScrollArea className="flex-1 pr-4">
+        <ScrollArea className="h-[68vh] pr-4">
           <div className="space-y-2 py-4">
             {groupsQuery.data?.map((group) => (
               <Button
@@ -52,4 +52,3 @@ export default function BulkGroupDialog({
     </Dialog>
   );
 }
-
