@@ -7,6 +7,7 @@ import {
   updateTask,
   deleteTask,
 } from "@/lib/api/query-functions";
+import useTasks from "@/hooks/use-tasks";
 
 interface UseBulkTasksProps {
   onSuccess?: () => void; // Callback to clear selection after success
@@ -15,34 +16,52 @@ interface UseBulkTasksProps {
 const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { tasksQuery } = useTasks();
 
-  // Bulk mark as complete mutation
+  // Bulk toggle completion mutation (marks complete if incomplete, marks incomplete if complete)
   const bulkMarkCompleteMutation = useMutation({
     mutationFn: async (taskIds: string[]) => {
-      // Get current task states
-      const tasks = queryClient.getQueryData<Task[]>(["tasks"]) || [];
+      // Get current task states from tasksQuery
+      const tasks = tasksQuery.data || [];
       const tasksToUpdate = tasks.filter((t) => taskIds.includes(t.id));
 
-      // Toggle all incomplete tasks to complete
-      const incompleteTasks = tasksToUpdate.filter((t) => !t.completed);
-      const promises = incompleteTasks.map((task) =>
+      if (tasksToUpdate.length === 0) {
+        return { taskIds, markedComplete: false, count: 0 };
+      }
+
+      // Toggle each task based on its current state
+      const promises = tasksToUpdate.map((task) =>
         toggleComplete(task.id, task.completed)
       );
 
       await Promise.all(promises);
-      return taskIds;
+
+      // Determine action: if any task was incomplete, we marked them complete
+      // Otherwise, we marked them incomplete
+      const allWereIncomplete = tasksToUpdate.every((t) => !t.completed);
+      const markedComplete = allWereIncomplete;
+
+      return { taskIds, markedComplete, count: tasksToUpdate.length };
     },
     onMutate: async (taskIds) => {
       await queryClient.cancelQueries({ queryKey: ["tasks"] });
 
       const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
+      const tasks = tasksQuery.data || [];
 
+      // Toggle each selected task's completion state
       queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
-        oldTasks?.map((task) =>
-          taskIds.includes(task.id) && !task.completed
-            ? { ...task, completed: true }
-            : task
-        )
+        oldTasks?.map((task) => {
+          if (taskIds.includes(task.id)) {
+            const currentTask = tasks.find((t) => t.id === task.id);
+            // Toggle based on current state from tasksQuery
+            return {
+              ...task,
+              completed: currentTask ? !currentTask.completed : !task.completed,
+            };
+          }
+          return task;
+        })
       );
 
       return { previousTasks };
@@ -60,15 +79,24 @@ const useBulkTasks = ({ onSuccess }: UseBulkTasksProps = {}) => {
 
       toast({ description, variant: "destructive" });
     },
-    onSuccess: (taskIds) => {
+    onSuccess: ({ markedComplete, count }) => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
       onSuccess?.();
-      toast({
-        description: `${taskIds.length} task${
-          taskIds.length === 1 ? "" : "s"
-        } marked as complete`,
-      });
+
+      // Show appropriate toast message based on what was done
+      if (markedComplete) {
+        toast({
+          description: `${count} task${
+            count === 1 ? "" : "s"
+          } marked as complete`,
+        });
+      } else {
+        toast({
+          description: `${count} task${
+            count === 1 ? "" : "s"
+          } marked as incomplete`,
+        });
+      }
     },
   });
 
