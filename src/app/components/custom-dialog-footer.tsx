@@ -53,7 +53,7 @@ const CustomDialogFooter = ({
   }
 
   return (
-    <DialogFooter className="flex-row justify-end gap-2 sm:space-x-2 p-2">
+    <DialogFooter className="flex-row justify-end gap-2 sm:space-x-2">
       <Button
         type="button"
         variant="secondary"
