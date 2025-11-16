@@ -148,6 +148,32 @@ export default function TasksToolbar({
     return groupId as string;
   }, [groupId, groupsQuery.data]);
 
+  // Get the group ID to exclude from bulk move dialog
+  // Only exclude if it's an actual group (not a special view)
+  const excludeGroupId = useMemo(() => {
+    if (!groupId || !groupsQuery.data) return undefined;
+
+    // Special views that don't represent a single group - don't exclude anything
+    const specialViews = [
+      "today",
+      "tomorrow",
+      "this-week",
+      "overdue",
+      "completed",
+    ];
+    if (specialViews.includes(groupId as string)) {
+      return undefined;
+    }
+
+    // Handle "inbox" route - exclude the Inbox group
+    if (groupId === "inbox") {
+      return groupsQuery.data.find((group) => group.name === "Inbox")?.id;
+    }
+
+    // For actual group IDs (UUIDs), exclude them
+    return groupId as string;
+  }, [groupId, groupsQuery.data]);
+
   const handleReset = () => {
     onSearchChange("");
     onPrioritiesChange([]);
@@ -315,6 +341,7 @@ export default function TasksToolbar({
           open={openGroupDialog}
           onOpenChange={setOpenGroupDialog}
           onSelectGroup={onBulkUpdateGroup}
+          excludeGroupId={excludeGroupId}
         />
       )}
       {onBulkDelete && (
