@@ -55,7 +55,7 @@ export default function Header() {
           whileHover="hover"
           initial="initial"
         >
-          <Link href="/groups/today" className="relative inline-flex items-center gap-2">
+          <Link href="/" className="relative inline-flex items-center gap-2">
             {/* Background glow effect with Motion animation */}
             <motion.span
               className="absolute inset-0 blur-xl bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 rounded-lg -z-10"
