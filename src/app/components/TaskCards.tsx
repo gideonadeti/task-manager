@@ -13,6 +13,7 @@ import {
   EmptyDescription,
 } from "@/components/ui/empty";
 import dynamic from "next/dynamic";
+import { motion, AnimatePresence } from "motion/react";
 import TaskCompletionCheckbox from "./TaskCompletionCheckbox";
 import TaskActions from "./TaskActions";
 import formatDate from "../format-date";
@@ -39,6 +40,7 @@ const getPriorityColor = (priority: string): string => {
       return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-800";
   }
 };
+
 
 // Memoized due date urgency function
 const getDueDateUrgency = (dueDate: Date | null): string | null => {
@@ -69,13 +71,50 @@ function TaskCard({ task, onCardClick }: TaskCardProps) {
   };
 
   return (
-    <div
+    <motion.div
+      layout
+      variants={{
+        hidden: { opacity: 0, scale: 0.9, y: 20 },
+        visible: { opacity: 1, scale: 1, y: 0 },
+        exit: { opacity: 0, scale: 0.9, y: -20 },
+      }}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      transition={{
+        opacity: { duration: 0.2 },
+        scale: { duration: 0.2 },
+        y: { duration: 0.2 },
+        layout: { duration: 0.3, ease: "easeInOut" },
+      }}
+      whileHover={{
+        scale: 1.02,
+        y: -4,
+        transition: { duration: 0.2 },
+      }}
       onClick={handleClick}
-      className={`relative border rounded-lg p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer ${
-        task.completed ? "bg-muted/50 opacity-75" : "bg-card"
+      className={`relative border rounded-lg p-3 sm:p-4 shadow-sm cursor-pointer ${
+        task.completed ? "bg-muted/50" : "bg-card"
       }`}
+      style={{
+        boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+      }}
+      onHoverStart={(e) => {
+        e.currentTarget.style.boxShadow =
+          "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)";
+      }}
+      onHoverEnd={(e) => {
+        e.currentTarget.style.boxShadow =
+          "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)";
+      }}
     >
-      <div className="flex items-start justify-between gap-2 mb-3">
+      <motion.div
+        animate={{
+          opacity: task.completed ? 0.75 : 1,
+        }}
+        transition={{ duration: 0.3 }}
+        className="flex items-start justify-between gap-2 mb-3"
+      >
         <div className="flex items-start gap-3 flex-1 min-w-0">
           <div
             className="mt-1 flex-shrink-0"
@@ -87,13 +126,17 @@ function TaskCard({ task, onCardClick }: TaskCardProps) {
             />
           </div>
           <div className="flex-1 min-w-0">
-            <h3
+            <motion.h3
+              animate={{
+                textDecoration: task.completed ? "line-through" : "none",
+              }}
+              transition={{ duration: 0.3 }}
               className={`font-semibold text-base mb-1 line-clamp-1 ${
-                task.completed ? "line-through text-muted-foreground" : ""
+                task.completed ? "text-muted-foreground" : ""
               }`}
             >
               {task.title}
-            </h3>
+            </motion.h3>
             {task.description && (
               <p className="text-sm text-muted-foreground line-clamp-2">
                 {task.description}
@@ -104,13 +147,23 @@ function TaskCard({ task, onCardClick }: TaskCardProps) {
         <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
           <TaskActions task={task} />
         </div>
-      </div>
+      </motion.div>
 
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
-          <Badge variant="outline" className={`text-xs ${priorityColor}`}>
-            {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-          </Badge>
+          <motion.div
+            key={task.priority}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Badge
+              variant="outline"
+              className={`text-xs transition-colors duration-300 ${priorityColor}`}
+            >
+              {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+            </Badge>
+          </motion.div>
           {task.dueDate && (
             <span className={`text-xs ${dueDateUrgency}`}>
               {formatDate(task.dueDate)}
@@ -118,7 +171,7 @@ function TaskCard({ task, onCardClick }: TaskCardProps) {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -156,11 +209,27 @@ function TaskCards({ tasks }: TaskCardsProps) {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 pb-4">
-        {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} onCardClick={handleCardClick} />
-        ))}
-      </div>
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 pb-4"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              delayChildren: 0.1,
+              staggerChildren: 0.05,
+            },
+          },
+        }}
+      >
+        <AnimatePresence mode="sync">
+          {tasks.map((task) => (
+            <TaskCard key={task.id} task={task} onCardClick={handleCardClick} />
+          ))}
+        </AnimatePresence>
+      </motion.div>
       <TaskDetailsDialog
         task={selectedTask}
         open={detailsOpen}
