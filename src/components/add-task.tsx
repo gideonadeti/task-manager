@@ -8,10 +8,11 @@ import { useRouter, useParams } from "next/navigation";
 
 import useGroups from "@/hooks/use-groups";
 import useTasks from "@/hooks/use-tasks";
+import AddGroup from "./add-group";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Plus } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import {
@@ -108,6 +109,7 @@ function AddTaskForm({
     : "00:00";
 
   const [timeValue, setTimeValue] = useState(defaultTime);
+  const [openAddGroup, setOpenAddGroup] = useState(false);
 
   const defaultValues = {
     title: task?.title || "",
@@ -149,6 +151,11 @@ function AddTaskForm({
       setTimeValue("00:00");
     }
   }, [task]);
+
+  // Handle group creation success - auto-select in form
+  const handleGroupCreated = (groupId: string) => {
+    form.setValue("groupId", groupId);
+  };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Combine date and time if date is set
@@ -255,20 +262,35 @@ function AddTaskForm({
                   <FormLabel>
                     Group <span className="text-destructive">*</span>
                   </FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select group" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {groupsQuery.data?.map((group) => (
-                          <SelectItem key={group.id} value={group.id}>
-                            {group.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
+                  <div className="flex gap-2">
+                    <FormControl className="flex-1">
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select group" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {groupsQuery.data?.map((group) => (
+                            <SelectItem key={group.id} value={group.id}>
+                              {group.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setOpenAddGroup(true)}
+                      className="shrink-0"
+                      title="Add new group"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -404,6 +426,11 @@ function AddTaskForm({
           />
         </div>
       </form>
+      <AddGroup
+        open={openAddGroup}
+        onOpenChange={setOpenAddGroup}
+        onGroupCreated={handleGroupCreated}
+      />
     </Form>
   );
 }
