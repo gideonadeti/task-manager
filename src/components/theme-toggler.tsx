@@ -15,11 +15,38 @@ export function ThemeToggler() {
     setMounted(true);
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = React.useCallback(() => {
     // Use resolvedTheme to determine actual theme (handles system theme)
     const currentTheme = resolvedTheme || theme || "light";
     setTheme(currentTheme === "light" ? "dark" : "light");
-  };
+  }, [resolvedTheme, theme, setTheme]);
+
+  // Keyboard shortcut: Ctrl/Cmd + Alt/Option + D to toggle theme
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key === "d" &&
+        (event.metaKey || event.ctrlKey) &&
+        event.altKey &&
+        !event.shiftKey
+      ) {
+        // Don't trigger if user is typing in an input field
+        const target = event.target as HTMLElement;
+        if (
+          target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable
+        ) {
+          return;
+        }
+        event.preventDefault();
+        toggleTheme();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [toggleTheme]);
 
   if (!mounted) {
     return (
