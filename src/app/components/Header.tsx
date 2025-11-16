@@ -15,7 +15,7 @@ export default function Header() {
   const isLightTheme = resolvedTheme === "light";
 
   return (
-    <header className="relative flex items-center justify-between border-b py-2 px-2 sm:px-4 gap-2">
+    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-between border-b py-2 px-2 sm:px-4 gap-2">
       {/* Left section: Sidebar trigger and theme toggler */}
       <div className="flex items-center gap-1 flex-shrink-0">
         <SidebarTrigger />
