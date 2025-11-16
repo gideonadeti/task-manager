@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/empty";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "motion/react";
-import TaskCompletionCheckbox from "./TaskCompletionCheckbox";
+import TaskSelectionCheckbox from "./TaskSelectionCheckbox";
 import TaskActions from "./TaskActions";
 import formatDate from "../format-date";
 
@@ -41,7 +41,6 @@ const getPriorityColor = (priority: string): string => {
   }
 };
 
-
 // Memoized due date urgency function
 const getDueDateUrgency = (dueDate: Date | null): string | null => {
   if (!dueDate) return null;
@@ -60,9 +59,16 @@ const getDueDateUrgency = (dueDate: Date | null): string | null => {
 interface TaskCardProps {
   task: Task;
   onCardClick: (task: Task) => void;
+  isSelected: boolean;
+  onSelectionChange: (taskId: string, checked: boolean) => void;
 }
 
-function TaskCard({ task, onCardClick }: TaskCardProps) {
+function TaskCard({
+  task,
+  onCardClick,
+  isSelected,
+  onSelectionChange,
+}: TaskCardProps) {
   const priorityColor = getPriorityColor(task.priority);
   const dueDateUrgency = getDueDateUrgency(task.dueDate);
 
@@ -97,15 +103,22 @@ function TaskCard({ task, onCardClick }: TaskCardProps) {
         task.completed ? "bg-muted/50" : "bg-card"
       }`}
       style={{
-        boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+        boxShadow:
+          "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
       }}
       onHoverStart={(e) => {
-        e.currentTarget.style.boxShadow =
-          "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)";
+        const target = e.currentTarget as HTMLElement;
+        if (target) {
+          target.style.boxShadow =
+            "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)";
+        }
       }}
       onHoverEnd={(e) => {
-        e.currentTarget.style.boxShadow =
-          "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)";
+        const target = e.currentTarget as HTMLElement;
+        if (target) {
+          target.style.boxShadow =
+            "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)";
+        }
       }}
     >
       <motion.div
@@ -120,9 +133,9 @@ function TaskCard({ task, onCardClick }: TaskCardProps) {
             className="mt-1 flex-shrink-0"
             onClick={(e) => e.stopPropagation()}
           >
-            <TaskCompletionCheckbox
-              taskId={task.id}
-              completed={task.completed}
+            <TaskSelectionCheckbox
+              checked={isSelected}
+              onCheckedChange={(checked) => onSelectionChange(task.id, checked)}
             />
           </div>
           <div className="flex-1 min-w-0">
@@ -178,6 +191,9 @@ function TaskCard({ task, onCardClick }: TaskCardProps) {
 function TaskCards({ tasks }: TaskCardsProps) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(
+    new Set()
+  );
 
   const handleCardClick = useCallback((task: Task) => {
     setSelectedTask(task);
@@ -190,6 +206,21 @@ function TaskCards({ tasks }: TaskCardsProps) {
       setSelectedTask(null);
     }
   }, []);
+
+  const handleSelectionChange = useCallback(
+    (taskId: string, checked: boolean) => {
+      setSelectedTaskIds((prev) => {
+        const newSet = new Set(prev);
+        if (checked) {
+          newSet.add(taskId);
+        } else {
+          newSet.delete(taskId);
+        }
+        return newSet;
+      });
+    },
+    []
+  );
 
   if (tasks.length === 0) {
     return (
@@ -226,7 +257,13 @@ function TaskCards({ tasks }: TaskCardsProps) {
       >
         <AnimatePresence mode="sync">
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} onCardClick={handleCardClick} />
+            <TaskCard
+              key={task.id}
+              task={task}
+              onCardClick={handleCardClick}
+              isSelected={selectedTaskIds.has(task.id)}
+              onSelectionChange={handleSelectionChange}
+            />
           ))}
         </AnimatePresence>
       </motion.div>
