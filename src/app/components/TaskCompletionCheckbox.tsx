@@ -1,6 +1,6 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Task } from "@prisma/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useCallback } from "react";
 
@@ -17,7 +17,6 @@ function TaskCompletionCheckbox({
   completed,
 }: TaskCompletionCheckboxProps) {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
   const { mutate } = useMutation({
     mutationFn: (previousStatus: boolean) =>
       toggleComplete(taskId, previousStatus),
@@ -48,7 +47,7 @@ function TaskCompletionCheckbox({
             "Something went wrong"
           : "Something went wrong";
 
-      toast({ description, variant: "destructive" });
+      toast.error(description, { id: "toggle-completion-error" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });

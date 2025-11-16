@@ -6,7 +6,7 @@ import { isToday, isTomorrow, isPast } from "date-fns";
 import { Calendar, Clock, CheckCircle2, Circle, Tag } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,7 +46,6 @@ export default function TaskDetailsDialog({
   const [updateOpen, setUpdateOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   const { mutate: toggleCompletion } = useMutation({
     mutationFn: (previousStatus: boolean) => {
@@ -80,7 +79,7 @@ export default function TaskDetailsDialog({
             "Something went wrong"
           : "Something went wrong";
 
-      toast({ description, variant: "destructive" });
+      toast.error(description, { id: "toggle-completion-error" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
