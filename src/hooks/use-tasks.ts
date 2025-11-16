@@ -86,6 +86,10 @@ const useTasks = () => {
       dueDate?: Date;
       form: UseFormReturn<TaskFormData, TaskFormData, undefined>;
       setOpen: (open: boolean) => void;
+      router?: AppRouterInstance;
+      currentGroupId?: string;
+      groups?: Array<{ id: string; name: string }>;
+      originalGroupId?: string;
     }
   >({
     mutationFn: ({ id, title, description, priority, groupId, dueDate }) => {
@@ -94,7 +98,7 @@ const useTasks = () => {
     onError: (err) => {
       handleApiError(err);
     },
-    onSuccess: (updatedTask, { form, setOpen }) => {
+    onSuccess: (updatedTask, { form, setOpen, router, currentGroupId, groups, originalGroupId }) => {
       setOpen(false);
 
       toast.success("Task updated successfully");
@@ -104,6 +108,22 @@ const useTasks = () => {
           task.id === updatedTask.id ? updatedTask : task
         );
       });
+
+      // Navigate to the new group if it's different from the current one and different from original
+      if (router && currentGroupId && groups && originalGroupId) {
+        const newGroupId = updatedTask.groupId;
+        // Only navigate if group actually changed
+        if (newGroupId !== originalGroupId) {
+          const taskGroup = groups.find((g) => g.id === newGroupId);
+          const isInboxGroup = taskGroup?.name === "Inbox";
+          const targetGroupId = isInboxGroup ? "inbox" : newGroupId;
+
+          // Only redirect if we're not already on that group's page
+          if (currentGroupId !== targetGroupId) {
+            router.push(`/groups/${targetGroupId}`);
+          }
+        }
+      }
     },
   });
 
