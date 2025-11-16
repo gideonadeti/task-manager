@@ -3,10 +3,15 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Group } from "@prisma/client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
 
 import useGroups from "@/hooks/use-groups";
 import CustomDialogFooter from "@/app/components/custom-dialog-footer";
 import { createGroupSchema } from "@/lib/validations";
+import { createGroup } from "@/lib/api/query-functions";
+import { handleApiError } from "@/lib/api/error-handler";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -27,10 +32,42 @@ interface AddGroupProps {
   open: boolean;
   group?: Group;
   onOpenChange: (open: boolean) => void;
+  onGroupCreated?: (groupId: string) => void;
 }
 
-const AddGroup = ({ open, group, onOpenChange }: AddGroupProps) => {
+const AddGroup = ({ open, group, onOpenChange, onGroupCreated }: AddGroupProps) => {
   const { createGroupMutation, updateGroupMutation } = useGroups();
+  const queryClient = useQueryClient();
+  
+  // Custom mutation for when onGroupCreated callback is provided (no redirect)
+  const customCreateGroupMutation = useMutation<
+    Group,
+    AxiosError,
+    { name: string }
+  >({
+    mutationFn: ({ name }) => createGroup(name),
+    onError: (err) => {
+      handleApiError(err);
+    },
+    onSuccess: (createdGroup) => {
+      onOpenChange(false);
+      toast.success("Group created successfully");
+      // Update the groups cache
+      queryClient.setQueryData<Group[]>(["groups"], (prevGroups) => {
+        return [createdGroup, ...(prevGroups || [])];
+      });
+      // Call the custom callback if provided
+      if (onGroupCreated) {
+        onGroupCreated(createdGroup.id);
+      }
+    },
+  });
+
+  // Use custom mutation if callback is provided, otherwise use default
+  const activeCreateMutation = onGroupCreated 
+    ? customCreateGroupMutation 
+    : createGroupMutation;
+
   const form = useForm<z.infer<typeof createGroupSchema>>({
     resolver: zodResolver(createGroupSchema),
     defaultValues: {
@@ -55,7 +92,11 @@ const AddGroup = ({ open, group, onOpenChange }: AddGroupProps) => {
         onOpenChange,
       });
     } else {
-      createGroupMutation.mutate({ name: formValues.name, onOpenChange });
+      if (onGroupCreated) {
+        customCreateGroupMutation.mutate({ name: formValues.name });
+      } else {
+        createGroupMutation.mutate({ name: formValues.name, onOpenChange });
+      }
     }
   };
 
@@ -92,7 +133,7 @@ const AddGroup = ({ open, group, onOpenChange }: AddGroupProps) => {
 
             <CustomDialogFooter
               isPending={
-                createGroupMutation.isPending || updateGroupMutation.isPending
+                activeCreateMutation.isPending || updateGroupMutation.isPending
               }
               disabled={!form.formState.isDirty}
               handleCancel={() => {
