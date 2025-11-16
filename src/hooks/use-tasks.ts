@@ -103,23 +103,40 @@ const useTasks = () => {
   const deleteTaskMutation = useMutation<
     Task,
     AxiosError,
-    { id: string; onOpenChange: (open: boolean) => void }
+    { id: string; onOpenChange: (open: boolean) => void },
+    {
+      previousTasks: Task[] | undefined;
+    }
   >({
     mutationFn: ({ id }) => {
       return deleteTask(id);
     },
-    onError: (err) => {
-      // Error is already handled by React Query and shown via toast
-      // Logging here for debugging purposes
-      handleApiError(err);
-    },
-    onSuccess: (deletedTask, { onOpenChange }) => {
+    onMutate: async ({ id, onOpenChange }) => {
+      await queryClient.cancelQueries({ queryKey: ["tasks"] });
+
+      const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
+
+      queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
+        oldTasks?.filter((task) => task.id !== id)
+      );
+
+      // Close dialog immediately
       onOpenChange(false);
 
+      return { previousTasks };
+    },
+    onError: (err, variables, context) => {
+      // Rollback on error
+      if (context?.previousTasks) {
+        queryClient.setQueryData(["tasks"], context.previousTasks);
+      }
+      // Reopen dialog on error
+      variables.onOpenChange(true);
+      handleApiError(err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
       toast.success("Task deleted successfully");
-      queryClient.setQueryData<Task[]>(["tasks"], (prevTasks) => {
-        return prevTasks?.filter((task) => task.id !== deletedTask.id);
-      });
     },
   });
 
