@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { Group } from "@prisma/client";
 
 import useGroups from "@/hooks/use-groups";
@@ -33,9 +34,18 @@ const AddGroup = ({ open, group, onOpenChange }: AddGroupProps) => {
   const form = useForm<z.infer<typeof createGroupSchema>>({
     resolver: zodResolver(createGroupSchema),
     defaultValues: {
-      name: group?.name || "",
+      name: "",
     },
   });
+
+  // Reset form when dialog opens or group changes
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        name: group?.name || "",
+      });
+    }
+  }, [open, group, form]);
 
   const onSubmit = (formValues: z.infer<typeof createGroupSchema>) => {
     if (group) {
