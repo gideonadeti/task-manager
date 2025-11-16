@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import useGroups from "@/hooks/use-groups";
 import formatDate from "../format-date";
 
@@ -86,8 +87,10 @@ export default function TaskDetailsDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-[95vw] sm:max-w-[500px]">
-          <DialogHeader>
+        <DialogContent
+          className="max-w-[95vw] sm:max-w-[500px] max-h-[95vh] sm:max-h-[90vh] flex flex-col p-0"
+        >
+          <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4 flex-shrink-0">
             <DialogTitle className="flex items-center gap-2">
               {task.completed ? (
                 <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -104,88 +107,102 @@ export default function TaskDetailsDialog({
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
-            {task.description && (
-              <div>
-                <h4 className="text-sm font-medium mb-2">Description</h4>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                  {task.description}
-                </p>
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-                  <Tag className="h-4 w-4" />
-                  Priority
-                </h4>
-                <Badge
-                  variant="outline"
-                  className={`text-xs ${getPriorityColor(task.priority)}`}
-                >
-                  {task.priority.charAt(0).toUpperCase() +
-                    task.priority.slice(1)}
-                </Badge>
-              </div>
-
-              {task.dueDate && (
+          {/* Scrollable content */}
+          <ScrollArea className="flex-1 px-4 sm:px-6">
+            <div className="space-y-4 pr-4">
+              {task.description && (
                 <div>
-                  <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    Due Date
-                  </h4>
-                  <p className={`text-sm ${getDueDateUrgency(task.dueDate)}`}>
-                    {formatDate(new Date(task.dueDate))}
+                  <h4 className="text-sm font-medium mb-2">Description</h4>
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                    {task.description}
                   </p>
                 </div>
               )}
 
-              {group && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <h4 className="text-sm font-medium mb-2">Group</h4>
-                  <p className="text-sm text-muted-foreground">{group.name}</p>
+                  <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Tag className="h-4 w-4" />
+                    Priority
+                  </h4>
+                  <Badge
+                    variant="outline"
+                    className={`text-xs ${getPriorityColor(task.priority)}`}
+                  >
+                    {task.priority.charAt(0).toUpperCase() +
+                      task.priority.slice(1)}
+                  </Badge>
                 </div>
-              )}
 
-              <div>
-                <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  Status
-                </h4>
-                <p className="text-sm text-muted-foreground">
-                  {task.completed ? "Completed" : "In Progress"}
-                </p>
-              </div>
-            </div>
-
-            <div className="border-t pt-4 space-y-2">
-              <div>
-                <h4 className="text-sm font-medium mb-1">Created</h4>
-                <p className="text-xs text-muted-foreground">
-                  {formatDate(new Date(task.createdAt))}
-                </p>
-              </div>
-              {task.updatedAt &&
-                new Date(task.updatedAt).getTime() !==
-                  new Date(task.createdAt).getTime() && (
+                {task.dueDate && (
                   <div>
-                    <h4 className="text-sm font-medium mb-1">Last Updated</h4>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDate(new Date(task.updatedAt))}
+                    <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      Due Date
+                    </h4>
+                    <p className={`text-sm ${getDueDateUrgency(task.dueDate)}`}>
+                      {formatDate(new Date(task.dueDate))}
                     </p>
                   </div>
                 )}
-            </div>
 
-            <div className="flex gap-2 pt-2">
-              <Button variant="outline" onClick={handleEdit} className="flex-1">
+                {group && (
+                  <div>
+                    <h4 className="text-sm font-medium mb-2">Group</h4>
+                    <p className="text-sm text-muted-foreground">
+                      {group.name}
+                    </p>
+                  </div>
+                )}
+
+                <div>
+                  <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    Status
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    {task.completed ? "Completed" : "In Progress"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-t pt-4 space-y-2">
+                <div>
+                  <h4 className="text-sm font-medium mb-1">Created</h4>
+                  <p className="text-xs text-muted-foreground">
+                    {formatDate(new Date(task.createdAt))}
+                  </p>
+                </div>
+                {task.updatedAt &&
+                  new Date(task.updatedAt).getTime() !==
+                    new Date(task.createdAt).getTime() && (
+                    <div>
+                      <h4 className="text-sm font-medium mb-1">
+                        Last Updated
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        {formatDate(new Date(task.updatedAt))}
+                      </p>
+                    </div>
+                  )}
+              </div>
+            </div>
+          </ScrollArea>
+
+          {/* Fixed footer with action buttons */}
+          <div className="flex-shrink-0 border-t px-4 sm:px-6 py-3 sm:py-4 mt-auto">
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={handleEdit}
+                className="flex-1 h-11 sm:h-10 min-h-[44px] sm:min-h-0"
+              >
                 Edit
               </Button>
               <Button
                 variant="destructive"
                 onClick={handleDelete}
-                className="flex-1"
+                className="flex-1 h-11 sm:h-10 min-h-[44px] sm:min-h-0"
               >
                 Delete
               </Button>
