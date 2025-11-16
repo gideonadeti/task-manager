@@ -242,22 +242,7 @@ const useBulkTasks = () => {
       await Promise.all(promises);
       return taskIds;
     },
-    onMutate: async (taskIds) => {
-      await queryClient.cancelQueries({ queryKey: ["tasks"] });
-
-      const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
-
-      queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
-        oldTasks?.filter((task) => !taskIds.includes(task.id))
-      );
-
-      return { previousTasks };
-    },
-    onError: (error, taskIds, context) => {
-      if (context?.previousTasks) {
-        queryClient.setQueryData(["tasks"], context.previousTasks);
-      }
-
+    onError: (error) => {
       const description =
         error instanceof AxiosError && error.response
           ? (error.response.data as { error: string }).error ||
@@ -266,8 +251,13 @@ const useBulkTasks = () => {
 
       toast({ description, variant: "destructive" });
     },
-    onSuccess: () => {
+    onSuccess: (taskIds) => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      toast({
+        description: `${taskIds.length} task${
+          taskIds.length === 1 ? "" : "s"
+        } deleted`,
+      });
     },
   });
 

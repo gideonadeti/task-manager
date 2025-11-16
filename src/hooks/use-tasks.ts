@@ -103,39 +103,21 @@ const useTasks = () => {
   const deleteTaskMutation = useMutation<
     Task,
     AxiosError,
-    { id: string; onOpenChange: (open: boolean) => void },
-    {
-      previousTasks: Task[] | undefined;
-    }
+    { id: string; onOpenChange: (open: boolean) => void }
   >({
     mutationFn: ({ id }) => {
       return deleteTask(id);
     },
-    onMutate: async ({ id, onOpenChange }) => {
-      await queryClient.cancelQueries({ queryKey: ["tasks"] });
-
-      const previousTasks = queryClient.getQueryData<Task[]>(["tasks"]);
-
-      queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) =>
-        oldTasks?.filter((task) => task.id !== id)
-      );
-
-      // Close dialog immediately
-      onOpenChange(false);
-
-      return { previousTasks };
-    },
-    onError: (err, variables, context) => {
-      // Rollback on error
-      if (context?.previousTasks) {
-        queryClient.setQueryData(["tasks"], context.previousTasks);
-      }
-      // Reopen dialog on error
-      variables.onOpenChange(true);
+    onError: (err) => {
       handleApiError(err);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    onSuccess: (deletedTask, { onOpenChange }) => {
+      onOpenChange(false);
+
+      toast.success("Task deleted successfully");
+      queryClient.setQueryData<Task[]>(["tasks"], (prevTasks) => {
+        return prevTasks?.filter((task) => task.id !== deletedTask.id);
+      });
     },
   });
 
