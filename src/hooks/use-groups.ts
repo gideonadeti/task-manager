@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   createGroup,
@@ -9,24 +10,18 @@ import {
   updateGroup,
   deleteGroup,
 } from "@/lib/api/query-functions";
-import { UseFormReturn } from "react-hook-form";
 import { Group, Task } from "@prisma/client";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { handleApiError } from "@/lib/api/error-handler";
 
-type GroupFormData = {
-  name: string;
-};
-
 const useGroups = () => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const createGroupMutation = useMutation<
     Group,
     AxiosError,
     {
       name: string;
-      form: UseFormReturn<GroupFormData, GroupFormData, undefined>;
-      router: AppRouterInstance;
+      onOpenChange: (open: boolean) => void;
     }
   >({
     mutationFn: ({ name }) => {
@@ -35,10 +30,10 @@ const useGroups = () => {
     onError: (err) => {
       handleApiError(err);
     },
-    onSuccess: (createdGroup, { form, router }) => {
-      toast.success("Group created successfully");
+    onSuccess: (createdGroup, { onOpenChange }) => {
+      onOpenChange(false);
 
-      form.reset();
+      toast.success("Group created successfully");
       queryClient.setQueryData<Group[]>(["groups"], (prevGroups) => {
         return [createdGroup, ...(prevGroups || [])];
       });
@@ -53,9 +48,6 @@ const useGroups = () => {
     {
       id: string;
       name: string;
-      form: UseFormReturn<GroupFormData, GroupFormData, undefined>;
-      router: AppRouterInstance;
-      open: boolean;
       onOpenChange: (open: boolean) => void;
     }
   >({
@@ -65,11 +57,10 @@ const useGroups = () => {
     onError: (err) => {
       handleApiError(err);
     },
-    onSuccess: (updatedGroup, { form, router, open, onOpenChange }) => {
-      onOpenChange(open);
+    onSuccess: (updatedGroup, { onOpenChange }) => {
+      onOpenChange(false);
 
       toast.success("Group updated successfully");
-      form.reset();
       queryClient.setQueryData<Group[]>(["groups"], (prevGroups) => {
         return prevGroups?.map((group) =>
           group.id === updatedGroup.id ? updatedGroup : group
