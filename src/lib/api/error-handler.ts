@@ -18,5 +18,5 @@ export function handleApiError(
     }
   }
 
-  toast.error(description);
+  toast.error(description, { id: "api-error" });
 }
