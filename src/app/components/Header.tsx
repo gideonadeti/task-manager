@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { Keyboard } from "lucide-react";
+import { motion } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -49,45 +50,123 @@ export default function Header() {
 
       {/* Center section: Logo and Title */}
       <div className="flex-1 flex justify-center min-w-0">
-        <Link
-          href="/groups/today"
-          className="group relative inline-flex items-center gap-2 transition-all"
+        <motion.div
+          className="relative inline-flex items-center gap-2"
+          whileHover="hover"
+          initial="initial"
         >
-          {/* Background glow effect */}
-          <span className="absolute inset-0 blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-500 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 rounded-lg -z-10" />
+          <Link href="/groups/today" className="relative inline-flex items-center gap-2">
+            {/* Background glow effect with Motion animation */}
+            <motion.span
+              className="absolute inset-0 blur-xl bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 rounded-lg -z-10"
+              variants={{
+                initial: { opacity: 0, scale: 0.95, filter: "blur(16px)" },
+                hover: {
+                  opacity: 0.6,
+                  scale: 1.05,
+                  filter: "blur(24px)",
+                },
+              }}
+              transition={{
+                duration: 0.5,
+                ease: "easeOut",
+              }}
+            />
 
-          {/* Logo */}
-          <div className="relative z-10 transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] group-hover:dark:drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]">
-            {!mounted ? (
-              <div className="h-8 w-8" />
-            ) : isLightTheme ? (
-              <Image
-                key="light"
-                src="/images/logo-light.png"
-                alt="Taskflow"
-                width={32}
-                height={32}
-                className="h-8 w-8"
-                priority
-              />
-            ) : (
-              <Image
-                key="dark"
-                src="/images/logo-dark.png"
-                alt="Taskflow"
-                width={32}
-                height={32}
-                className="h-8 w-8"
-                priority
-              />
-            )}
-          </div>
+            {/* Logo with scale/pulse animation */}
+            <motion.div
+              className="relative z-10"
+              variants={{
+                initial: {
+                  scale: 1,
+                  filter: isLightTheme
+                    ? "drop-shadow(0 0 0px rgba(59,130,246,0))"
+                    : "drop-shadow(0 0 0px rgba(96,165,250,0))",
+                },
+                hover: {
+                  scale: [1, 1.1, 1.05],
+                  filter: isLightTheme
+                    ? [
+                        "drop-shadow(0 0 0px rgba(59,130,246,0))",
+                        "drop-shadow(0 0 12px rgba(59,130,246,0.6))",
+                        "drop-shadow(0 0 8px rgba(59,130,246,0.5))",
+                      ]
+                    : [
+                        "drop-shadow(0 0 0px rgba(96,165,250,0))",
+                        "drop-shadow(0 0 12px rgba(96,165,250,0.6))",
+                        "drop-shadow(0 0 8px rgba(96,165,250,0.5))",
+                      ],
+                },
+              }}
+              transition={{
+                duration: 0.4,
+                ease: "easeOut",
+              }}
+            >
+              {!mounted ? (
+                <div className="h-8 w-8" />
+              ) : isLightTheme ? (
+                <Image
+                  key="light"
+                  src="/images/logo-light.png"
+                  alt="Taskflow"
+                  width={32}
+                  height={32}
+                  className="h-8 w-8"
+                  priority
+                />
+              ) : (
+                <Image
+                  key="dark"
+                  src="/images/logo-dark.png"
+                  alt="Taskflow"
+                  width={32}
+                  height={32}
+                  className="h-8 w-8"
+                  priority
+                />
+              )}
+            </motion.div>
 
-          {/* Main text */}
-          <span className="relative z-10 block text-xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient group-hover:drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] group-hover:dark:drop-shadow-[0_0_8px_rgba(96,165,250,0.5)] transition-all duration-300">
-            Taskflow
-          </span>
-        </Link>
+            {/* Main text with Motion gradient animation */}
+            <motion.span
+              className="relative z-10 block text-xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]"
+              style={{
+                backgroundPosition: "0% 50%",
+              }}
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+              }}
+              transition={{
+                duration: 3,
+                ease: "easeInOut",
+                repeat: Infinity,
+              }}
+              variants={{
+                initial: {
+                  filter: isLightTheme
+                    ? "drop-shadow(0 0 0px rgba(59,130,246,0))"
+                    : "drop-shadow(0 0 0px rgba(96,165,250,0))",
+                },
+                hover: {
+                  filter: isLightTheme
+                    ? [
+                        "drop-shadow(0 0 0px rgba(59,130,246,0))",
+                        "drop-shadow(0 0 12px rgba(59,130,246,0.6))",
+                        "drop-shadow(0 0 8px rgba(59,130,246,0.5))",
+                      ]
+                    : [
+                        "drop-shadow(0 0 0px rgba(96,165,250,0))",
+                        "drop-shadow(0 0 12px rgba(96,165,250,0.6))",
+                        "drop-shadow(0 0 8px rgba(96,165,250,0.5))",
+                      ],
+                },
+              }}
+            >
+              Taskflow
+            </motion.span>
+          </Link>
+        </motion.div>
       </div>
 
       {/* Right section: User button */}
