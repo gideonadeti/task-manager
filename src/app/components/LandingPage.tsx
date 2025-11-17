@@ -542,10 +542,10 @@ export default function LandingPage() {
             <Separator />
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
               <p className="text-xs text-muted-foreground text-center sm:text-left">
-                © {new Date().getFullYear()} Taskflow. All rights reserved.
+                &copy; {new Date().getFullYear()} Taskflow. All rights reserved.
               </p>
               <p className="text-xs text-muted-foreground text-center sm:text-right">
-                Developed by{" "}
+                Engineered by{" "}
                 <span className="font-medium text-foreground">
                   Gideon Adeti
                 </span>{" "}
