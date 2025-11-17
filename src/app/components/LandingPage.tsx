@@ -15,6 +15,9 @@ import {
   Search,
   Shield,
   Smartphone,
+  Github,
+  Linkedin,
+  Twitter,
 } from "lucide-react";
 import { H1 } from "../ui/CustomTags";
 import { Button } from "@/components/ui/button";
@@ -416,6 +419,142 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
+
+      {/* Footer */}
+      <footer
+        className="border-t bg-muted/30"
+        role="contentinfo"
+        aria-label="Site footer"
+      >
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8 sm:py-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={getTransition()}
+            className="space-y-6"
+          >
+            {/* Main Footer Content */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+              {/* Brand and Links */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                <div className="flex items-center gap-2">
+                  {mounted && (
+                    <>
+                      {isLightTheme ? (
+                        <Image
+                          src="/images/logo-light.png"
+                          alt="Taskflow"
+                          width={24}
+                          height={24}
+                          className="h-6 w-6"
+                        />
+                      ) : (
+                        <Image
+                          src="/images/logo-dark.png"
+                          alt="Taskflow"
+                          width={24}
+                          height={24}
+                          className="h-6 w-6"
+                        />
+                      )}
+                    </>
+                  )}
+                  <span className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent">
+                    Taskflow
+                  </span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={scrollToFeatures}
+                    className="text-sm text-muted-foreground hover:text-foreground h-auto py-1"
+                    aria-label="Scroll to features"
+                  >
+                    Features
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() =>
+                      window.scrollTo({ top: 0, behavior: "smooth" })
+                    }
+                    className="text-sm text-muted-foreground hover:text-foreground h-auto py-1"
+                    aria-label="Scroll to top"
+                  >
+                    Back to Top
+                  </Button>
+                </div>
+              </div>
+
+              {/* Social Links */}
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  asChild
+                  className="h-9 w-9 rounded-full hover:bg-primary/10"
+                  aria-label="Visit GitHub profile"
+                >
+                  <a
+                    href="https://github.com/gideonadeti"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Github className="h-4 w-4" />
+                  </a>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  asChild
+                  className="h-9 w-9 rounded-full hover:bg-primary/10"
+                  aria-label="Visit LinkedIn profile"
+                >
+                  <a
+                    href="https://linkedin.com/in/gideonadeti"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Linkedin className="h-4 w-4" />
+                  </a>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  asChild
+                  className="h-9 w-9 rounded-full hover:bg-primary/10"
+                  aria-label="Visit X (Twitter) profile"
+                >
+                  <a
+                    href="https://x.com/gideonadeti0"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Twitter className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+            </div>
+
+            {/* Bottom Bar */}
+            <Separator />
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+              <p className="text-xs text-muted-foreground text-center sm:text-left">
+                © {new Date().getFullYear()} Taskflow. All rights reserved.
+              </p>
+              <p className="text-xs text-muted-foreground text-center sm:text-right">
+                Developed by{" "}
+                <span className="font-medium text-foreground">
+                  Gideon Adeti
+                </span>{" "}
+                • Built with Next.js, TypeScript & PostgreSQL
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </footer>
 
       {/* Enhanced Decorative Elements with Reduced Motion Support */}
       <div
