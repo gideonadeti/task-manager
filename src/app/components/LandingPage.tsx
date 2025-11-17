@@ -321,8 +321,7 @@ export default function LandingPage() {
             >
               Taskflow is a modern, full-stack task management application that
               helps you organize your work, track priorities, and stay
-              productive. Built with Next.js, TypeScript, and PostgreSQL for a
-              seamless, reliable experience.
+              productive.
             </motion.p>
 
             {/* Optional CTA Button */}
@@ -545,11 +544,10 @@ export default function LandingPage() {
                 &copy; {new Date().getFullYear()} Taskflow. All rights reserved.
               </p>
               <p className="text-xs text-muted-foreground text-center sm:text-right">
-                Engineered by{" "}
+                Engineered with ❤️ by{" "}
                 <span className="font-medium text-foreground">
                   Gideon Adeti
                 </span>{" "}
-                • Built with Next.js, TypeScript & PostgreSQL
               </p>
             </div>
           </motion.div>
