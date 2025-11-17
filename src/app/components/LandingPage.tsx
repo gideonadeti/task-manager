@@ -252,24 +252,12 @@ export default function LandingPage() {
             </Link>
           </motion.div>
 
-          {/* Right Section - Learn More & Theme Toggle */}
+          {/* Right Section - Theme Toggle */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={getTransition()}
-            className="flex items-center gap-2"
           >
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={scrollToFeatures}
-              className="hidden sm:flex items-center gap-1.5"
-              aria-label="Learn more about features"
-            >
-              Learn More
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Separator orientation="vertical" className="h-6" />
             <ThemeToggler />
           </motion.div>
         </div>
