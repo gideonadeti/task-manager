@@ -278,7 +278,7 @@ export default function LandingPage() {
       {/* Main Content */}
       <main id="main-content" className="flex-1 flex flex-col" role="main">
         {/* Hero Section */}
-        <section className="flex flex-col md:flex-row items-center justify-center gap-12 sm:gap-16 lg:gap-20 p-6 sm:p-8 lg:p-12 max-w-7xl mx-auto w-full min-h-[70vh]">
+        <section className="flex flex-col md:flex-row items-center justify-center gap-12 sm:gap-16 lg:gap-20 p-6 sm:p-8 lg:p-12 max-w-7xl mx-auto w-full min-h-[88vh]">
           {/* Left Section - Hero Content */}
           <div className="flex-1 flex flex-col text-center md:text-left space-y-6 sm:space-y-8">
             {/* Hero Title */}
