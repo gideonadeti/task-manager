@@ -486,69 +486,69 @@ export default function LandingPage() {
                   </Button>
                 </div>
               </div>
-
-              {/* Social Links */}
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  asChild
-                  className="h-9 w-9 rounded-full hover:bg-primary/10"
-                  aria-label="Visit GitHub profile"
-                >
-                  <a
-                    href="https://github.com/gideonadeti"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Github className="h-4 w-4" />
-                  </a>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  asChild
-                  className="h-9 w-9 rounded-full hover:bg-primary/10"
-                  aria-label="Visit LinkedIn profile"
-                >
-                  <a
-                    href="https://linkedin.com/in/gideonadeti"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Linkedin className="h-4 w-4" />
-                  </a>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  asChild
-                  className="h-9 w-9 rounded-full hover:bg-primary/10"
-                  aria-label="Visit X (Twitter) profile"
-                >
-                  <a
-                    href="https://x.com/gideonadeti0"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Twitter className="h-4 w-4" />
-                  </a>
-                </Button>
-              </div>
+              <p className="text-xs text-muted-foreground text-center sm:text-right">
+                &copy; {new Date().getFullYear()} Taskflow. All rights reserved.
+              </p>
             </div>
 
             {/* Bottom Bar */}
             <Separator />
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-              <p className="text-xs text-muted-foreground text-center sm:text-left">
-                &copy; {new Date().getFullYear()} Taskflow. All rights reserved.
-              </p>
-              <p className="text-xs text-muted-foreground text-center sm:text-right">
-                Engineered with ❤️ by{" "}
-                <span className="font-medium text-foreground">
-                  Gideon Adeti
-                </span>{" "}
-              </p>
+            <div className="flex items-center justify-center pt-2">
+              <div className="flex items-center gap-3">
+                <p className="text-xs text-muted-foreground text-center">
+                  Engineered with ❤️ by{" "}
+                  <span className="font-medium text-foreground">
+                    Gideon Adeti
+                  </span>
+                </p>
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    asChild
+                    className="h-7 w-7 rounded-full hover:bg-primary/10"
+                    aria-label="Visit GitHub profile"
+                  >
+                    <a
+                      href="https://github.com/gideonadeti"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Github className="h-3.5 w-3.5" />
+                    </a>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    asChild
+                    className="h-7 w-7 rounded-full hover:bg-primary/10"
+                    aria-label="Visit LinkedIn profile"
+                  >
+                    <a
+                      href="https://linkedin.com/in/gideonadeti"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Linkedin className="h-3.5 w-3.5" />
+                    </a>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    asChild
+                    className="h-7 w-7 rounded-full hover:bg-primary/10"
+                    aria-label="Visit X (Twitter) profile"
+                  >
+                    <a
+                      href="https://x.com/gideonadeti0"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Twitter className="h-3.5 w-3.5" />
+                    </a>
+                  </Button>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
