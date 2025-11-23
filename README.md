@@ -110,7 +110,7 @@ Before you begin, ensure you have the following installed:
 
 3. **Set Up Environment Variables**
 
-   Create a `.env.local` file in the root directory with the following variables:
+   Create a `.env.local` file in the root directory. You can refer to [`.env.example`](.env.example) as a template for the required environment variables:
 
    ```env
    # Database
@@ -125,7 +125,7 @@ Before you begin, ensure you have the following installed:
    NODE_ENV="development"
    ```
 
-   See [Getting Environment Variables](#getting-environment-variables) below for detailed instructions.
+   See [Getting Environment Variables](#getting-environment-variables) below for detailed instructions on obtaining these values.
 
 4. **Set Up the Database**
 
