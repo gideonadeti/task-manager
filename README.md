@@ -81,6 +81,22 @@ A modern, full-stack task management application built with Next.js, featuring a
 
 - **[Vercel](https://vercel.com/)** - Platform for frontend deployment
 
+## Project History
+
+This project has evolved through multiple iterations, demonstrating continuous improvement and learning:
+
+- **v1** - Initial vanilla JavaScript implementation
+  - [GitHub](https://github.com/Gideon-D-Adeti/todo-list) | [Live Demo](https://gideon-d-adeti.github.io/todo-list/)
+
+- **v2** - Enhanced version with improved structure
+  - [GitHub](https://github.com/GDA0/to-do-list) | [Live Demo](https://gda0.github.io/to-do-list/)
+
+- **v3** - Full-stack Next.js application with authentication
+  - [GitHub](https://github.com/gideonadeti/taskflow/tree/main) | [Live Demo](https://gideonadeti-task-manager.vercel.app/)
+
+- **v4** - Current revamping of v3 with enhanced features and improved UX
+  - [GitHub](https://github.com/gideonadeti/taskflow/tree/revamping) | [Live Demo](https://gideonadeti-taskflow.vercel.app/)
+
 ## Running Locally
 
 ### Prerequisites
