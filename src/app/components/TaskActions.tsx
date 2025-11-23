@@ -105,12 +105,12 @@ export default function TaskActions({ task }: TaskActionsProps) {
         <DropdownMenuItem onClick={handleToggleCompletion}>
           {task.completed ? (
             <>
-              <Circle className="mr-2 size-4" />
+              <Circle className="size-4" />
               Mark as Incomplete
             </>
           ) : (
             <>
-              <CheckCircle2 className="mr-2 size-4" />
+              <CheckCircle2 className="size-4" />
               Mark as Complete
             </>
           )}
@@ -118,16 +118,16 @@ export default function TaskActions({ task }: TaskActionsProps) {
         {!task.completed && (
           <>
             <DropdownMenuItem onClick={() => setPriorityOpen(true)}>
-              <Tag className="mr-2 size-4" />
+              <Tag className="size-4" />
               Change Priority
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setGroupOpen(true)}>
-              <FolderInput className="mr-2 size-4" />
+              <FolderInput className="size-4" />
               Move to Group
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleUpdate}>
-              <Pencil className="mr-2 size-4" />
+              <Pencil className="size-4" />
               Edit
             </DropdownMenuItem>
           </>

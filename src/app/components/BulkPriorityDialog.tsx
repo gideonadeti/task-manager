@@ -47,7 +47,7 @@ export default function BulkPriorityDialog({
             >
               <Badge
                 variant="outline"
-                className={`mr-2 ${
+                className={`${
                   option.value === "high"
                     ? "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800"
                     : option.value === "medium"
@@ -65,4 +65,3 @@ export default function BulkPriorityDialog({
     </Dialog>
   );
 }
-

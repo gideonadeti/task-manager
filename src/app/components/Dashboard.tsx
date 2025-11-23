@@ -268,7 +268,7 @@ export default function Dashboard() {
                   className="flex-1 sm:flex-initial focus-visible:ring-2 min-w-0"
                   size="lg"
                 >
-                  <Plus className="size-4 sm:size-5 mr-1 sm:mr-2 flex-shrink-0" />
+                  <Plus className="size-4 sm:size-5 flex-shrink-0" />
                   <span className="text-xs sm:text-base truncate">
                     Create Task
                   </span>
@@ -279,7 +279,7 @@ export default function Dashboard() {
                   className="flex-1 sm:flex-initial focus-visible:ring-2 min-w-0"
                   size="lg"
                 >
-                  <FolderPlus className="size-4 sm:size-5 mr-1 sm:mr-2 flex-shrink-0" />
+                  <FolderPlus className="size-4 sm:size-5 flex-shrink-0" />
                   <span className="text-xs sm:text-base truncate">
                     Create Group
                   </span>
@@ -302,7 +302,7 @@ export default function Dashboard() {
                   className="flex-1 sm:flex-initial focus-visible:ring-2"
                   size="lg"
                 >
-                  <Plus className="size-5 mr-2" />
+                  <Plus className="size-5" />
                   Create Task
                 </Button>
                 <Button
@@ -311,7 +311,7 @@ export default function Dashboard() {
                   className="flex-1 sm:flex-initial focus-visible:ring-2"
                   size="lg"
                 >
-                  <FolderPlus className="size-5 mr-2" />
+                  <FolderPlus className="size-5" />
                   Create Group
                 </Button>
               </div>

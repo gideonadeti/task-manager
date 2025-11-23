@@ -334,7 +334,7 @@ export default function TasksToolbar({
                       }}
                     >
                       {React.createElement(bulkToggleIcon, {
-                        className: "mr-2 size-4",
+                        className: "size-4",
                       })}
                       {bulkToggleLabel}
                     </DropdownMenuItem>
@@ -345,7 +345,7 @@ export default function TasksToolbar({
                             setOpenPriorityDialog(true);
                           }}
                         >
-                          <Tag className="mr-2 size-4" />
+                          <Tag className="size-4" />
                           Change Priority
                         </DropdownMenuItem>
                         <DropdownMenuItem
@@ -353,7 +353,7 @@ export default function TasksToolbar({
                             setOpenGroupDialog(true);
                           }}
                         >
-                          <FolderInput className="mr-2 size-4" />
+                          <FolderInput className="size-4" />
                           Move to Group
                         </DropdownMenuItem>
                       </>
@@ -365,7 +365,7 @@ export default function TasksToolbar({
                       }}
                       className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
                     >
-                      <Trash2 className="mr-2 size-4" />
+                      <Trash2 className="size-4" />
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>

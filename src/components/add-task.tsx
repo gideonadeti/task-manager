@@ -309,7 +309,7 @@ export default function AddTask({
                                   >
                                     <Check
                                       className={cn(
-                                        "mr-2 size-4",
+                                        "size-4",
                                         field.value === group.id
                                           ? "opacity-100"
                                           : "opacity-0"

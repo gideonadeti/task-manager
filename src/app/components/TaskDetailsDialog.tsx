@@ -114,7 +114,9 @@ export default function TaskDetailsDialog({
 
     // If task is completed, don't show red styling for overdue dates
     if (isPast(date) && !isToday(date)) {
-      return task.completed ? "text-gray-600 dark:text-gray-400" : "text-red-600 dark:text-red-400 font-semibold";
+      return task.completed
+        ? "text-gray-600 dark:text-gray-400"
+        : "text-red-600 dark:text-red-400 font-semibold";
     } else if (isToday(date)) {
       return "text-orange-600 dark:text-orange-400 font-semibold";
     } else if (isTomorrow(date)) {
@@ -249,12 +251,12 @@ export default function TaskDetailsDialog({
               >
                 {task.completed ? (
                   <>
-                    <Circle className="mr-2 size-4" />
+                    <Circle className="size-4" />
                     Mark as Incomplete
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="mr-2 size-4" />
+                    <CheckCircle2 className="size-4" />
                     Mark as Complete
                   </>
                 )}
@@ -272,7 +274,11 @@ export default function TaskDetailsDialog({
                 <Button
                   variant="destructive"
                   onClick={handleDelete}
-                  className={task.completed ? "w-full sm:flex-1 h-11 sm:h-10 min-h-[44px] sm:min-h-0" : "flex-1 h-11 sm:h-10 min-h-[44px] sm:min-h-0"}
+                  className={
+                    task.completed
+                      ? "w-full sm:flex-1 h-11 sm:h-10 min-h-[44px] sm:min-h-0"
+                      : "flex-1 h-11 sm:h-10 min-h-[44px] sm:min-h-0"
+                  }
                 >
                   Delete
                 </Button>
