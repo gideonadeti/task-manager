@@ -77,10 +77,8 @@ A modern, full-stack task management application built with Next.js, featuring a
 
 - **[Clerk](https://clerk.com/)** - Complete authentication and user management solution
 
-### Testing & Deployment
+### Hosting & Deployment
 
-- **[Vitest](https://vitest.dev/)** - Fast unit test framework
-- **[Testing Library](https://testing-library.com/)** - Simple and complete testing utilities
 - **[Vercel](https://vercel.com/)** - Platform for frontend deployment
 
 ## Prerequisites
@@ -214,7 +212,7 @@ The application uses two main models:
 
 ### Seeding the Database
 
-To populate the database with sample data for testing and development:
+To populate the database with sample data for development:
 
 ```bash
 npm run seed
@@ -222,7 +220,7 @@ npm run seed
 
 This will create sample groups and tasks. You can optionally set the `SEED_USER_ID` environment variable to use a specific user ID for seeded data.
 
-**Note**: The seed script will create data for the user ID specified in `SEED_USER_ID` (defaults to "seed-user-123" if not set). Make sure you're authenticated with the corresponding user when testing seeded data.
+**Note**: The seed script will create data for the user ID specified in `SEED_USER_ID` (defaults to "seed-user-123" if not set). Make sure you're authenticated with the corresponding user when viewing seeded data.
 
 ### Useful Prisma Commands
 
@@ -246,72 +244,10 @@ npx prisma format
 npx prisma validate
 ```
 
-## Testing
-
-This project uses [Vitest](https://vitest.dev/) for unit and integration testing.
-
-### Running Tests
-
-```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode (recommended for development)
-npm test -- --watch
-
-# Run tests with coverage report
-npm test -- --coverage
-
-# Run specific test file
-npm test -- __tests__/services/task-service.test.ts
-
-# Run tests matching a pattern
-npm test -- --grep "TaskService"
-```
-
-### Test Structure
-
-- **Unit Tests**: Test individual functions, utilities, and services
-  - `__tests__/lib/`: Validation schemas and utilities
-  - `__tests__/services/`: Business logic tests
-
-- **Integration Tests**: Test API routes and component interactions
-  - `__tests__/api/`: API route handlers
-  - `__tests__/components/`: React component tests
-
-For detailed information about the test infrastructure, see [`__tests__/README.md`](__tests__/README.md).
-
-### Writing Tests
-
-1. **Unit Tests**: Create test files alongside source files or in `__tests__/lib/` or `__tests__/services/`
-2. **Integration Tests**: Add tests to `__tests__/api/` following the route structure
-3. **Component Tests**: Add tests to `__tests__/components/`
-
-Example test structure:
-
-```typescript
-import { describe, it, expect } from "vitest";
-
-describe("FeatureName", () => {
-  it("should do something", () => {
-    // Test implementation
-  });
-});
-```
-
 ## Project Structure
 
 ```text
 taskflow/
-├── __tests__/                    # Test files
-│   ├── api/                     # API route tests
-│   │   ├── tasks/              # Task API tests
-│   │   └── groups/             # Group API tests
-│   ├── lib/                     # Utility tests
-│   │   └── validations/        # Validation schema tests
-│   ├── services/                # Service tests
-│   ├── format-date.test.ts     # Date formatting utility test
-│   └── setup.ts                 # Test setup and mocks
 ├── docs/                        # Documentation
 │   └── API.md                  # API documentation
 ├── prisma/                      # Prisma schema and migrations
@@ -386,8 +322,7 @@ taskflow/
 ├── .env.local                # Environment variables (not committed)
 ├── next.config.ts            # Next.js configuration
 ├── package.json              # Dependencies and scripts
-├── tsconfig.json             # TypeScript configuration
-└── vitest.config.mts         # Vitest configuration
+└── tsconfig.json             # TypeScript configuration
 ```
 
 ## Available Scripts
@@ -398,9 +333,6 @@ taskflow/
 | `npm run build` | Build application for production |
 | `npm start` | Start production server |
 | `npm run lint` | Run ESLint to check code quality |
-| `npm test` | Run test suite with Vitest |
-| `npm test -- --watch` | Run tests in watch mode |
-| `npm test -- --coverage` | Run tests with coverage report |
 | `npm run seed` | Seed the database with sample data |
 
 ## Contributing
@@ -422,20 +354,13 @@ We welcome contributions! Please follow these guidelines:
 ### Development Workflow
 
 1. **Make your changes** following the project's code style
-2. **Write or update tests** for your changes
-3. **Run tests** to ensure everything passes:
-
-   ```bash
-   npm test
-   ```
-
-4. **Run linting** to check code quality:
+2. **Run linting** to check code quality:
 
    ```bash
    npm run lint
    ```
 
-5. **Test your changes** locally in development mode
+3. **Test your changes** locally in development mode
 
 ### Submitting Changes
 
@@ -455,7 +380,7 @@ We welcome contributions! Please follow these guidelines:
    - Provide a clear description of your changes
    - Reference any related issues
    - Include screenshots if applicable
-   - Ensure all tests pass and linting is clean
+   - Ensure linting is clean
 
 ### Code Style Guidelines
 
@@ -463,7 +388,6 @@ We welcome contributions! Please follow these guidelines:
 - **Formatting**: Follow existing code style and formatting
 - **Naming**: Use descriptive names for variables, functions, and components
 - **Comments**: Add comments for complex logic
-- **Testing**: Write tests for new features and bug fixes
 - **Documentation**: Update documentation for API or behavior changes
 
 ### Commit Message Format
@@ -476,7 +400,7 @@ type: short description
 Longer explanation if needed
 ```
 
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `chore`
 
 ### Reporting Issues
 
@@ -515,7 +439,6 @@ npx prisma migrate deploy
 ## Documentation
 
 - **[API Documentation](docs/API.md)**: Complete API reference with request/response examples
-- **[Test Documentation](__tests__/README.md)**: Testing infrastructure and guidelines
 
 ## License
 
