@@ -43,23 +43,45 @@ A modern, full-stack task management application built with Next.js, featuring a
 
 ## Technologies Used
 
-- **Frontend & Backend**: [Next.js 15](https://nextjs.org/) with App Router
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **UI Components**: [Radix UI](https://www.radix-ui.com/) & [shadcn/ui](https://ui.shadcn.com/)
-- **Database**: [PostgreSQL](https://www.postgresql.org/)
-- **ORM**: [Prisma](https://www.prisma.io/)
-- **Authentication**: [Clerk](https://clerk.com/)
-- **State Management**: [TanStack Query](https://tanstack.com/query) (React Query)
-- **Form Handling**: [React Hook Form](https://react-hook-form.com/) with [Zod](https://zod.dev/)
-- **Animations**: [Motion](https://motion.dev/) (Framer Motion) for smooth UI animations
-- **Date Handling**: [date-fns](https://date-fns.org/) for date formatting and manipulation
-- **Table/Data Display**: [TanStack Table](https://tanstack.com/table) for advanced data tables
-- **Command Menu**: [cmdk](https://cmdk.paco.me/) for command palette functionality
-- **Toast Notifications**: [Sonner](https://sonner.emilkowal.ski/) for elegant toast messages
-- **Analytics**: [Vercel Analytics](https://vercel.com/analytics) for usage analytics
-- **Testing**: [Vitest](https://vitest.dev/) & [Testing Library](https://testing-library.com/)
-- **Deployment**: [Vercel](https://vercel.com/)
+### Core Framework
+
+- **[Next.js 15](https://nextjs.org/)** - React framework with App Router for full-stack development
+- **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript for better developer experience
+
+### UI & Styling
+
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
+- **[shadcn/ui](https://ui.shadcn.com/)** - Beautiful component library built on Radix UI
+- **[Motion](https://motion.dev/)** - Production-ready motion library for React (formerly Framer Motion)
+
+### Data & State Management
+
+- **[PostgreSQL](https://www.postgresql.org/)** - Robust relational database
+- **[Prisma](https://www.prisma.io/)** - Next-generation ORM for database access
+- **[TanStack Query](https://tanstack.com/query)** - Powerful data synchronization for React
+- **[TanStack Table](https://tanstack.com/table)** - Headless UI for building tables
+
+### Forms & Validation
+
+- **[React Hook Form](https://react-hook-form.com/)** - Performant forms with easy validation
+- **[Zod](https://zod.dev/)** - TypeScript-first schema validation
+
+### Utilities & Enhancements
+
+- **[date-fns](https://date-fns.org/)** - Modern JavaScript date utility library
+- **[cmdk](https://cmdk.paco.me/)** - Command menu component
+- **[Sonner](https://sonner.emilkowal.ski/)** - Toast notification library
+- **[Vercel Analytics](https://vercel.com/analytics)** - Web analytics and performance monitoring
+
+### Authentication & Security
+
+- **[Clerk](https://clerk.com/)** - Complete authentication and user management solution
+
+### Testing & Deployment
+
+- **[Vitest](https://vitest.dev/)** - Fast unit test framework
+- **[Testing Library](https://testing-library.com/)** - Simple and complete testing utilities
+- **[Vercel](https://vercel.com/)** - Platform for frontend deployment
 
 ## Prerequisites
 
