@@ -18,11 +18,11 @@ import {
   Github,
   Linkedin,
   Twitter,
+  Mail,
 } from "lucide-react";
 import { H1 } from "../ui/CustomTags";
 import { Button } from "@/components/ui/button";
 import { ThemeToggler } from "@/components/theme-toggler";
-import { Separator } from "@/components/ui/separator";
 import { useRef, useState, useEffect } from "react";
 
 const features = [
@@ -463,7 +463,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer
-        className="border-t bg-muted/30"
+        className="border-t bg-muted/30 text-center"
         role="contentinfo"
         aria-label="Site footer"
       >
@@ -473,124 +473,78 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={getTransition()}
-            className="space-y-6"
+            className="flex flex-col items-center gap-4"
           >
-            {/* Main Footer Content */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-              {/* Brand and Links */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                <div className="flex items-center gap-2">
-                  {mounted && (
-                    <>
-                      {isLightTheme ? (
-                        <Image
-                          src="/images/logo-light.png"
-                          alt="Taskflow"
-                          width={24}
-                          height={24}
-                          className="h-6 w-6"
-                        />
-                      ) : (
-                        <Image
-                          src="/images/logo-dark.png"
-                          alt="Taskflow"
-                          width={24}
-                          height={24}
-                          className="h-6 w-6"
-                        />
-                      )}
-                    </>
-                  )}
-                  <span className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent">
-                    Taskflow
-                  </span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={scrollToFeatures}
-                    className="text-sm text-muted-foreground hover:text-foreground h-auto py-1"
-                    aria-label="Scroll to features"
-                  >
-                    Features
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      window.scrollTo({ top: 0, behavior: "smooth" })
-                    }
-                    className="text-sm text-muted-foreground hover:text-foreground h-auto py-1"
-                    aria-label="Scroll to top"
-                  >
-                    Back to Top
-                  </Button>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground text-center sm:text-right">
-                &copy; {new Date().getFullYear()} Taskflow. All rights reserved.
-              </p>
+            {/* Engineered by text */}
+            <p className="text-sm font-medium text-muted-foreground mb-2">
+              Engineered by{" "}
+              <span className="font-semibold text-foreground">
+                Gideon Adeti
+              </span>
+            </p>
+
+            {/* Social Links */}
+            <div className="flex items-center justify-center gap-3">
+              <a
+                href="https://github.com/gideonadeti"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-all duration-200 inline-flex items-center justify-center hover:-translate-y-0.5 hover:scale-110 active:translate-y-0 active:scale-105"
+                title="GitHub"
+                aria-label="GitHub"
+              >
+                <Github className="size-5" />
+              </a>
+              <a
+                href="https://linkedin.com/in/gideonadeti"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-all duration-200 inline-flex items-center justify-center hover:-translate-y-0.5 hover:scale-110 active:translate-y-0 active:scale-105"
+                title="LinkedIn"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="size-5" />
+              </a>
+              <a
+                href="https://x.com/gideonadeti0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-all duration-200 inline-flex items-center justify-center hover:-translate-y-0.5 hover:scale-110 active:translate-y-0 active:scale-105"
+                title="X (Twitter)"
+                aria-label="X (Twitter)"
+              >
+                <Twitter className="size-5" />
+              </a>
+              <a
+                href="mailto:gideonadeti0@gmail.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-all duration-200 inline-flex items-center justify-center hover:-translate-y-0.5 hover:scale-110 active:translate-y-0 active:scale-105"
+                title="Email"
+                aria-label="Email"
+              >
+                <Mail className="size-5" />
+              </a>
             </div>
 
-            {/* Bottom Bar */}
-            <Separator />
-            <div className="flex items-center justify-center pt-2">
-              <div className="flex items-center gap-3">
-                <p className="text-xs text-muted-foreground text-center">
-                  Engineered with ❤️ by{" "}
-                  <span className="font-medium text-foreground">
-                    Gideon Adeti
-                  </span>
-                </p>
-                <div className="flex items-center gap-1.5">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    asChild
-                    className="h-7 w-7 rounded-full hover:bg-primary/10"
-                    aria-label="Visit GitHub profile"
-                  >
-                    <a
-                      href="https://github.com/gideonadeti"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Github className="h-3.5 w-3.5" />
-                    </a>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    asChild
-                    className="h-7 w-7 rounded-full hover:bg-primary/10"
-                    aria-label="Visit LinkedIn profile"
-                  >
-                    <a
-                      href="https://linkedin.com/in/gideonadeti"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Linkedin className="h-3.5 w-3.5" />
-                    </a>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    asChild
-                    className="h-7 w-7 rounded-full hover:bg-primary/10"
-                    aria-label="Visit X (Twitter) profile"
-                  >
-                    <a
-                      href="https://x.com/gideonadeti0"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Twitter className="h-3.5 w-3.5" />
-                    </a>
-                  </Button>
-                </div>
-              </div>
+            {/* Copyright */}
+            <p className="text-xs text-muted-foreground mt-2 mb-0">
+              &copy; {new Date().getFullYear()} Taskflow. All Rights Reserved.
+            </p>
+
+            {/* Buy me coffee button */}
+            <div className="mt-3">
+              <a
+                href="https://buymeacoffee.com/gideonadeti"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-all hover:scale-105 active:scale-100 text-sm font-medium"
+                title="Support me with a coffee"
+                aria-label="Buy me a coffee"
+              >
+                <span>☕</span>
+                <span>Buy me a coffee</span>
+              </a>
             </div>
           </motion.div>
         </div>
