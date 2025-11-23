@@ -177,27 +177,6 @@ This will:
 - Generate Prisma Client
 - Apply all migrations
 
-### Database Schema
-
-The application uses two main models:
-
-- **Group**: Contains groups that organize tasks
-  - `id`: Unique identifier (CUID)
-  - `name`: Group name (1-100 characters)
-  - `userId`: Owner's user ID
-  - `createdAt`, `updatedAt`: Timestamps
-
-- **Task**: Contains individual tasks
-  - `id`: Unique identifier (CUID)
-  - `title`: Task title (1-200 characters)
-  - `description`: Optional task description (max 1000 characters)
-  - `priority`: Priority level (low, medium, high)
-  - `dueDate`: Optional due date
-  - `completed`: Completion status (boolean)
-  - `groupId`: Foreign key to Group
-  - `userId`: Owner's user ID
-  - `createdAt`, `updatedAt`: Timestamps
-
 ### Seeding the Database
 
 To populate the database with sample data for development:
