@@ -15,6 +15,21 @@ Taskflow is a full-stack application built as a portfolio project, extending bey
 - **Task Completion Toggle**: Easily toggle task status as completed or not
 - **Priority Levels**: Assign priority levels (low, medium, high) to tasks
 - **Due Dates**: Set and manage due dates for tasks
+- **Bulk Operations**: Perform actions on multiple tasks at once:
+  - Bulk mark tasks as complete/incomplete
+  - Bulk update priority levels
+  - Bulk move tasks between groups
+  - Bulk delete tasks
+- **Dashboard with Progress Tracking**: Visual overview of your tasks with completion statistics
+- **Advanced Search & Filtering**: Search tasks by title or description and filter by priority levels
+- **Task Selection**: Multi-select tasks for bulk operations with intuitive selection controls
+- **Task Details Dialog**: View and manage task details in a dedicated dialog
+- **Keyboard Shortcuts**: Power user features with keyboard shortcuts:
+  - `Ctrl/Cmd + B`: Toggle sidebar
+  - `Ctrl/Cmd + Alt/Option + T`: Add new task
+  - `Ctrl/Cmd + Alt/Option + C`: Toggle selected tasks completion
+  - `?`: Show keyboard shortcuts dialog
+- **Landing Page**: Beautiful landing page showcasing application features
 - **User Authentication**: Secure authentication using Clerk
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
 - **Dark Mode Support**: Built-in theme switching
@@ -30,6 +45,12 @@ Taskflow is a full-stack application built as a portfolio project, extending bey
 - **Authentication**: [Clerk](https://clerk.com/)
 - **State Management**: [TanStack Query](https://tanstack.com/query) (React Query)
 - **Form Handling**: [React Hook Form](https://react-hook-form.com/) with [Zod](https://zod.dev/)
+- **Animations**: [Motion](https://motion.dev/) (Framer Motion) for smooth UI animations
+- **Date Handling**: [date-fns](https://date-fns.org/) for date formatting and manipulation
+- **Table/Data Display**: [TanStack Table](https://tanstack.com/table) for advanced data tables
+- **Command Menu**: [cmdk](https://cmdk.paco.me/) for command palette functionality
+- **Toast Notifications**: [Sonner](https://sonner.emilkowal.ski/) for elegant toast messages
+- **Analytics**: [Vercel Analytics](https://vercel.com/analytics) for usage analytics
 - **Testing**: [Vitest](https://vitest.dev/) & [Testing Library](https://testing-library.com/)
 - **Deployment**: [Vercel](https://vercel.com/)
 
@@ -162,6 +183,18 @@ The application uses two main models:
   - `userId`: Owner's user ID
   - `createdAt`, `updatedAt`: Timestamps
 
+### Seeding the Database
+
+To populate the database with sample data for testing and development:
+
+```bash
+npm run seed
+```
+
+This will create sample groups and tasks. You can optionally set the `SEED_USER_ID` environment variable to use a specific user ID for seeded data.
+
+**Note**: The seed script will create data for the user ID specified in `SEED_USER_ID` (defaults to "seed-user-123" if not set). Make sure you're authenticated with the corresponding user when testing seeded data.
+
 ### Useful Prisma Commands
 
 ```bash
@@ -241,35 +274,91 @@ describe("FeatureName", () => {
 
 ```text
 taskflow/
-├── __tests__/              # Test files
-│   ├── api/               # API route tests
-│   ├── lib/               # Utility tests
-│   ├── services/          # Service tests
-│   └── setup.ts           # Test setup and mocks
-├── docs/                  # Documentation
-│   └── API.md            # API documentation
-├── prisma/                # Prisma schema and migrations
-│   └── schema.prisma     # Database schema
-├── public/                # Static assets
+├── __tests__/                    # Test files
+│   ├── api/                     # API route tests
+│   │   ├── tasks/              # Task API tests
+│   │   └── groups/             # Group API tests
+│   ├── lib/                     # Utility tests
+│   │   └── validations/        # Validation schema tests
+│   ├── services/                # Service tests
+│   ├── format-date.test.ts     # Date formatting utility test
+│   └── setup.ts                 # Test setup and mocks
+├── docs/                        # Documentation
+│   └── API.md                  # API documentation
+├── prisma/                      # Prisma schema and migrations
+│   ├── schema.prisma          # Database schema
+│   └── seed.ts                # Database seed script
+├── public/                      # Static assets
 ├── src/
-│   ├── app/              # Next.js App Router
-│   │   ├── api/          # API routes
-│   │   ├── (auth)/       # Authentication routes
-│   │   └── layout.tsx    # Root layout
-│   ├── components/       # React components
-│   ├── hooks/            # Custom React hooks
-│   ├── lib/              # Utilities and helpers
-│   │   ├── auth/         # Authentication utilities
-│   │   ├── db/           # Database queries
-│   │   ├── errors/       # Error handling
-│   │   └── validations/  # Zod schemas
-│   ├── services/         # Business logic services
-│   └── types/            # TypeScript type definitions
-├── .env.local            # Environment variables (not committed)
-├── next.config.ts        # Next.js configuration
-├── package.json          # Dependencies and scripts
-├── tsconfig.json         # TypeScript configuration
-└── vitest.config.mts     # Vitest configuration
+│   ├── app/                    # Next.js App Router
+│   │   ├── api/               # API routes
+│   │   │   ├── tasks/        # Task API endpoints
+│   │   │   │   └── [taskId]/ # Task-specific endpoints
+│   │   │   └── groups/       # Group API endpoints
+│   │   │       └── [groupId]/ # Group-specific endpoints
+│   │   ├── components/       # App-specific components
+│   │   │   ├── dashboard/    # Dashboard components
+│   │   │   │   ├── OverallProgress.tsx
+│   │   │   │   └── TaskCard.tsx
+│   │   │   ├── BulkDeleteDialog.tsx
+│   │   │   ├── BulkGroupDialog.tsx
+│   │   │   ├── BulkPriorityDialog.tsx
+│   │   │   ├── Dashboard.tsx
+│   │   │   ├── Header.tsx
+│   │   │   ├── KeyboardShortcutsDialog.tsx
+│   │   │   ├── LandingPage.tsx
+│   │   │   ├── PriorityFilter.tsx
+│   │   │   ├── TaskActions.tsx
+│   │   │   ├── TaskDetailsDialog.tsx
+│   │   │   ├── TasksList.tsx
+│   │   │   └── TasksToolbar.tsx
+│   │   ├── groups/            # Group pages
+│   │   │   └── [groupId]/    # Dynamic group routes
+│   │   ├── format-date.ts    # Date formatting utility
+│   │   ├── format-relative-time.ts # Relative time formatting
+│   │   ├── layout.tsx        # Root layout
+│   │   ├── loading.tsx       # Loading component
+│   │   ├── not-found.tsx    # 404 page
+│   │   ├── opengraph-image.tsx # Open Graph image
+│   │   ├── page.tsx          # Home page
+│   │   ├── robots.ts         # Robots.txt
+│   │   ├── sitemap.ts        # Sitemap generation
+│   │   └── ui/               # App-specific UI components
+│   ├── components/           # Shared React components
+│   │   ├── ui/              # shadcn/ui components
+│   │   ├── add-group.tsx    # Add/Edit group dialog
+│   │   ├── add-task.tsx     # Add/Edit task dialog
+│   │   ├── app-sidebar.tsx  # Application sidebar
+│   │   ├── delete-dialog.tsx # Delete confirmation dialog
+│   │   ├── theme-provider.tsx # Theme context provider
+│   │   └── theme-toggler.tsx # Theme toggle component
+│   ├── hooks/                # Custom React hooks
+│   │   ├── use-bulk-tasks.ts # Bulk task operations hook
+│   │   ├── use-groups.ts     # Groups data hook
+│   │   ├── use-mobile.tsx    # Mobile detection hook
+│   │   ├── use-tasks.ts      # Tasks data hook
+│   │   └── use-toast.ts      # Toast notifications hook
+│   ├── lib/                  # Utilities and helpers
+│   │   ├── api/             # API client functions
+│   │   ├── auth/             # Authentication utilities
+│   │   │   └── get-user-id.ts
+│   │   ├── db/               # Database queries
+│   │   ├── errors/           # Error handling
+│   │   ├── validations/      # Zod schemas
+│   │   ├── logger.ts         # Logging utility
+│   │   ├── seo.ts            # SEO metadata generation
+│   │   ├── type-guards.ts    # Type guard utilities
+│   │   └── utils.ts          # General utilities
+│   ├── services/             # Business logic services
+│   │   ├── task-service.ts  # Task business logic
+│   │   └── group-service.ts # Group business logic
+│   ├── types/                # TypeScript type definitions
+│   └── middleware.ts         # Next.js middleware
+├── .env.local                # Environment variables (not committed)
+├── next.config.ts            # Next.js configuration
+├── package.json              # Dependencies and scripts
+├── tsconfig.json             # TypeScript configuration
+└── vitest.config.mts         # Vitest configuration
 ```
 
 ## Available Scripts
@@ -283,6 +372,7 @@ taskflow/
 | `npm test` | Run test suite with Vitest |
 | `npm test -- --watch` | Run tests in watch mode |
 | `npm test -- --coverage` | Run tests with coverage report |
+| `npm run seed` | Seed the database with sample data |
 
 ## Contributing
 
