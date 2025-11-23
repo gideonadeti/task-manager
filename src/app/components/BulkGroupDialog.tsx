@@ -43,12 +43,15 @@ export default function BulkGroupDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md max-h-[80vh] flex flex-col p-0">
-        <DialogHeader className="px-6 pt-6 pb-4">
+        <DialogHeader className="px-6 pt-6 pb-4 flex-shrink-0">
           <DialogTitle>Move to Group</DialogTitle>
         </DialogHeader>
-        <Command className="rounded-lg border-none">
-          <CommandInput placeholder="Search groups..." />
-          <CommandList className="max-h-[60vh]">
+        <Command className="rounded-lg border-none flex-1 flex flex-col">
+          <CommandInput
+            placeholder="Search groups..."
+            className="flex-shrink-0"
+          />
+          <CommandList className="flex-1 min-h-0 max-h-[60vh]">
             <CommandEmpty>No groups found.</CommandEmpty>
             <CommandGroup>
               {filteredGroups?.map((group) => (

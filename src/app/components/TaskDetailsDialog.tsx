@@ -16,7 +16,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import useGroups from "@/hooks/use-groups";
 import { toggleComplete } from "@/lib/api/query-functions";
 import formatDate from "../format-date";
@@ -150,7 +149,7 @@ export default function TaskDetailsDialog({
           </DialogHeader>
 
           {/* Scrollable content */}
-          <ScrollArea className="h-[68vh] px-4 sm:px-6">
+          <div className="flex-1 px-4 sm:px-6 overflow-y-auto">
             <div className="space-y-4 pr-4">
               {task.description && (
                 <div>
@@ -237,7 +236,7 @@ export default function TaskDetailsDialog({
                   )}
               </div>
             </div>
-          </ScrollArea>
+          </div>
 
           {/* Fixed footer with action buttons */}
           <div className="flex-shrink-0 border-t px-4 sm:px-6 py-3 sm:py-4 mt-auto">
