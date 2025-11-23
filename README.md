@@ -205,6 +205,13 @@ Contributions, issues, and feature requests are welcome! Feel free to:
 
 Please ensure your code follows the existing style.
 
+## Future Improvements
+
+This project is continuously evolving, and I plan to keep improving it with new features and enhancements. Some planned additions include:
+
+- **Notifications**: Real-time notifications for task reminders, due dates, and important updates
+- More features coming soon...
+
 ## Acknowledgments
 
 The original version of this project was built as part of my web development learning journey using [The Odin Project](https://www.theodinproject.com) curriculum. Special thanks to them for providing the [Todo List project lesson](https://www.theodinproject.com/lessons/node-path-javascript-todo-list) and comprehensive curriculum.
