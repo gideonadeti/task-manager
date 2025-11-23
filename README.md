@@ -110,7 +110,7 @@ Before you begin, ensure you have the following installed:
 
 3. **Set Up Environment Variables**
 
-   Create a `.env.local` file in the root directory. You can refer to [`.env.example`](.env.example) as a template for the required environment variables:
+   Create a `.env` file in the root directory. You can refer to [`.env.example`](.env.example) as a template for the required environment variables:
 
    ```env
    # Database
@@ -120,9 +120,6 @@ Before you begin, ensure you have the following installed:
    # Clerk Authentication
    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
    CLERK_SECRET_KEY="sk_test_..."
-
-   # Node Environment
-   NODE_ENV="development"
    ```
 
    See [Getting Environment Variables](#getting-environment-variables) below for detailed instructions on obtaining these values.
@@ -130,10 +127,7 @@ Before you begin, ensure you have the following installed:
 4. **Set Up the Database**
 
    ```bash
-   # Generate Prisma Client
-   npx prisma generate
-
-   # Run database migrations
+   # Run database migrations (automatically generates Prisma Client)
    npx prisma migrate dev
 
    # (Optional) Open Prisma Studio to view/edit database
