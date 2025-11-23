@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import { Clock, Edit } from "lucide-react";
 import { isToday, isPast } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -23,30 +22,6 @@ export function TaskCard({ task, groups, index, onTaskClick }: TaskCardProps) {
     !isToday(new Date(task.dueDate)) &&
     !task.completed;
 
-  // Generate color from group name (deterministic)
-  const getGroupColor = (name: string) => {
-    const colors = [
-      "bg-blue-500",
-      "bg-purple-500",
-      "bg-pink-500",
-      "bg-indigo-500",
-      "bg-cyan-500",
-      "bg-teal-500",
-      "bg-green-500",
-      "bg-amber-500",
-    ];
-    const hash = name
-      .split("")
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return colors[hash % colors.length];
-  };
-
-  const priorityColors = {
-    high: "bg-red-500",
-    medium: "bg-yellow-500",
-    low: "bg-green-500",
-  };
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -55,18 +30,7 @@ export function TaskCard({ task, groups, index, onTaskClick }: TaskCardProps) {
   };
 
   return (
-    <motion.div
-      key={task.id}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.3,
-        delay: 0.6 + index * 0.05,
-        ease: "easeOut",
-      }}
-      whileHover={{ y: -2, scale: 1.01 }}
-      className="group relative"
-    >
+    <div className="group relative">
       <div
         role="button"
         tabIndex={0}
@@ -77,21 +41,7 @@ export function TaskCard({ task, groups, index, onTaskClick }: TaskCardProps) {
         } ${isOverdue && !task.completed ? "animate-pulse" : ""}`}
         aria-label={`Task: ${task.title}`}
       >
-        {/* Priority indicator bar */}
-        <div
-          className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-lg ${
-            priorityColors[task.priority]
-          }`}
-        />
-        {/* Group color stripe */}
-        {group && (
-          <div
-            className={`absolute top-0 right-0 w-1 h-full ${getGroupColor(
-              group.name
-            )} opacity-30`}
-          />
-        )}
-        <div className="ml-2">
+        <div>
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-sm sm:text-base flex-1 mb-1 line-clamp-1">
@@ -160,7 +110,7 @@ export function TaskCard({ task, groups, index, onTaskClick }: TaskCardProps) {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
