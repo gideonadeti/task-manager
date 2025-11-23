@@ -183,8 +183,36 @@ export default function Dashboard() {
         <main className="flex-grow flex flex-col min-h-svh">
           <Header />
           <div className="flex-1 px-2 sm:px-4 lg:px-6 py-2 sm:py-4 max-w-7xl mx-auto w-full">
-            <Skeleton className="h-8 sm:h-10 w-48 mb-6" />
-            <Skeleton className="h-24" />
+            {/* Header Skeleton */}
+            <div className="mb-6 sm:mb-8">
+              <Skeleton className="h-8 sm:h-10 lg:h-12 w-64 mb-2" />
+              <Skeleton className="h-5 w-48" />
+            </div>
+
+            {/* Overall Progress Skeleton */}
+            <div className="mb-6 sm:mb-8">
+              <Skeleton className="h-24 sm:h-28 rounded-lg" />
+            </div>
+
+            {/* Quick Actions Skeleton */}
+            <div className="mb-6 sm:mb-8">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Skeleton className="h-12 sm:h-11 w-full sm:w-40" />
+                <Skeleton className="h-12 sm:h-11 w-full sm:w-40" />
+              </div>
+            </div>
+
+            {/* Section Skeleton */}
+            <div className="mb-6 sm:mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <Skeleton className="h-7 w-32" />
+                <Skeleton className="h-8 w-20" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-24 rounded-lg" />
+                <Skeleton className="h-24 rounded-lg" />
+              </div>
+            </div>
           </div>
         </main>
       </SidebarProvider>
