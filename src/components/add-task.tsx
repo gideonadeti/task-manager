@@ -193,13 +193,13 @@ export default function AddTask({
         hideCloseButton
         preventClose
       >
-        <DialogHeader className="px-2">
+        <DialogHeader className="px-2 flex-shrink-0">
           <DialogTitle>{task ? "Edit Task" : "Add Task"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col space-y-3 sm:space-y-4 p-2 overflow-y-auto"
+            className="flex-1 flex flex-col space-y-3 sm:space-y-4 p-2 overflow-y-auto"
           >
             <FormField
               control={form.control}
