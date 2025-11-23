@@ -228,6 +228,7 @@ If you find this project helpful or interesting, consider supporting me:
 This project is continuously evolving, and I plan to keep improving it with new features and enhancements. Some planned additions include:
 
 - **Notifications**: Real-time notifications for task reminders, due dates, and important updates
+- More features coming soon...
 
 ## License
 
