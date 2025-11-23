@@ -88,7 +88,7 @@ A modern, full-stack task management application built with Next.js, featuring a
 Before you begin, ensure you have the following installed:
 
 - **Node.js** 18.x or higher ([Download](https://nodejs.org/))
-- **npm** or **yarn** package manager
+- A package manager: **bun**, **npm**, **yarn**, or **pnpm** (examples use bun)
 - **PostgreSQL** database (local or cloud instance like [Supabase](https://supabase.com/), [Neon](https://neon.tech/), or [Railway](https://railway.app/))
 - **Git** ([Download](https://git-scm.com/))
 - A **Clerk** account for authentication ([Sign up](https://clerk.com/))
@@ -105,7 +105,7 @@ Before you begin, ensure you have the following installed:
 2. **Install Dependencies**
 
    ```bash
-   npm install
+   bun install
    ```
 
 3. **Set Up Environment Variables**
@@ -137,7 +137,7 @@ Before you begin, ensure you have the following installed:
 5. **Start the Development Server**
 
    ```bash
-   npm run dev
+   bun run dev
    ```
 
    The application will be available at [http://localhost:3000](http://localhost:3000).
@@ -203,7 +203,7 @@ The application uses two main models:
 To populate the database with sample data for development:
 
 ```bash
-npm run seed
+bun run seed
 ```
 
 This will create sample groups and tasks. You can optionally set the `SEED_USER_ID` environment variable to use a specific user ID for seeded data.
@@ -236,11 +236,11 @@ npx prisma validate
 
 | Script | Description |
 |--------|-------------|
-| `npm run dev` | Start development server with Turbopack |
-| `npm run build` | Build application for production |
-| `npm start` | Start production server |
-| `npm run lint` | Run ESLint to check code quality |
-| `npm run seed` | Seed the database with sample data |
+| `bun run dev` | Start development server with Turbopack |
+| `bun run build` | Build application for production |
+| `bun start` | Start production server |
+| `bun run lint` | Run ESLint to check code quality |
+| `bun run seed` | Seed the database with sample data |
 
 ## Contributing
 
@@ -264,7 +264,7 @@ We welcome contributions! Please follow these guidelines:
 2. **Run linting** to check code quality:
 
    ```bash
-   npm run lint
+   bun run lint
    ```
 
 3. **Test your changes** locally in development mode
