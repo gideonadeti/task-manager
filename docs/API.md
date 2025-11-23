@@ -386,6 +386,38 @@ Content-Type: application/json
 
 ---
 
+## Bulk Operations
+
+Bulk operations allow you to perform actions on multiple tasks simultaneously. These operations are implemented client-side and use the existing API endpoints multiple times in parallel.
+
+**Note**: Bulk operations are not separate API endpoints. They are client-side features that call the standard task endpoints (`PATCH /api/tasks/:taskId`, `PUT /api/tasks/:taskId`, `DELETE /api/tasks/:taskId`) for each selected task in parallel.
+
+### Supported Bulk Operations
+
+1. **Bulk Mark Complete/Incomplete**: Toggle completion status for multiple tasks
+   - Uses: `PATCH /api/tasks/:taskId` for each task
+   - Request body: `{ "previousStatus": boolean }`
+
+2. **Bulk Update Priority**: Change priority level for multiple tasks
+   - Uses: `PUT /api/tasks/:taskId` for each task
+   - Request body: `{ "priority": "low" | "medium" | "high" }`
+
+3. **Bulk Update Group**: Move multiple tasks to a different group
+   - Uses: `PUT /api/tasks/:taskId` for each task
+   - Request body: `{ "groupId": string }`
+
+4. **Bulk Delete**: Delete multiple tasks
+   - Uses: `DELETE /api/tasks/:taskId` for each task
+
+### Implementation Notes
+
+- All bulk operations are executed in parallel using `Promise.all()`
+- Each operation follows the same validation and error handling as individual operations
+- If any operation fails, the client handles rollback via optimistic updates
+- The client uses TanStack Query for state management and optimistic updates
+
+---
+
 ## Groups API
 
 ### Get All Groups
