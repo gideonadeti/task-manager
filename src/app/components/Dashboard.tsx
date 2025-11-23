@@ -4,8 +4,15 @@ import { useMemo, useState, useEffect, useCallback } from "react";
 import { motion } from "motion/react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import { Plus, Inbox, FolderPlus, ArrowRight } from "lucide-react";
-import { isThisWeek, compareAsc } from "date-fns";
+import {
+  Plus,
+  Inbox,
+  FolderPlus,
+  ArrowRight,
+  AlertTriangle,
+  Calendar,
+} from "lucide-react";
+import { isThisWeek, isPast, isToday, compareAsc } from "date-fns";
 import { Task } from "@prisma/client";
 
 import useTasks from "@/hooks/use-tasks";
@@ -97,8 +104,34 @@ export default function Dashboard() {
     return groupsQuery.data?.find((group) => group.name === "Inbox")?.id;
   }, [groupsQuery.data]);
 
-  // Get urgent tasks this week (max 4, ordered by priority)
-  const urgentTasksThisWeek = useMemo(() => {
+  // Get overdue tasks (ordered by priority)
+  const overdueTasks = useMemo(() => {
+    if (!tasksQuery.data) return [];
+
+    const overdue = tasksQuery.data.filter(
+      (task) =>
+        task.dueDate &&
+        isPast(new Date(task.dueDate)) &&
+        !isToday(new Date(task.dueDate)) &&
+        !task.completed
+    );
+
+    // Sort by priority (high -> medium -> low), then by due date
+    return overdue.sort((a, b) => {
+      const priorityOrder = { high: 3, medium: 2, low: 1 };
+      const priorityDiff =
+        (priorityOrder[a.priority] || 0) - (priorityOrder[b.priority] || 0);
+      if (priorityDiff !== 0) return -priorityDiff;
+
+      if (a.dueDate && b.dueDate) {
+        return compareAsc(a.dueDate, b.dueDate);
+      }
+      return 0;
+    });
+  }, [tasksQuery.data]);
+
+  // Get tasks due this week (max 4, ordered by priority)
+  const tasksThisWeek = useMemo(() => {
     if (!tasksQuery.data) return [];
 
     const tasksDueThisWeek = tasksQuery.data.filter(
@@ -109,19 +142,26 @@ export default function Dashboard() {
     // Sort by priority (high -> medium -> low), then by due date
     return tasksDueThisWeek
       .sort((a, b) => {
-        // First sort by priority
         const priorityOrder = { high: 3, medium: 2, low: 1 };
         const priorityDiff =
           (priorityOrder[a.priority] || 0) - (priorityOrder[b.priority] || 0);
-        if (priorityDiff !== 0) return -priorityDiff; // Negative for descending
+        if (priorityDiff !== 0) return -priorityDiff;
 
-        // Then by due date
         if (a.dueDate && b.dueDate) {
           return compareAsc(a.dueDate, b.dueDate);
         }
         return 0;
       })
       .slice(0, 4);
+  }, [tasksQuery.data]);
+
+  // Get total count of tasks due this week (for display)
+  const tasksThisWeekCount = useMemo(() => {
+    if (!tasksQuery.data) return 0;
+    return tasksQuery.data.filter(
+      (task) =>
+        task.dueDate && isThisWeek(new Date(task.dueDate)) && !task.completed
+    ).length;
   }, [tasksQuery.data]);
 
   const handleTaskClick = useCallback((task: Task) => {
@@ -202,36 +242,81 @@ export default function Dashboard() {
             </motion.div>
           )}
 
-          {/* Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
-            className="mb-6 sm:mb-8"
-          >
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button
-                onClick={() => setAddTaskOpen(true)}
-                className="flex-1 sm:flex-none"
-                size="lg"
-              >
-                <Plus className="h-5 w-5 mr-2" />
-                Create Task
-              </Button>
-              <Button
-                onClick={() => setAddGroupOpen(true)}
-                variant="outline"
-                className="flex-1 sm:flex-none"
-                size="lg"
-              >
-                <FolderPlus className="h-5 w-5 mr-2" />
-                Create Group
-              </Button>
-            </div>
-          </motion.div>
+          {/* Quick Actions - Only show when there are tasks */}
+          {tasksQuery.data && tasksQuery.data.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
+              className="mb-6 sm:mb-8"
+            >
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button
+                  onClick={() => setAddTaskOpen(true)}
+                  className="flex-1 sm:flex-none"
+                  size="lg"
+                >
+                  <Plus className="size-5 mr-2" />
+                  Create Task
+                </Button>
+                <Button
+                  onClick={() => setAddGroupOpen(true)}
+                  variant="outline"
+                  className="flex-1 sm:flex-none"
+                  size="lg"
+                >
+                  <FolderPlus className="size-5 mr-2" />
+                  Create Group
+                </Button>
+              </div>
+            </motion.div>
+          )}
 
-          {/* Urgent Tasks This Week */}
-          {urgentTasksThisWeek.length > 0 && (
+          {/* Overdue Tasks */}
+          {overdueTasks.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
+              className="mb-6 sm:mb-8"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="size-5 text-red-500" />
+                  <H2 className="text-xl sm:text-2xl text-red-600 dark:text-red-400">
+                    Overdue
+                  </H2>
+                  <span className="text-sm text-muted-foreground">
+                    ({overdueTasks.length})
+                  </span>
+                </div>
+                <Link href="/groups/overdue">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="focus-visible:ring-2"
+                  >
+                    See all
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </Link>
+              </div>
+              <div className="space-y-2">
+                {overdueTasks.slice(0, 4).map((task, index) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    groups={groupsQuery.data || []}
+                    index={index}
+                    onTaskClick={handleTaskClick}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Tasks Due This Week */}
+          {tasksThisWeek.length > 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -239,7 +324,14 @@ export default function Dashboard() {
               className="mb-6 sm:mb-8"
             >
               <div className="flex items-center justify-between mb-4">
-                <H2 className="text-xl sm:text-2xl">Due This Week</H2>
+                <H2 className="text-xl sm:text-2xl">
+                  Due This Week
+                  {tasksThisWeekCount > 0 && (
+                    <span className="ml-2 text-base text-muted-foreground font-normal">
+                      ({tasksThisWeekCount})
+                    </span>
+                  )}
+                </H2>
                 <Link href="/groups/this-week">
                   <Button
                     variant="ghost"
@@ -252,7 +344,7 @@ export default function Dashboard() {
                 </Link>
               </div>
               <div className="space-y-2">
-                {urgentTasksThisWeek.map((task, index) => (
+                {tasksThisWeek.map((task, index) => (
                   <TaskCard
                     key={task.id}
                     task={task}
@@ -263,6 +355,33 @@ export default function Dashboard() {
                 ))}
               </div>
             </motion.div>
+          ) : (
+            tasksQuery.data &&
+            tasksQuery.data.length > 0 &&
+            !overdueTasks.length && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
+                className="mb-6 sm:mb-8"
+              >
+                <div className="border rounded-lg p-6 sm:p-8 text-center bg-card/50 backdrop-blur-sm">
+                  <Calendar className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+                  <h3 className="font-semibold text-base mb-2">
+                    No tasks due this week
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    You&apos;re all caught up! Add due dates to tasks to see
+                    them here.
+                  </p>
+                  <Link href="/groups/this-week">
+                    <Button variant="outline" size="sm">
+                      View all tasks
+                    </Button>
+                  </Link>
+                </div>
+              </motion.div>
+            )
           )}
         </div>
 
