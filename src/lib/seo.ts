@@ -4,7 +4,7 @@ export const siteConfig = {
   name: "Taskflow",
   description:
     "A modern, full-stack task management application built with Next.js, featuring authentication, CRUD operations, and intuitive task organization. Organize your tasks into groups, set priorities, track due dates, and boost your productivity.",
-  url: "https://gideonadeti-task-manager.vercel.app",
+  url: "https://gideonadeti-taskflow.vercel.app",
   ogImage: "/opengraph-image",
   links: {
     github: "https://github.com/gideonadeti",
