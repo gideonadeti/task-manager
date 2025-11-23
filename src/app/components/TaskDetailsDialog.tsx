@@ -259,17 +259,19 @@ export default function TaskDetailsDialog({
                 )}
               </Button>
               <div className="flex gap-2 w-full sm:flex-1">
-                <Button
-                  variant="outline"
-                  onClick={handleEdit}
-                  className="flex-1 h-11 sm:h-10 min-h-[44px] sm:min-h-0"
-                >
-                  Edit
-                </Button>
+                {!task.completed && (
+                  <Button
+                    variant="outline"
+                    onClick={handleEdit}
+                    className="flex-1 h-11 sm:h-10 min-h-[44px] sm:min-h-0"
+                  >
+                    Edit
+                  </Button>
+                )}
                 <Button
                   variant="destructive"
                   onClick={handleDelete}
-                  className="flex-1 h-11 sm:h-10 min-h-[44px] sm:min-h-0"
+                  className={task.completed ? "w-full sm:flex-1 h-11 sm:h-10 min-h-[44px] sm:min-h-0" : "flex-1 h-11 sm:h-10 min-h-[44px] sm:min-h-0"}
                 >
                   Delete
                 </Button>
