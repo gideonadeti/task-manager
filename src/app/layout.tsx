@@ -39,16 +39,14 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ClerkProvider>
-            <SignedIn>
-              <QCProvider>
+            <QCProvider>
+              <SignedIn>{children}</SignedIn>
+              <SignedOut>
+                {/* Unauthenticated users see LandingPage via page.tsx */}
                 {children}
-                <Toaster richColors />
-              </QCProvider>
-            </SignedIn>
-            <SignedOut>
-              {/* Unauthenticated users see LandingPage via page.tsx */}
-              {children}
-            </SignedOut>
+              </SignedOut>
+              <Toaster richColors />
+            </QCProvider>
           </ClerkProvider>
         </ThemeProvider>
         <Analytics />
