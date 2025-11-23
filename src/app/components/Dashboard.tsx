@@ -3,6 +3,7 @@
 import { useMemo, useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
+import { useUser } from "@clerk/nextjs";
 import {
   CheckCircle2,
   Calendar,
@@ -49,11 +50,15 @@ const TaskDetailsDialog = dynamic(() => import("./TaskDetailsDialog"), {
 });
 
 export default function Dashboard() {
+  const { user } = useUser();
   const { tasksQuery } = useTasks();
   const { groupsQuery } = useGroups();
   const [addTaskOpen, setAddTaskOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [taskDetailsOpen, setTaskDetailsOpen] = useState(false);
+
+  // Get user's first name
+  const firstName = user?.firstName || user?.fullName?.split(" ")[0] || "";
 
   // Keyboard shortcut for creating task
   useEffect(() => {
@@ -245,7 +250,7 @@ export default function Dashboard() {
             className="mb-6 sm:mb-8"
           >
             <H1 className="text-2xl sm:text-3xl lg:text-4xl mb-2">
-              Welcome Back
+              Welcome Back{firstName ? `, ${firstName}` : ""}
             </H1>
             <p className="text-muted-foreground text-sm sm:text-base">
               Here&apos;s an overview of your tasks
