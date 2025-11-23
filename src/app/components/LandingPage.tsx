@@ -114,7 +114,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-svh flex flex-col relative">
+    <div className="min-h-svh flex flex-col relative overflow-x-hidden">
       {/* Skip to content link for accessibility */}
       <a
         href="#main-content"
