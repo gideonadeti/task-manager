@@ -81,7 +81,9 @@ A modern, full-stack task management application built with Next.js, featuring a
 
 - **[Vercel](https://vercel.com/)** - Platform for frontend deployment
 
-## Prerequisites
+## Running Locally
+
+### Prerequisites
 
 Before you begin, ensure you have the following installed:
 
@@ -91,31 +93,70 @@ Before you begin, ensure you have the following installed:
 - **Git** ([Download](https://git-scm.com/))
 - A **Clerk** account for authentication ([Sign up](https://clerk.com/))
 
-## Environment Variables
+### Setup Steps
 
-Create a `.env.local` file in the root directory with the following variables:
+1. **Clone the Repository**
 
-```env
-# Database
-POSTGRES_PRISMA_URL="postgresql://user:password@host:port/database?schema=public&pgbouncer=true"
-POSTGRES_URL_NON_POOLING="postgresql://user:password@host:port/database?schema=public"
+   ```bash
+   git clone https://github.com/gideonadeti/taskflow.git
+   cd taskflow
+   ```
 
-# Clerk Authentication
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
-CLERK_SECRET_KEY="sk_test_..."
+2. **Install Dependencies**
 
-# Node Environment
-NODE_ENV="development"
-```
+   ```bash
+   npm install
+   ```
+
+3. **Set Up Environment Variables**
+
+   Create a `.env.local` file in the root directory with the following variables:
+
+   ```env
+   # Database
+   POSTGRES_PRISMA_URL="postgresql://user:password@host:port/database?schema=public&pgbouncer=true"
+   POSTGRES_URL_NON_POOLING="postgresql://user:password@host:port/database?schema=public"
+
+   # Clerk Authentication
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
+   CLERK_SECRET_KEY="sk_test_..."
+
+   # Node Environment
+   NODE_ENV="development"
+   ```
+
+   See [Getting Environment Variables](#getting-environment-variables) below for detailed instructions.
+
+4. **Set Up the Database**
+
+   ```bash
+   # Generate Prisma Client
+   npx prisma generate
+
+   # Run database migrations
+   npx prisma migrate dev
+
+   # (Optional) Open Prisma Studio to view/edit database
+   npx prisma studio
+   ```
+
+5. **Start the Development Server**
+
+   ```bash
+   npm run dev
+   ```
+
+   The application will be available at [http://localhost:3000](http://localhost:3000).
 
 ### Getting Environment Variables
 
 #### Database URLs (PostgreSQL)
 
 1. Create a PostgreSQL database (local or cloud)
-2. **For Vercel/Production**: Use connection pooling URL for `POSTGRES_PRISMA_URL` and direct URL for `POSTGRES_URL_NON_POOLING`
-3. **For Local Development**: Both URLs can be the same direct connection string
-4. Format: `postgresql://username:password@host:port/database?schema=public`
+2. **For Local Development**: Both URLs can be the same direct connection string
+3. Format: `postgresql://username:password@host:port/database?schema=public`
+
+   **Note**: For production/Vercel deployments, use connection pooling URL for `POSTGRES_PRISMA_URL` and direct URL for `POSTGRES_URL_NON_POOLING`.
 
 #### Clerk Keys
 
@@ -126,54 +167,7 @@ NODE_ENV="development"
    - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (starts with `pk_test_` or `pk_live_`)
    - `CLERK_SECRET_KEY` (starts with `sk_test_` or `sk_live_`)
 
-## Development Setup
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/gideonadeti/taskflow.git
-cd taskflow
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-```
-
-### 3. Set Up Environment Variables
-
-Create a `.env.local` file in the root directory and add all required environment variables (see [Environment Variables](#environment-variables) section above).
-
-### 4. Set Up the Database
-
-```bash
-# Generate Prisma Client
-npx prisma generate
-
-# Run database migrations
-npx prisma migrate dev
-
-# (Optional) Open Prisma Studio to view/edit database
-npx prisma studio
-```
-
-### 5. Start the Development Server
-
-```bash
-npm run dev
-```
-
-The application will be available at [http://localhost:3000](http://localhost:3000).
-
-### 6. Build for Production
-
-```bash
-npm run build
-npm start
-```
-
-## Database Setup
+### Database Setup
 
 ### Initial Migration
 
@@ -343,7 +337,7 @@ When reporting issues, please include:
 
 ### Environment Variables in Production
 
-Ensure all environment variables from [Environment Variables](#environment-variables) are set in your production environment.
+Ensure all environment variables from the [Running Locally](#running-locally) section are set in your production environment.
 
 ### Database Migrations in Production
 
