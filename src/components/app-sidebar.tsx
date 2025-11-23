@@ -44,6 +44,7 @@ import {
   SidebarMenuAction,
   SidebarMenuBadge,
   SidebarMenuSkeleton,
+  SidebarSeparator,
 } from "./ui/sidebar";
 import {
   DropdownMenu,
@@ -226,25 +227,30 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarSeparator />
+      <SidebarHeader>
         <SidebarGroup>
           <SidebarGroupLabel>Personal Groups</SidebarGroupLabel>
-          {groupsQuery.isPending ? (
-            <>
-              <SidebarGroupAction title="Add Group" onClick={handleAdd}>
-                <Plus />
-              </SidebarGroupAction>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {Array.from({ length: 3 }).map((_, index) => (
-                    <SidebarMenuItem key={index}>
-                      <SidebarMenuSkeleton showIcon />
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </>
-          ) : personalGroups.length === 0 ? (
+          <SidebarGroupAction title="Add Group" onClick={handleAdd}>
+            <Plus />
+          </SidebarGroupAction>
+        </SidebarGroup>
+      </SidebarHeader>
+      <SidebarContent>
+        {groupsQuery.isPending ? (
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <SidebarMenuItem key={index}>
+                    <SidebarMenuSkeleton showIcon />
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ) : personalGroups.length === 0 ? (
+          <SidebarGroup>
             <SidebarGroupContent>
               <Empty className="border-0 p-4">
                 <EmptyHeader>
@@ -259,72 +265,66 @@ export function AppSidebar() {
                   </EmptyDescription>
                 </EmptyHeader>
               </Empty>
-              <SidebarGroupAction title="Add Group">
-                <Plus onClick={handleAdd} />
-              </SidebarGroupAction>
             </SidebarGroupContent>
-          ) : (
-            <>
-              <SidebarGroupAction title="Add Group">
-                <Plus onClick={handleAdd} />
-              </SidebarGroupAction>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {personalGroups.map((personalGroup) => {
-                    const numOfTasks = getNumOfTasksPersonal(personalGroup.id);
+          </SidebarGroup>
+        ) : (
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {personalGroups.map((personalGroup) => {
+                  const numOfTasks = getNumOfTasksPersonal(personalGroup.id);
 
-                    return (
-                      <SidebarMenuItem key={personalGroup.id}>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={groupId === personalGroup.id}
-                        >
-                          <Link href={`/groups/${personalGroup.id}`}>
-                            {groupId === personalGroup.id ? (
-                              <FolderOpen />
-                            ) : (
-                              <FolderClosed />
-                            )}
-                            <span>{personalGroup.name}</span>
-                          </Link>
-                        </SidebarMenuButton>
+                  return (
+                    <SidebarMenuItem key={personalGroup.id}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={groupId === personalGroup.id}
+                      >
+                        <Link href={`/groups/${personalGroup.id}`}>
+                          {groupId === personalGroup.id ? (
+                            <FolderOpen />
+                          ) : (
+                            <FolderClosed />
+                          )}
+                          <span>{personalGroup.name}</span>
+                        </Link>
+                      </SidebarMenuButton>
 
-                        {numOfTasks > 0 && (
-                          <SidebarMenuBadge className="me-5">
-                            {numOfTasks > 99 ? "99+" : numOfTasks}
-                          </SidebarMenuBadge>
-                        )}
+                      {numOfTasks > 0 && (
+                        <SidebarMenuBadge className="me-5">
+                          {numOfTasks > 99 ? "99+" : numOfTasks}
+                        </SidebarMenuBadge>
+                      )}
 
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <SidebarMenuAction showOnHover>
-                              <MoreHorizontal />
-                              <span className="sr-only">More</span>
-                            </SidebarMenuAction>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuItem
-                              onClick={() => handleEdit(personalGroup.id)}
-                            >
-                              <span>Edit</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => handleDelete(personalGroup.id)}
-                              className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
-                            >
-                              <span>Delete</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </>
-          )}
-        </SidebarGroup>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <SidebarMenuAction showOnHover>
+                            <MoreHorizontal />
+                            <span className="sr-only">More</span>
+                          </SidebarMenuAction>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem
+                            onClick={() => handleEdit(personalGroup.id)}
+                          >
+                            <span>Edit</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => handleDelete(personalGroup.id)}
+                            className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
+                          >
+                            <span>Delete</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <AddGroup open={open} onOpenChange={setOpen} group={group} />
       <DeleteDialog
