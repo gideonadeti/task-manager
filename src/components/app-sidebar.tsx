@@ -32,6 +32,7 @@ import {
 } from "./ui/empty";
 import {
   Sidebar,
+  SidebarHeader,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
@@ -186,7 +187,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarContent>
+      <SidebarHeader>
         <SidebarGroup>
           <SidebarGroupLabel>Default Groups</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -224,6 +225,8 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+      </SidebarHeader>
+      <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Personal Groups</SidebarGroupLabel>
           {groupsQuery.isPending ? (
