@@ -260,20 +260,22 @@ export default function Dashboard() {
               <p className="text-sm text-muted-foreground mb-4">
                 Get started by creating your first task or group
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <div className="flex flex-row gap-2 sm:gap-3">
                 <Button
                   onClick={() => setAddTaskOpen(true)}
-                  className="focus-visible:ring-2"
+                  className="flex-1 sm:flex-initial focus-visible:ring-2"
+                  size="lg"
                 >
-                  <Plus className="size-4 mr-2" />
+                  <Plus className="size-5 mr-2" />
                   Create Task
                 </Button>
                 <Button
                   onClick={() => setAddGroupOpen(true)}
                   variant="outline"
-                  className="focus-visible:ring-2"
+                  className="flex-1 sm:flex-initial focus-visible:ring-2"
+                  size="lg"
                 >
-                  <FolderPlus className="size-4 mr-2" />
+                  <FolderPlus className="size-5 mr-2" />
                   Create Group
                 </Button>
               </div>
@@ -288,10 +290,10 @@ export default function Dashboard() {
               transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
               className="mb-6 sm:mb-8"
             >
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-row gap-2 sm:gap-3">
                 <Button
                   onClick={() => setAddTaskOpen(true)}
-                  className="flex-1 sm:flex-none"
+                  className="flex-1 sm:flex-initial focus-visible:ring-2"
                   size="lg"
                 >
                   <Plus className="size-5 mr-2" />
@@ -300,7 +302,7 @@ export default function Dashboard() {
                 <Button
                   onClick={() => setAddGroupOpen(true)}
                   variant="outline"
-                  className="flex-1 sm:flex-none"
+                  className="flex-1 sm:flex-initial focus-visible:ring-2"
                   size="lg"
                 >
                   <FolderPlus className="size-5 mr-2" />

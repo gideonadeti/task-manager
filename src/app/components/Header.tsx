@@ -20,10 +20,21 @@ export default function Header() {
   const { isLoaded } = useUser();
   const [mounted, setMounted] = React.useState(false);
   const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(false);
 
   // Avoid hydration mismatch
   React.useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Detect mobile screen size
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const isLightTheme = mounted && resolvedTheme === "light";
@@ -180,7 +191,7 @@ export default function Header() {
                 }`,
               },
             }}
-            showName
+            showName={!isMobile}
           />
         )}
         <Separator orientation="vertical" className="mx-1 sm:mx-2 h-8" />
