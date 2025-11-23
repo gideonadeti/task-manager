@@ -112,8 +112,9 @@ export default function TaskDetailsDialog({
 
     const date = dueDate instanceof Date ? dueDate : new Date(dueDate);
 
+    // If task is completed, don't show red styling for overdue dates
     if (isPast(date) && !isToday(date)) {
-      return "text-red-600 dark:text-red-400 font-semibold";
+      return task.completed ? "text-gray-600 dark:text-gray-400" : "text-red-600 dark:text-red-400 font-semibold";
     } else if (isToday(date)) {
       return "text-orange-600 dark:text-orange-400 font-semibold";
     } else if (isTomorrow(date)) {

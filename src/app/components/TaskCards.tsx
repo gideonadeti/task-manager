@@ -44,11 +44,12 @@ const getPriorityColor = (priority: string): string => {
 };
 
 // Memoized due date urgency function
-const getDueDateUrgency = (dueDate: Date | null): string | null => {
+const getDueDateUrgency = (dueDate: Date | null, completed: boolean): string | null => {
   if (!dueDate) return null;
 
+  // If task is completed, don't show red styling for overdue dates
   if (isPast(dueDate) && !isToday(dueDate)) {
-    return "text-red-600 dark:text-red-400 font-semibold";
+    return completed ? "text-gray-600 dark:text-gray-400" : "text-red-600 dark:text-red-400 font-semibold";
   } else if (isToday(dueDate)) {
     return "text-orange-600 dark:text-orange-400 font-semibold";
   } else if (isTomorrow(dueDate)) {
@@ -72,7 +73,7 @@ function TaskCard({
   onSelectionChange,
 }: TaskCardProps) {
   const priorityColor = getPriorityColor(task.priority);
-  const dueDateUrgency = getDueDateUrgency(task.dueDate);
+  const dueDateUrgency = getDueDateUrgency(task.dueDate, task.completed);
 
   // Check if due date should pulse (overdue or today, and not completed)
   const shouldPulse =
