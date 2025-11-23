@@ -175,10 +175,4 @@ This will create sample groups and tasks. You can optionally set the `SEED_USER_
 
 ## Acknowledgments
 
-- Built as a portfolio project extending The Odin Project's Todo List
-- UI components from [shadcn/ui](https://ui.shadcn.com/)
-- Icons from [Lucide](https://lucide.dev/)
-
----
-
-Made with ❤️ by [Gideon Adeti](https://github.com/gideonadeti)
+The original version of this project was built as part of my web development learning journey using [The Odin Project](https://www.theodinproject.com) curriculum. Special thanks to them for providing the [Todo List project lesson](https://www.theodinproject.com/lessons/node-path-javascript-todo-list) and comprehensive curriculum.
