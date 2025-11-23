@@ -258,15 +258,25 @@ export default function Dashboard() {
               <Inbox className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="font-semibold text-lg mb-2">No tasks yet</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Get started by creating your first task
+                Get started by creating your first task or group
               </p>
-              <Button
-                onClick={() => setAddTaskOpen(true)}
-                className="focus-visible:ring-2"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Create Task
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button
+                  onClick={() => setAddTaskOpen(true)}
+                  className="focus-visible:ring-2"
+                >
+                  <Plus className="size-4 mr-2" />
+                  Create Task
+                </Button>
+                <Button
+                  onClick={() => setAddGroupOpen(true)}
+                  variant="outline"
+                  className="focus-visible:ring-2"
+                >
+                  <FolderPlus className="size-4 mr-2" />
+                  Create Group
+                </Button>
+              </div>
             </motion.div>
           )}
 
@@ -325,7 +335,7 @@ export default function Dashboard() {
                     className="focus-visible:ring-2"
                   >
                     See all
-                    <ArrowRight className="h-4 w-4 ml-2" />
+                    <ArrowRight className="size-4 ml-2" />
                   </Button>
                 </Link>
               </div>
@@ -367,7 +377,7 @@ export default function Dashboard() {
                     className="focus-visible:ring-2"
                   >
                     See all
-                    <ArrowRight className="h-4 w-4 ml-2" />
+                    <ArrowRight className="size-4 ml-2" />
                   </Button>
                 </Link>
               </div>
