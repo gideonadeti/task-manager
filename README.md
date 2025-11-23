@@ -128,10 +128,10 @@ Before you begin, ensure you have the following installed:
 
    ```bash
    # Run database migrations (automatically generates Prisma Client)
-   npx prisma migrate dev
+   bunx prisma migrate dev
 
    # (Optional) Open Prisma Studio to view/edit database
-   npx prisma studio
+   bunx prisma studio
    ```
 
 5. **Start the Development Server**
@@ -168,7 +168,7 @@ Before you begin, ensure you have the following installed:
 The first time you set up the database, run:
 
 ```bash
-npx prisma migrate dev --name init
+bunx prisma migrate dev --name init
 ```
 
 This will:
@@ -214,22 +214,22 @@ This will create sample groups and tasks. You can optionally set the `SEED_USER_
 
 ```bash
 # Generate Prisma Client after schema changes
-npx prisma generate
+bunx prisma generate
 
 # Create a new migration
-npx prisma migrate dev --name migration_name
+bunx prisma migrate dev --name migration_name
 
 # Reset database (⚠️ deletes all data)
-npx prisma migrate reset
+bunx prisma migrate reset
 
 # View database in Prisma Studio
-npx prisma studio
+bunx prisma studio
 
 # Format Prisma schema
-npx prisma format
+bunx prisma format
 
 # Validate Prisma schema
-npx prisma validate
+bunx prisma validate
 ```
 
 ## Available Scripts
@@ -338,7 +338,7 @@ Ensure all environment variables from the [Running Locally](#running-locally) se
 Run migrations on your production database:
 
 ```bash
-npx prisma migrate deploy
+bunx prisma migrate deploy
 ```
 
 **⚠️ Warning**: Always test migrations in a staging environment first!
