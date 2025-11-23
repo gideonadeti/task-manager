@@ -178,31 +178,15 @@ export default function TasksToolbar({
     return bulkToggleLabel === "Mark as Incomplete" ? Circle : CheckCircle2;
   }, [bulkToggleLabel]);
 
-  // Get the actual group ID to prefill the form
-  // Handles special routes like "inbox" and regular group IDs
-  const defaultGroupId = useMemo(() => {
-    if (!groupId || !groupsQuery.data) return undefined;
-
-    // Special views that don't have a single group - default to Inbox
-    const specialViews = [
-      "today",
-      "tomorrow",
-      "this-week",
-      "overdue",
-      "completed",
-    ];
-    if (specialViews.includes(groupId as string)) {
-      return groupsQuery.data.find((group) => group.name === "Inbox")?.id;
+  // Check if all selected tasks are completed
+  const areAllSelectedTasksCompleted = useMemo(() => {
+    if (!selectedTaskIds || !tasks || selectedTaskIds.size === 0) {
+      return false;
     }
-
-    // Handle "inbox" route - find the actual Inbox group ID
-    if (groupId === "inbox") {
-      return groupsQuery.data.find((group) => group.name === "Inbox")?.id;
-    }
-
-    // For actual group IDs (UUIDs), return as is
-    return groupId as string;
-  }, [groupId, groupsQuery.data]);
+    const selectedTasks = tasks.filter((t) => selectedTaskIds.has(t.id));
+    if (selectedTasks.length === 0) return false;
+    return selectedTasks.every((t) => t.completed);
+  }, [selectedTaskIds, tasks]);
 
   // Get the group ID to exclude from bulk move dialog
   // Only exclude if it's an actual group (not a special view)
@@ -227,6 +211,32 @@ export default function TasksToolbar({
     }
 
     // For actual group IDs (UUIDs), exclude them
+    return groupId as string;
+  }, [groupId, groupsQuery.data]);
+
+  // Get the actual group ID to prefill the form
+  // Handles special routes like "inbox" and regular group IDs
+  const defaultGroupId = useMemo(() => {
+    if (!groupId || !groupsQuery.data) return undefined;
+
+    // Special views that don't have a single group - default to Inbox
+    const specialViews = [
+      "today",
+      "tomorrow",
+      "this-week",
+      "overdue",
+      "completed",
+    ];
+    if (specialViews.includes(groupId as string)) {
+      return groupsQuery.data.find((group) => group.name === "Inbox")?.id;
+    }
+
+    // Handle "inbox" route - find the actual Inbox group ID
+    if (groupId === "inbox") {
+      return groupsQuery.data.find((group) => group.name === "Inbox")?.id;
+    }
+
+    // For actual group IDs (UUIDs), return as is
     return groupId as string;
   }, [groupId, groupsQuery.data]);
 
@@ -328,22 +338,26 @@ export default function TasksToolbar({
                       })}
                       {bulkToggleLabel}
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setOpenPriorityDialog(true);
-                      }}
-                    >
-                      <Tag className="mr-2 h-4 w-4" />
-                      Change Priority
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setOpenGroupDialog(true);
-                      }}
-                    >
-                      <FolderInput className="mr-2 h-4 w-4" />
-                      Move to Group
-                    </DropdownMenuItem>
+                    {!areAllSelectedTasksCompleted && (
+                      <>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setOpenPriorityDialog(true);
+                          }}
+                        >
+                          <Tag className="mr-2 h-4 w-4" />
+                          Change Priority
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setOpenGroupDialog(true);
+                          }}
+                        >
+                          <FolderInput className="mr-2 h-4 w-4" />
+                          Move to Group
+                        </DropdownMenuItem>
+                      </>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => {
