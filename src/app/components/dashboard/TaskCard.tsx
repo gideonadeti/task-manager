@@ -79,7 +79,7 @@ export function TaskCard({ task, groups, index, onTaskClick }: TaskCardProps) {
           <div className="flex items-center justify-between gap-2">
             {task.dueDate && (
               <div className="flex items-center gap-1.5 text-xs">
-                <Clock className="h-3 w-3 text-muted-foreground" />
+                <Clock className="size-3 text-muted-foreground" />
                 <span
                   className={
                     isOverdue
@@ -97,14 +97,14 @@ export function TaskCard({ task, groups, index, onTaskClick }: TaskCardProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7"
+                className="size-7"
                 onClick={(e) => {
                   e.stopPropagation();
                   onTaskClick(task);
                 }}
                 aria-label="View task details"
               >
-                <Edit className="h-3.5 w-3.5" />
+                <Edit className="size-3.5" />
               </Button>
             </div>
           </div>

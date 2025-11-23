@@ -21,7 +21,7 @@ export function OverallProgress({ completed, total }: OverallProgressProps) {
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Target className="h-5 w-5 text-primary" />
+          <Target className="size-5 text-primary" />
           <span className="font-semibold text-sm sm:text-base">
             Overall Progress
           </span>

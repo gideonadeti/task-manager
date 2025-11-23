@@ -185,7 +185,7 @@ export default function LandingPage() {
                 }}
               >
                 {!mounted ? (
-                  <div className="h-8 w-8" />
+                  <div className="size-8" />
                 ) : isLightTheme ? (
                   <Image
                     key="light"
@@ -193,7 +193,7 @@ export default function LandingPage() {
                     alt="Taskflow"
                     width={32}
                     height={32}
-                    className="h-8 w-8"
+                    className="size-8"
                     priority
                   />
                 ) : (
@@ -203,7 +203,7 @@ export default function LandingPage() {
                     alt="Taskflow"
                     width={32}
                     height={32}
-                    className="h-8 w-8"
+                    className="size-8"
                     priority
                   />
                 )}
@@ -382,7 +382,7 @@ export default function LandingPage() {
                 aria-label="Learn more about features"
               >
                 Learn More
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 size-4" />
               </Button>
             </motion.div>
           </div>
@@ -442,7 +442,7 @@ export default function LandingPage() {
                   >
                     <div className="flex-shrink-0 p-3 rounded-lg bg-primary/10 w-fit">
                       <Icon
-                        className="h-6 w-6 sm:h-7 sm:w-7 text-primary"
+                        className="size-6 sm:size-7 text-primary"
                         aria-hidden="true"
                       />
                     </div>
@@ -567,7 +567,7 @@ export default function LandingPage() {
         aria-hidden="true"
       >
         <motion.div
-          className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-80 sm:h-80 bg-blue-500/10 dark:bg-blue-400/10 rounded-full blur-3xl"
+          className="absolute top-1/4 left-1/4 size-64 sm:size-80 bg-blue-500/10 dark:bg-blue-400/10 rounded-full blur-3xl"
           animate={
             prefersReducedMotion
               ? {}
@@ -584,7 +584,7 @@ export default function LandingPage() {
           }}
         />
         <motion.div
-          className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-80 sm:h-80 bg-purple-500/10 dark:bg-purple-400/10 rounded-full blur-3xl"
+          className="absolute bottom-1/4 right-1/4 size-64 sm:size-80 bg-purple-500/10 dark:bg-purple-400/10 rounded-full blur-3xl"
           animate={
             prefersReducedMotion
               ? {}

@@ -113,7 +113,7 @@ export default function Header() {
               }}
             >
               {!mounted ? (
-                <div className="h-8 w-8" />
+                <div className="size-8" />
               ) : isLightTheme ? (
                 <Image
                   key="light"
@@ -121,7 +121,7 @@ export default function Header() {
                   alt="Taskflow"
                   width={32}
                   height={32}
-                  className="h-8 w-8"
+                  className="size-8"
                   priority
                 />
               ) : (
@@ -131,7 +131,7 @@ export default function Header() {
                   alt="Taskflow"
                   width={32}
                   height={32}
-                  className="h-8 w-8"
+                  className="size-8"
                   priority
                 />
               )}

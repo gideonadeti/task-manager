@@ -62,7 +62,7 @@ export default function PriorityFilter({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-11 sm:h-8 min-h-[44px] sm:min-h-0 border-dashed">
-          <PlusCircledIcon className="mr-2 h-4 w-4" />
+          <PlusCircledIcon className="mr-2 size-4" />
           Priority
           {selectedValues.size > 0 && (
             <>
@@ -122,13 +122,13 @@ export default function PriorityFilter({
                   >
                     <div
                       className={cn(
-                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                        "mr-2 flex size-4 items-center justify-center rounded-sm border border-primary",
                         isSelected
                           ? "bg-primary text-primary-foreground"
                           : "opacity-50 [&_svg]:invisible"
                       )}
                     >
-                      <CheckIcon className={cn("h-4 w-4")} />
+                      <CheckIcon className={cn("size-4")} />
                     </div>
                     <span className="flex-1">{option.label}</span>
                     {priorityCounts[option.value] > 0 && (

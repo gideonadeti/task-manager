@@ -94,10 +94,10 @@ export default function TaskActions({ task }: TaskActionsProps) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="h-8 w-8 sm:h-8 sm:w-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-0"
+          className="size-8 sm:size-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-0"
         >
           <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
+          <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -105,12 +105,12 @@ export default function TaskActions({ task }: TaskActionsProps) {
         <DropdownMenuItem onClick={handleToggleCompletion}>
           {task.completed ? (
             <>
-              <Circle className="mr-2 h-4 w-4" />
+              <Circle className="mr-2 size-4" />
               Mark as Incomplete
             </>
           ) : (
             <>
-              <CheckCircle2 className="mr-2 h-4 w-4" />
+              <CheckCircle2 className="mr-2 size-4" />
               Mark as Complete
             </>
           )}
@@ -118,11 +118,11 @@ export default function TaskActions({ task }: TaskActionsProps) {
         {!task.completed && (
           <>
             <DropdownMenuItem onClick={() => setPriorityOpen(true)}>
-              <Tag className="mr-2 h-4 w-4" />
+              <Tag className="mr-2 size-4" />
               Change Priority
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setGroupOpen(true)}>
-              <FolderInput className="mr-2 h-4 w-4" />
+              <FolderInput className="mr-2 size-4" />
               Move to Group
             </DropdownMenuItem>
             <DropdownMenuSeparator />

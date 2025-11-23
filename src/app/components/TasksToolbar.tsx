@@ -252,7 +252,7 @@ export default function TasksToolbar({
         <div className="flex flex-1 items-center gap-2 sm:gap-2 flex-wrap">
           <InputGroup className="h-11 sm:h-8 flex-1 min-w-0 sm:min-w-[120px] sm:max-w-[300px]">
             <InputGroupAddon align="inline-start">
-              <MagnifyingGlassIcon className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+              <MagnifyingGlassIcon className="size-4 sm:size-3.5" />
             </InputGroupAddon>
             <InputGroupInput
               placeholder="Search task..."
@@ -276,7 +276,7 @@ export default function TasksToolbar({
               aria-label="Reset filters"
             >
               <span className="hidden sm:inline">Reset</span>
-              <Cross2Icon className="h-4 w-4 sm:ml-2" />
+              <Cross2Icon className="size-4 sm:ml-2" />
             </Button>
           )}
         </div>
@@ -296,7 +296,7 @@ export default function TasksToolbar({
                       className="ml-1 p-0.5 rounded-sm hover:bg-muted-foreground/20 transition-colors"
                       aria-label="Deselect all tasks"
                     >
-                      <X className="h-3.5 w-3.5 text-muted-foreground" />
+                      <X className="size-3.5 text-muted-foreground" />
                     </button>
                   )}
                 </div>
@@ -322,7 +322,7 @@ export default function TasksToolbar({
                     >
                       <span className="hidden sm:inline">Bulk Actions</span>
                       <span className="sm:hidden">Actions</span>
-                      <ChevronDown className="h-4 w-4" />
+                      <ChevronDown className="size-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
@@ -334,7 +334,7 @@ export default function TasksToolbar({
                       }}
                     >
                       {React.createElement(bulkToggleIcon, {
-                        className: "mr-2 h-4 w-4",
+                        className: "mr-2 size-4",
                       })}
                       {bulkToggleLabel}
                     </DropdownMenuItem>
@@ -345,7 +345,7 @@ export default function TasksToolbar({
                             setOpenPriorityDialog(true);
                           }}
                         >
-                          <Tag className="mr-2 h-4 w-4" />
+                          <Tag className="mr-2 size-4" />
                           Change Priority
                         </DropdownMenuItem>
                         <DropdownMenuItem
@@ -353,7 +353,7 @@ export default function TasksToolbar({
                             setOpenGroupDialog(true);
                           }}
                         >
-                          <FolderInput className="mr-2 h-4 w-4" />
+                          <FolderInput className="mr-2 size-4" />
                           Move to Group
                         </DropdownMenuItem>
                       </>
@@ -365,7 +365,7 @@ export default function TasksToolbar({
                       }}
                       className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
                     >
-                      <Trash2 className="mr-2 h-4 w-4" />
+                      <Trash2 className="mr-2 size-4" />
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -377,7 +377,7 @@ export default function TasksToolbar({
             onClick={() => setOpenAdd(true)}
             className="h-11 sm:h-8 min-h-[44px] sm:min-h-0 gap-2 w-full sm:w-auto"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="size-4" />
             <span className="hidden sm:inline">Create Task</span>
             <span className="sm:hidden">Create</span>
           </Button>

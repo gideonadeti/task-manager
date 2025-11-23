@@ -16,7 +16,7 @@ export default function TaskCardSkeleton() {
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="flex items-start gap-3 flex-1 min-w-0">
           <div className="mt-1 flex-shrink-0">
-            <Skeleton className="h-5 w-5 rounded" />
+            <Skeleton className="size-5 rounded" />
           </div>
           <div className="flex-1 min-w-0 space-y-2">
             <Skeleton className="h-5 w-3/4" />
@@ -25,7 +25,7 @@ export default function TaskCardSkeleton() {
           </div>
         </div>
         <div className="flex-shrink-0">
-          <Skeleton className="h-8 w-8 rounded" />
+          <Skeleton className="size-8 rounded" />
         </div>
       </div>
 

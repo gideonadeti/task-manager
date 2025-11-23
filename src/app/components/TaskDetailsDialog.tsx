@@ -164,7 +164,7 @@ export default function TaskDetailsDialog({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-                    <Tag className="h-4 w-4" />
+                    <Tag className="size-4" />
                     Priority
                   </h4>
                   <Badge
@@ -179,7 +179,7 @@ export default function TaskDetailsDialog({
                 {task.dueDate && (
                   <div>
                     <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
+                      <Calendar className="size-4" />
                       Due Date
                     </h4>
                     <p
@@ -209,7 +209,7 @@ export default function TaskDetailsDialog({
 
                 <div>
                   <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
+                    <Clock className="size-4" />
                     Status
                   </h4>
                   <p className="text-sm text-muted-foreground">
@@ -249,12 +249,12 @@ export default function TaskDetailsDialog({
               >
                 {task.completed ? (
                   <>
-                    <Circle className="mr-2 h-4 w-4" />
+                    <Circle className="mr-2 size-4" />
                     Mark as Incomplete
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                    <CheckCircle2 className="mr-2 size-4" />
                     Mark as Complete
                   </>
                 )}

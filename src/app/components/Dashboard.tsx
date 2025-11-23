@@ -255,7 +255,7 @@ export default function Dashboard() {
               transition={{ duration: 0.3 }}
               className="border rounded-lg p-4 sm:p-8 lg:p-12 text-center bg-card/50 backdrop-blur-sm mb-6 sm:mb-8 w-full overflow-x-hidden"
             >
-              <Inbox className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
+              <Inbox className="size-10 sm:size-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
               <h3 className="font-semibold text-base sm:text-lg mb-2">
                 No tasks yet
               </h3>
@@ -412,7 +412,7 @@ export default function Dashboard() {
                 className="mb-6 sm:mb-8"
               >
                 <div className="border rounded-lg p-6 sm:p-8 text-center bg-card/50 backdrop-blur-sm">
-                  <Calendar className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+                  <Calendar className="size-10 text-muted-foreground mx-auto mb-3" />
                   <h3 className="font-semibold text-base mb-2">
                     No tasks due this week
                   </h3>
