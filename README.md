@@ -205,6 +205,12 @@ Contributions, issues, and feature requests are welcome! Feel free to:
 
 Please ensure your code follows the existing style.
 
+## Support
+
+If you find this project helpful or interesting, consider supporting me:
+
+[☕ Buy me a coffee](https://buymeacoffee.com/gideonadeti)
+
 ## Future Improvements
 
 This project is continuously evolving, and I plan to keep improving it with new features and enhancements. Some planned additions include:
