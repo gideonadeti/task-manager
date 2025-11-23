@@ -6,29 +6,40 @@ A modern, full-stack task management application built with Next.js, featuring a
 
 ## Features
 
-- **Create, Read, Update, Delete (CRUD) Tasks**: Easily manage your tasks with full CRUD functionality
-- **Create, Read, Update, Delete (CRUD) Groups**: Organize your tasks into groups for better organization
-- **Task Completion Toggle**: Easily toggle task status as completed or not
-- **Priority Levels**: Assign priority levels (low, medium, high) to tasks
-- **Due Dates**: Set and manage due dates for tasks
-- **Bulk Operations**: Perform actions on multiple tasks at once:
-  - Bulk mark tasks as complete/incomplete
+### Task Management
+
+- **Full CRUD Operations**: Create, read, update, and delete tasks and groups
+- **Priority System**: Assign and filter tasks by priority levels (low, medium, high)
+- **Due Date Tracking**: Set due dates with smart relative time formatting
+- **Completion Tracking**: Toggle task completion status with visual indicators
+- **Task Details**: View and edit task details in a dedicated dialog
+
+### Organization & Productivity
+
+- **Group Organization**: Organize tasks into custom groups for better structure
+- **Dashboard Overview**: Visual progress tracking with completion statistics
+- **Advanced Search**: Search tasks by title or description
+- **Smart Filtering**: Filter tasks by priority, completion status, and group
+- **Bulk Operations**: Efficiently manage multiple tasks at once:
+  - Bulk mark complete/incomplete
   - Bulk update priority levels
-  - Bulk move tasks between groups
-  - Bulk delete tasks
-- **Dashboard with Progress Tracking**: Visual overview of your tasks with completion statistics
-- **Advanced Search & Filtering**: Search tasks by title or description and filter by priority levels
-- **Task Selection**: Multi-select tasks for bulk operations with intuitive selection controls
-- **Task Details Dialog**: View and manage task details in a dedicated dialog
-- **Keyboard Shortcuts**: Power user features with keyboard shortcuts:
-  - `Ctrl/Cmd + B`: Toggle sidebar
-  - `Ctrl/Cmd + Alt/Option + T`: Add new task
-  - `Ctrl/Cmd + Alt/Option + C`: Toggle selected tasks completion
-  - `?`: Show keyboard shortcuts dialog
-- **Landing Page**: Beautiful landing page showcasing application features
-- **User Authentication**: Secure authentication using Clerk
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
-- **Dark Mode Support**: Built-in theme switching
+  - Bulk move between groups
+  - Bulk delete
+
+### User Experience
+
+- **Keyboard Shortcuts**: Power user features for faster navigation:
+  - `Ctrl/Cmd + B` - Toggle sidebar
+  - `Ctrl/Cmd + Alt/Option + T` - Add new task
+  - `Ctrl/Cmd + Alt/Option + C` - Toggle selected tasks
+- **Responsive Design**: Seamless experience on desktop, tablet, and mobile devices
+- **Dark Mode**: Built-in theme switching with system preference detection
+- **Beautiful UI**: Modern, clean interface with smooth animations
+
+### Security & Infrastructure
+
+- **Secure Authentication**: Powered by Clerk for secure user authentication
+- **User Isolation**: Each user's data is completely isolated and secure
 
 ## Technologies Used
 
