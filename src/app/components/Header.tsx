@@ -30,11 +30,9 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-between border-b py-2 px-2 sm:px-4 gap-2">
-      {/* Left section: Sidebar trigger and theme toggler */}
+      {/* Left section: Sidebar trigger and keyboard shortcuts */}
       <div className="flex items-center gap-1 flex-shrink-0">
         <SidebarTrigger />
-        <Separator orientation="vertical" className="mx-1 sm:mx-2 h-8" />
-        <ThemeToggler />
         <Separator orientation="vertical" className="mx-1 sm:mx-2 h-8" />
         <Button
           variant="outline"
@@ -169,8 +167,8 @@ export default function Header() {
         </motion.div>
       </div>
 
-      {/* Right section: User button */}
-      <div className="flex items-center flex-shrink-0">
+      {/* Right section: User button and theme toggler */}
+      <div className="flex items-center gap-1 flex-shrink-0">
         {!isLoaded ? (
           <Skeleton className="min-w-20 sm:min-w-28 h-8 rounded-full" />
         ) : (
@@ -185,6 +183,8 @@ export default function Header() {
             showName
           />
         )}
+        <Separator orientation="vertical" className="mx-1 sm:mx-2 h-8" />
+        <ThemeToggler />
       </div>
 
       <KeyboardShortcutsDialog
