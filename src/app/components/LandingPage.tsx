@@ -276,27 +276,82 @@ export default function LandingPage() {
               transition={getTransition()}
             >
               <H1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-tight">
-                <motion.span
-                  className="block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]"
-                  style={{
-                    backgroundPosition: "0% 50%",
-                  }}
-                  animate={
-                    prefersReducedMotion
-                      ? {}
-                      : {
-                          backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                        }
-                  }
-                  transition={{
-                    duration: 3,
-                    ease: "easeInOut",
-                    repeat: Infinity,
-                  }}
-                >
-                  Streamline Your Workflow,
-                </motion.span>
-                <span className="block mt-3 sm:mt-4">Master Your Tasks</span>
+                <span className="block">
+                  <motion.span
+                    className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]"
+                    style={{
+                      backgroundPosition: "0% 50%",
+                    }}
+                    animate={
+                      prefersReducedMotion
+                        ? {}
+                        : {
+                            backgroundPosition: [
+                              "0% 50%",
+                              "100% 50%",
+                              "0% 50%",
+                            ],
+                          }
+                    }
+                    transition={{
+                      duration: 3,
+                      ease: "easeInOut",
+                      repeat: Infinity,
+                    }}
+                  >
+                    Streamline
+                  </motion.span>{" "}
+                  Your{" "}
+                  <motion.span
+                    className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]"
+                    style={{
+                      backgroundPosition: "0% 50%",
+                    }}
+                    animate={
+                      prefersReducedMotion
+                        ? {}
+                        : {
+                            backgroundPosition: [
+                              "0% 50%",
+                              "100% 50%",
+                              "0% 50%",
+                            ],
+                          }
+                    }
+                    transition={{
+                      duration: 3,
+                      ease: "easeInOut",
+                      repeat: Infinity,
+                    }}
+                  >
+                    Workflow,
+                  </motion.span>{" "}
+                  with{" "}
+                  <motion.span
+                    className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto]"
+                    style={{
+                      backgroundPosition: "0% 50%",
+                    }}
+                    animate={
+                      prefersReducedMotion
+                        ? {}
+                        : {
+                            backgroundPosition: [
+                              "0% 50%",
+                              "100% 50%",
+                              "0% 50%",
+                            ],
+                          }
+                    }
+                    transition={{
+                      duration: 3,
+                      ease: "easeInOut",
+                      repeat: Infinity,
+                    }}
+                  >
+                    Taskflow
+                  </motion.span>
+                </span>
               </H1>
             </motion.div>
 
