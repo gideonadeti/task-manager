@@ -89,7 +89,7 @@ Before you begin, ensure you have the following installed:
 
 - **Node.js** 18.x or higher ([Download](https://nodejs.org/))
 - A package manager: **bun**, **npm**, **yarn**, or **pnpm** (examples use bun)
-- **PostgreSQL** database (local or cloud instance like [Supabase](https://supabase.com/), [Neon](https://neon.tech/), or [Railway](https://railway.app/))
+- **PostgreSQL** database (local or cloud instance like [Supabase](https://supabase.com/), [Neon](https://neon.tech/), [Railway](https://railway.app/), or [Prisma Postgres](https://www.prisma.io/data-platform))
 - **Git** ([Download](https://git-scm.com/))
 - A **Clerk** account for authentication ([Sign up](https://clerk.com/))
 
