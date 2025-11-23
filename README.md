@@ -173,6 +173,22 @@ This will create sample groups and tasks. You can optionally set the `SEED_USER_
 
 **Note**: The seed script will create data for the user ID specified in `SEED_USER_ID` (defaults to "seed-user-123" if not set). Make sure you're authenticated with the corresponding user when viewing seeded data.
 
+## Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to:
+
+1. Fork the project
+
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+
+5. Open a Pull Request
+
+Please ensure your code follows the existing style.
+
 ## Acknowledgments
 
 The original version of this project was built as part of my web development learning journey using [The Odin Project](https://www.theodinproject.com) curriculum. Special thanks to them for providing the [Todo List project lesson](https://www.theodinproject.com/lessons/node-path-javascript-todo-list) and comprehensive curriculum.
