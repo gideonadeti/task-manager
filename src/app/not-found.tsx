@@ -19,8 +19,8 @@ export default function NotFound() {
           </EmptyMedia>
           <EmptyTitle>Page Not Found</EmptyTitle>
           <EmptyDescription>
-            The page you're looking for doesn't exist or has been moved. Let's
-            get you back on track.
+            The page you&apos;re looking for doesn&apos;t exist or has been
+            moved. Let&apos;s get you back on track.
           </EmptyDescription>
         </EmptyHeader>
         <div className="flex gap-2">
@@ -35,4 +35,3 @@ export default function NotFound() {
     </div>
   );
 }
-
