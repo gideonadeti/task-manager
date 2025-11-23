@@ -253,30 +253,36 @@ export default function Dashboard() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
-              className="border rounded-lg p-8 sm:p-12 text-center bg-card/50 backdrop-blur-sm mb-6 sm:mb-8"
+              className="border rounded-lg p-4 sm:p-8 lg:p-12 text-center bg-card/50 backdrop-blur-sm mb-6 sm:mb-8 w-full overflow-x-hidden"
             >
-              <Inbox className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="font-semibold text-lg mb-2">No tasks yet</h3>
-              <p className="text-sm text-muted-foreground mb-4">
+              <Inbox className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
+              <h3 className="font-semibold text-base sm:text-lg mb-2">
+                No tasks yet
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6 px-2">
                 Get started by creating your first task or group
               </p>
-              <div className="flex flex-row gap-2 sm:gap-3">
+              <div className="flex flex-row gap-2 sm:gap-3 w-full min-w-0">
                 <Button
                   onClick={() => setAddTaskOpen(true)}
-                  className="flex-1 sm:flex-initial focus-visible:ring-2"
+                  className="flex-1 sm:flex-initial focus-visible:ring-2 min-w-0"
                   size="lg"
                 >
-                  <Plus className="size-5 mr-2" />
-                  Create Task
+                  <Plus className="size-4 sm:size-5 mr-1 sm:mr-2 flex-shrink-0" />
+                  <span className="text-xs sm:text-base truncate">
+                    Create Task
+                  </span>
                 </Button>
                 <Button
                   onClick={() => setAddGroupOpen(true)}
                   variant="outline"
-                  className="flex-1 sm:flex-initial focus-visible:ring-2"
+                  className="flex-1 sm:flex-initial focus-visible:ring-2 min-w-0"
                   size="lg"
                 >
-                  <FolderPlus className="size-5 mr-2" />
-                  Create Group
+                  <FolderPlus className="size-4 sm:size-5 mr-1 sm:mr-2 flex-shrink-0" />
+                  <span className="text-xs sm:text-base truncate">
+                    Create Group
+                  </span>
                 </Button>
               </div>
             </motion.div>
