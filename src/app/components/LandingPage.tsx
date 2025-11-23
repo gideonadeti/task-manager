@@ -362,9 +362,8 @@ export default function LandingPage() {
               transition={getTransition(0.1)}
               className="text-muted-foreground text-base sm:text-lg lg:text-xl max-w-2xl leading-relaxed"
             >
-              Taskflow is a modern, full-stack task management application that
-              helps you organize your work, track priorities, and stay
-              productive.
+              A modern task-management application that helps you organize your
+              work, track priorities, and stay productive.
             </motion.p>
 
             {/* Optional CTA Button */}
