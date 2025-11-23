@@ -9,20 +9,22 @@ __tests__/
 ├── setup.ts                    # Global test setup and mocks
 ├── api/                        # Integration tests for API routes
 │   ├── tasks/
-│   │   ├── route.test.ts
-│   │   └── [taskId]/route.test.ts
+│   │   ├── route.test.ts      # GET and POST /api/tasks tests
+│   │   └── [taskId]/
+│   │       └── route.test.ts # PUT, DELETE, PATCH /api/tasks/:taskId tests
 │   └── groups/
-│       ├── route.test.ts
-│       └── [groupId]/route.test.ts
+│       ├── route.test.ts      # GET and POST /api/groups tests
+│       └── [groupId]/
+│           └── route.test.ts # PATCH and DELETE /api/groups/:groupId tests
 ├── lib/                        # Unit tests for utilities
 │   └── validations/
-│       ├── task.test.ts
-│       ├── group.test.ts
-│       └── validate.test.ts
+│       ├── task.test.ts       # Task validation schema tests
+│       ├── group.test.ts      # Group validation schema tests
+│       └── validate.test.ts  # Validation utility function tests
 ├── services/                   # Unit tests for services
-│   ├── task-service.test.ts
-│   └── group-service.test.ts
-└── format-date.test.ts         # Format date utility test
+│   ├── task-service.test.ts   # TaskService business logic tests
+│   └── group-service.test.ts # GroupService business logic tests
+└── format-date.test.ts        # Date formatting utility test
 ```
 
 ## Test Setup
