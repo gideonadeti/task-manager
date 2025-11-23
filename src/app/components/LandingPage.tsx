@@ -19,6 +19,7 @@ import {
   Linkedin,
   Twitter,
   Mail,
+  ChevronUp,
 } from "lucide-react";
 import { H1 } from "../ui/CustomTags";
 import { Button } from "@/components/ui/button";
@@ -526,6 +527,16 @@ export default function LandingPage() {
                 <Mail className="size-5" />
               </a>
             </div>
+
+            {/* Back to top button */}
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="mt-2 inline-flex items-center justify-center size-10 rounded-full bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-110 active:scale-100 border border-border"
+              title="Back to top"
+              aria-label="Back to top"
+            >
+              <ChevronUp className="size-5" />
+            </button>
 
             {/* Copyright */}
             <p className="text-xs text-muted-foreground mt-2 mb-0">
