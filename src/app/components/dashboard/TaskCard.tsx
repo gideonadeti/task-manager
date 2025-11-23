@@ -14,7 +14,7 @@ interface TaskCardProps {
   onTaskClick: (task: Task) => void;
 }
 
-export function TaskCard({ task, groups, index, onTaskClick }: TaskCardProps) {
+export function TaskCard({ task, groups, onTaskClick }: TaskCardProps) {
   const group = groups.find((g) => g.id === task.groupId);
   const isOverdue =
     task.dueDate &&
@@ -113,4 +113,3 @@ export function TaskCard({ task, groups, index, onTaskClick }: TaskCardProps) {
     </div>
   );
 }
-
