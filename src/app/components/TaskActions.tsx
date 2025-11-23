@@ -115,19 +115,23 @@ export default function TaskActions({ task }: TaskActionsProps) {
             </>
           )}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setPriorityOpen(true)}>
-          <Tag className="mr-2 h-4 w-4" />
-          Change Priority
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setGroupOpen(true)}>
-          <FolderInput className="mr-2 h-4 w-4" />
-          Move to Group
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleUpdate}>
-          <Pencil className="mr-2 size-4" />
-          Edit
-        </DropdownMenuItem>
+        {!task.completed && (
+          <>
+            <DropdownMenuItem onClick={() => setPriorityOpen(true)}>
+              <Tag className="mr-2 h-4 w-4" />
+              Change Priority
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setGroupOpen(true)}>
+              <FolderInput className="mr-2 h-4 w-4" />
+              Move to Group
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleUpdate}>
+              <Pencil className="mr-2 size-4" />
+              Edit
+            </DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => setDeleteOpen(true)}
