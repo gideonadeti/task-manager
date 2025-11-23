@@ -27,10 +27,22 @@ import { useRef, useState, useEffect } from "react";
 
 const features = [
   {
+    icon: Shield,
+    title: "Secure Authentication",
+    description:
+      "Your data is protected with secure authentication powered by Clerk. Sign in safely and access your tasks from anywhere.",
+  },
+  {
     icon: FolderTree,
     title: "Organize with Groups",
     description:
       "Create custom groups to organize your tasks by project, category, or any way you prefer. Keep your workspace structured and find what you need instantly.",
+  },
+  {
+    icon: Edit,
+    title: "Edit & Manage Tasks",
+    description:
+      "Create, edit, and organize your tasks effortlessly. Update task details, descriptions, and status with ease - full control at your fingertips.",
   },
   {
     icon: Target,
@@ -45,12 +57,6 @@ const features = [
       "Never miss a deadline with due date tracking. Set deadlines for your tasks and stay on top of your schedule with visual date indicators.",
   },
   {
-    icon: Edit,
-    title: "Full CRUD Operations",
-    description:
-      "Complete task management with create, read, update, and delete operations. Edit task details, descriptions, and status with ease.",
-  },
-  {
     icon: CheckCircle2,
     title: "Task Completion",
     description:
@@ -61,12 +67,6 @@ const features = [
     title: "Search & Filter",
     description:
       "Quickly find tasks with powerful search functionality. Filter by priority, group, completion status, or due date to focus on what you need.",
-  },
-  {
-    icon: Shield,
-    title: "Secure Authentication",
-    description:
-      "Your data is protected with secure authentication powered by Clerk. Sign in safely and access your tasks from anywhere.",
   },
   {
     icon: Smartphone,
