@@ -1,12 +1,8 @@
 # Taskflow
 
-A modern, full-stack task management application built with Next.js, featuring authentication, CRUD operations, and intuitive task organization.
+A modern, full-stack task management application built with Next.js, featuring authentication, CRUD operations, and intuitive task organization. Built as a portfolio project extending beyond The Odin Project's Todo List, Taskflow provides a seamless experience for managing tasks and organizing them into groups, with a clean and intuitive user interface.
 
 **Live Demo**: [Taskflow](https://gideonadeti-task-manager.vercel.app/)
-
-## Overview
-
-Taskflow is a full-stack application built as a portfolio project, extending beyond The Odin Project's Todo List project to demonstrate advanced web development skills. It provides a seamless experience for managing tasks and organizing them into groups, with a clean and intuitive user interface.
 
 ## Features
 
