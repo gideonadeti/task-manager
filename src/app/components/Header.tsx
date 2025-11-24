@@ -182,7 +182,7 @@ export default function Header() {
                 }`,
               },
             }}
-            showName={!isMobile}
+            showName={isMobile === false}
           />
         )}
         <Separator orientation="vertical" className="mx-1 sm:mx-2 h-8" />
