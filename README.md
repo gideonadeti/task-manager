@@ -36,7 +36,6 @@ A modern, full-stack task management application built with Next.js, featuring a
   - [Contributing](#contributing)
   - [Support](#support)
   - [Future Improvements](#future-improvements)
-  - [License](#license)
   - [Acknowledgments](#acknowledgments)
 
 ## Features
@@ -303,10 +302,6 @@ This project is continuously evolving, and I plan to keep improving it with new 
 
 - **Notifications**: Real-time notifications for task reminders, due dates, and important updates
 - More features coming soon...
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
