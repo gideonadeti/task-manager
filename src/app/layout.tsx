@@ -3,7 +3,6 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
-import { Suspense } from "react";
 
 import "./globals.css";
 import QCProvider from "./components/QCProvider";
@@ -52,13 +51,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ClerkProvider>
-            <Suspense fallback={null}>
-              <QCProvider>
-                <SignedIn>{children}</SignedIn>
-                <SignedOut>{children}</SignedOut>
-                <Toaster richColors />
-              </QCProvider>
-            </Suspense>
+            <QCProvider>
+              <SignedIn>{children}</SignedIn>
+              <SignedOut>{children}</SignedOut>
+              <Toaster richColors />
+            </QCProvider>
           </ClerkProvider>
         </ThemeProvider>
         <Analytics />

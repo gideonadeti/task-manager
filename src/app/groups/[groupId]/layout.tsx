@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import Header from "@/app/components/Header";
@@ -7,13 +5,11 @@ import Header from "@/app/components/Header";
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <Suspense fallback={null}>
-        <AppSidebar />
-        <main className="flex-grow flex flex-col min-h-svh">
-          <Header />
-          {children}
-        </main>
-      </Suspense>
+      <AppSidebar />
+      <main className="flex-grow flex flex-col min-h-svh">
+        <Header />
+        {children}
+      </main>
     </SidebarProvider>
   );
 }
