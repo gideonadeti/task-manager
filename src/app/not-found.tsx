@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FileQuestion } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +13,17 @@ import {
 } from "@/components/ui/empty";
 
 export default function NotFound() {
+  const router = useRouter();
+
+  const handleBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+      return;
+    }
+
+    router.push("/");
+  };
+
   return (
     <div className="flex items-center justify-center min-h-dvh p-4">
       <Empty className="max-w-md">
@@ -24,9 +38,7 @@ export default function NotFound() {
           </EmptyDescription>
         </EmptyHeader>
         <div className="flex gap-2">
-          <Button asChild>
-            <Link href="/groups/today">Go to Today</Link>
-          </Button>
+          <Button onClick={handleBack}>Go Back</Button>
           <Button asChild variant="outline">
             <Link href="/">Go Home</Link>
           </Button>
