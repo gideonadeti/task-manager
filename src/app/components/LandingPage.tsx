@@ -125,7 +125,7 @@ export default function LandingPage() {
 
       {/* Header with Logo */}
       <header
-        className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b"
+        className="fixed inset-x-0 top-0 z-50 border-b bg-background/80 supports-[backdrop-filter]:bg-background/60 backdrop-blur-sm"
         role="banner"
         aria-label="Site header"
       >
@@ -265,7 +265,11 @@ export default function LandingPage() {
       </header>
 
       {/* Main Content */}
-      <main id="main-content" className="flex-1 flex flex-col" role="main">
+      <main
+        id="main-content"
+        className="flex-1 flex flex-col pt-20 sm:pt-24"
+        role="main"
+      >
         {/* Hero Section */}
         <section className="flex flex-col md:flex-row items-center justify-center gap-12 sm:gap-16 lg:gap-20 p-6 sm:p-8 lg:p-12 max-w-7xl mx-auto w-full min-h-svh">
           {/* Left Section - Hero Content */}
