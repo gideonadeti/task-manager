@@ -79,52 +79,20 @@ A modern, full-stack task management application built with Next.js, featuring a
 
 ### Desktop (MacBook Air)
 
-<table>
-  <tr>
-    <td>
-      <img src="public/images/screenshots/Macbook-Air-gideonadeti-taskflow.vercel.app.png" alt="Hero section of the landing page on desktop" />
-    </td>
-    <td>
-      <img src="public/images/screenshots/Macbook-Air-gideonadeti-taskflow.vercel.app%20(10).png" alt="Overdue tasks view on desktop" />
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center">
-      <img src="public/images/screenshots/Macbook-Air-gideonadeti-taskflow.vercel.app%20(12).png" alt="This week overview on desktop" />
-    </td>
-  </tr>
-</table>
+![Hero section of the landing page on desktop](public/images/screenshots/Macbook-Air-gideonadeti-taskflow.vercel.app.png)
+![Overdue tasks view on desktop](public/images/screenshots/Macbook-Air-gideonadeti-taskflow.vercel.app%20(10).png)
+![This week overview on desktop](public/images/screenshots/Macbook-Air-gideonadeti-taskflow.vercel.app%20(12).png)
 
 ### Tablet (iPad Pro 11")
 
-<table>
-  <tr>
-    <td>
-      <img src="public/images/screenshots/iPad-PRO-11-gideonadeti-taskflow.vercel.app%20(2).png" alt="Features section of the landing page on tablet" />
-    </td>
-    <td>
-      <img src="public/images/screenshots/iPad-PRO-11-gideonadeti-taskflow.vercel.app%20(7).png" alt="Dashboard view on tablet" />
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center">
-      <img src="public/images/screenshots/iPad-PRO-11-gideonadeti-taskflow.vercel.app%20(9).png" alt="Completed tasks page on tablet" />
-    </td>
-  </tr>
-</table>
+![Features section of the landing page on tablet](public/images/screenshots/iPad-PRO-11-gideonadeti-taskflow.vercel.app%20(2).png)
+![Dashboard view on tablet](public/images/screenshots/iPad-PRO-11-gideonadeti-taskflow.vercel.app%20(7).png)
+![Completed tasks page on tablet](public/images/screenshots/iPad-PRO-11-gideonadeti-taskflow.vercel.app%20(9).png)
 
 ### Mobile (iPhone 13 Pro)
 
-<table>
-  <tr>
-    <td>
-      <img src="public/images/screenshots/iPhone-13-PRO-gideonadeti-taskflow.vercel.app (4).png" alt="Footer section of the landing page on mobile" />
-    </td>
-    <td>
-      <img src="public/images/screenshots/iPhone-13-PRO-gideonadeti-taskflow.vercel.app%20(14).png" alt="Empty inbox state on mobile" />
-    </td>
-  </tr>
-</table>
+![Footer section of the landing page on mobile](public/images/screenshots/iPhone-13-PRO-gideonadeti-taskflow.vercel.app%20(4).png)
+![Empty inbox state on mobile](public/images/screenshots/iPhone-13-PRO-gideonadeti-taskflow.vercel.app%20(14).png)
 
 ## Technologies Used
 
