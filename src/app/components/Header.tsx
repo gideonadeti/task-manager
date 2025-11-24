@@ -22,11 +22,16 @@ export default function Header() {
   const [mounted, setMounted] = React.useState(false);
   const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
   const isMobile = useIsMobile();
+  const [mobileResolved, setMobileResolved] = React.useState(false);
 
   // Avoid hydration mismatch
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  React.useEffect(() => {
+    setMobileResolved(true);
+  }, [isMobile]);
 
   const isLightTheme = mounted && resolvedTheme === "light";
 
@@ -182,7 +187,7 @@ export default function Header() {
                 }`,
               },
             }}
-            showName={isMobile === false}
+            showName={mobileResolved && !isMobile}
           />
         )}
         <Separator orientation="vertical" className="mx-1 sm:mx-2 h-8" />
