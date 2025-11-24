@@ -53,6 +53,57 @@ A modern, full-stack task management application built with Next.js, featuring a
 - **Secure Authentication**: Powered by Clerk for secure user authentication
 - **User Isolation**: Each user's data is completely isolated and secure
 
+## Screenshots
+
+### Desktop (MacBook Air)
+
+<table>
+  <tr>
+    <td>
+      <img src="public/images/screenshots/Macbook-Air-gideonadeti-taskflow.vercel.app.png" alt="Hero section of the landing page on desktop" />
+    </td>
+    <td>
+      <img src="public/images/screenshots/Macbook-Air-gideonadeti-taskflow.vercel.app%20(10).png" alt="Overdue tasks view on desktop" />
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <img src="public/images/screenshots/Macbook-Air-gideonadeti-taskflow.vercel.app%20(12).png" alt="This week overview on desktop" />
+    </td>
+  </tr>
+</table>
+
+### Tablet (iPad Pro 11")
+
+<table>
+  <tr>
+    <td>
+      <img src="public/images/screenshots/iPad-PRO-11-gideonadeti-taskflow.vercel.app%20(2).png" alt="Features section of the landing page on tablet" />
+    </td>
+    <td>
+      <img src="public/images/screenshots/iPad-PRO-11-gideonadeti-taskflow.vercel.app%20(7).png" alt="Dashboard view on tablet" />
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <img src="public/images/screenshots/iPad-PRO-11-gideonadeti-taskflow.vercel.app%20(9).png" alt="Completed tasks page on tablet" />
+    </td>
+  </tr>
+</table>
+
+### Mobile (iPhone 13 Pro)
+
+<table>
+  <tr>
+    <td>
+      <img src="public/images/screenshots/iPhone-13-PRO-gideonadeti-taskflow.vercel.app (4).png" alt="Footer section of the landing page on mobile" />
+    </td>
+    <td>
+      <img src="public/images/screenshots/iPhone-13-PRO-gideonadeti-taskflow.vercel.app%20(14).png" alt="Empty inbox state on mobile" />
+    </td>
+  </tr>
+</table>
+
 ## Technologies Used
 
 ### Core Framework
