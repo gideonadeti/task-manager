@@ -125,7 +125,7 @@ export default function LandingPage() {
 
       {/* Header with Logo */}
       <header
-        className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b"
+        className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b"
         role="banner"
         aria-label="Site header"
       >
