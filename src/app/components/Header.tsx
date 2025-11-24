@@ -14,27 +14,18 @@ import { Separator } from "@/components/ui/separator";
 import { ThemeToggler } from "@/components/theme-toggler";
 import { Button } from "@/components/ui/button";
 import { KeyboardShortcutsDialog } from "./KeyboardShortcutsDialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Header() {
   const { resolvedTheme } = useTheme();
   const { isLoaded } = useUser();
   const [mounted, setMounted] = React.useState(false);
   const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
-  const [isMobile, setIsMobile] = React.useState(false);
+  const isMobile = useIsMobile();
 
   // Avoid hydration mismatch
   React.useEffect(() => {
     setMounted(true);
-  }, []);
-
-  // Detect mobile screen size
-  React.useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const isLightTheme = mounted && resolvedTheme === "light";
