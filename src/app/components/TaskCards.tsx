@@ -47,9 +47,13 @@ const getPriorityColor = (priority: string): string => {
 const getDueDateUrgency = (dueDate: Date | null, completed: boolean): string | null => {
   if (!dueDate) return null;
 
-  // If task is completed, don't show red styling for overdue dates
+  // If task is completed, don't apply any color coding
+  if (completed) {
+    return "text-gray-600 dark:text-gray-400";
+  }
+
   if (isPast(dueDate) && !isToday(dueDate)) {
-    return completed ? "text-gray-600 dark:text-gray-400" : "text-red-600 dark:text-red-400 font-semibold";
+    return "text-red-600 dark:text-red-400 font-semibold";
   } else if (isToday(dueDate)) {
     return "text-orange-600 dark:text-orange-400 font-semibold";
   } else if (isTomorrow(dueDate)) {
