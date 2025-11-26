@@ -138,16 +138,16 @@ A modern, full-stack task management application built with Next.js, featuring a
 
 This project has evolved through multiple iterations, demonstrating continuous improvement and learning:
 
-- **v1** - Initial vanilla JavaScript implementation
+- **v1** - Initial vanilla JavaScript, HTML, and CSS implementation
   - [GitHub](https://github.com/Gideon-D-Adeti/todo-list) | [Live Demo](https://gideon-d-adeti.github.io/todo-list/)
 
-- **v2** - Enhanced version with improved structure
+- **v2** - Enhanced version with improved structure using SCSS and Bootstrap, inspired by [Todoist](https://www.todoist.com). This version became one of the most liked solutions (submitted as GDA) of [The Odin Project's Todo List project](https://www.theodinproject.com/lessons/node-path-javascript-todo-list/project_submissions?direction=desc&sort=likes_count) and served as the foundation for v3.
   - [GitHub](https://github.com/GDA0/to-do-list) | [Live Demo](https://gda0.github.io/to-do-list/)
 
-- **v3** - Full-stack Next.js application with authentication
+- **v3** - Full-stack Next.js application with authentication, featuring a solid backend architecture with room for frontend enhancement.
   - [GitHub](https://github.com/gideonadeti/taskflow/tree/main) | [Live Demo](https://gideonadeti-task-manager.vercel.app/)
 
-- **v4** - Current revamping of v3 with enhanced features and improved UX
+- **v4** - Current version: a comprehensive revamp of v3 with enhanced features, improved UX, and modern UI
   - [GitHub](https://github.com/gideonadeti/taskflow/tree/revamping) | [Live Demo](https://gideonadeti-taskflow.vercel.app/)
 
 ## Running Locally
