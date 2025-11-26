@@ -371,3 +371,27 @@ export async function toggleComplete(
     throw error;
   }
 }
+
+export async function deleteAllUserData(userId: string) {
+  try {
+    // Delete all groups for the user
+    // Tasks will be automatically deleted via cascade (onDelete: Cascade in schema)
+    const deletedGroups = await prisma.group.deleteMany({
+      where: {
+        userId,
+      },
+    });
+
+    console.log("Deleted all user data", {
+      userId,
+      groupsDeleted: deletedGroups.count,
+    });
+
+    return {
+      groupsDeleted: deletedGroups.count,
+    };
+  } catch (error) {
+    logger.error("Error deleting all user data", error, { userId });
+    throw error;
+  }
+}

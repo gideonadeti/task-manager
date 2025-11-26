@@ -2,7 +2,8 @@
 
 A modern, full-stack task management application built with Next.js, featuring authentication, CRUD operations, and intuitive task organization. This portfolio project extends beyond The Odin Project's Todo List, providing a seamless experience for managing tasks and organizing them into groups with a clean and intuitive user interface.
 
-**Live Demo**: [Taskflow](https://gideonadeti-taskflow.vercel.app/)
+**Live Demo**: [Taskflow](https://gideonadeti-taskflow.vercel.app/)  
+**Video Tutorial**: [Complete Walkthrough on YouTube](https://youtu.be/kkSGNebMShg) - Learn how to use all of Taskflow's features
 
 ## Table of Contents
 
@@ -29,10 +30,16 @@ A modern, full-stack task management application built with Next.js, featuring a
   - [Running Locally](#running-locally)
     - [Prerequisites](#prerequisites)
     - [Setup Steps](#setup-steps)
+    - [Installing as a PWA](#installing-as-a-pwa)
+      - [On Desktop (Chrome, Edge, or Brave)](#on-desktop-chrome-edge-or-brave)
+      - [On iOS (Safari)](#on-ios-safari)
+      - [On Android (Chrome or Edge)](#on-android-chrome-or-edge)
     - [Getting Environment Variables](#getting-environment-variables)
       - [Database URLs (PostgreSQL)](#database-urls-postgresql)
       - [Clerk Keys](#clerk-keys)
     - [Seeding the Database](#seeding-the-database)
+  - [Deployment](#deployment)
+    - [Setting Up Clerk Webhook](#setting-up-clerk-webhook)
   - [Contributing](#contributing)
   - [Support](#support)
   - [Future Improvements](#future-improvements)
@@ -62,6 +69,10 @@ A modern, full-stack task management application built with Next.js, featuring a
 
 ### User Experience
 
+- **Progressive Web App (PWA)**: Install Taskflow on your device for a native app-like experience:
+  - Install to home screen on mobile and desktop
+  - Standalone mode with full-screen experience
+  - Works on iOS, Android, and desktop browsers
 - **Keyboard Shortcuts**: Power user features for faster navigation:
   - `Ctrl/Cmd + B` - Toggle sidebar
   - `Ctrl/Cmd + Alt/Option + T` - Add new task
@@ -138,16 +149,16 @@ A modern, full-stack task management application built with Next.js, featuring a
 
 This project has evolved through multiple iterations, demonstrating continuous improvement and learning:
 
-- **v1** - Initial vanilla JavaScript implementation
+- **v1** - Initial vanilla JavaScript, HTML, and CSS implementation
   - [GitHub](https://github.com/Gideon-D-Adeti/todo-list) | [Live Demo](https://gideon-d-adeti.github.io/todo-list/)
 
-- **v2** - Enhanced version with improved structure
+- **v2** - Enhanced version with improved structure using SCSS and Bootstrap, inspired by [Todoist](https://www.todoist.com). This version became one of the most liked solutions (submitted as GDA) of [The Odin Project's Todo List project](https://www.theodinproject.com/lessons/node-path-javascript-todo-list/project_submissions?direction=desc&sort=likes_count) and served as the foundation for v3.
   - [GitHub](https://github.com/GDA0/to-do-list) | [Live Demo](https://gda0.github.io/to-do-list/)
 
-- **v3** - Full-stack Next.js application with authentication
+- **v3** - Full-stack Next.js application with authentication, featuring a solid backend architecture with room for frontend enhancement.
   - [GitHub](https://github.com/gideonadeti/taskflow/tree/main) | [Live Demo](https://gideonadeti-task-manager.vercel.app/)
 
-- **v4** - Current revamping of v3 with enhanced features and improved UX
+- **v4** - Current version: a comprehensive revamp of v3 with enhanced features, improved UX, and modern UI
   - [GitHub](https://github.com/gideonadeti/taskflow/tree/revamping) | [Live Demo](https://gideonadeti-taskflow.vercel.app/)
 
 ## Running Locally
@@ -193,7 +204,19 @@ Before you begin, ensure you have the following installed:
 
    See [Getting Environment Variables](#getting-environment-variables) below for detailed instructions on obtaining these values.
 
-4. **Set Up the Database**
+4. **Set Up PWA Icons** (Optional but recommended)
+
+   For the app to be installable, you need to add PWA icons to the `/public` directory:
+   - `icon-192x192.png` (192x192 pixels)
+   - `icon-512x512.png` (512x512 pixels)
+   - `icon-192x192-maskable.png` (192x192 pixels, with padding)
+   - `icon-512x512-maskable.png` (512x512 pixels, with padding)
+
+   See [`public/PWA-ICONS-README.md`](public/PWA-ICONS-README.md) for detailed instructions on creating these icons.
+
+   **Note**: The app will work without these icons, but users won't be able to install it to their home screen.
+
+5. **Set Up the Database**
 
    ```bash
    # Run database migrations (automatically generates Prisma Client)
@@ -203,13 +226,39 @@ Before you begin, ensure you have the following installed:
    bunx prisma studio
    ```
 
-5. **Start the Development Server**
+6. **Start the Development Server**
 
    ```bash
    bun run dev
    ```
 
    The application will be available at [http://localhost:3000](http://localhost:3000).
+
+### Installing as a PWA
+
+Taskflow can be installed as a Progressive Web App for a native app-like experience:
+
+#### On Desktop (Chrome, Edge, or Brave)
+
+1. Visit the Taskflow website
+2. Look for the install icon (⊕) in the address bar
+3. Click "Install" to add Taskflow to your applications
+
+#### On iOS (Safari)
+
+1. Open Taskflow in Safari
+2. Tap the Share button (square with arrow pointing up)
+3. Scroll down and tap "Add to Home Screen"
+4. Tap "Add" to install
+
+#### On Android (Chrome or Edge)
+
+1. Open Taskflow in your browser
+2. A banner will appear prompting you to install, or
+3. Tap the menu (three dots) → "Install app"
+4. Follow the prompts to install
+
+Once installed, Taskflow will open in its own window without browser UI, providing a cleaner, more focused experience.
 
 ### Getting Environment Variables
 
@@ -242,6 +291,38 @@ This will create sample groups and tasks. You can optionally set the `SEED_USER_
 
 **Note**: The seed script will create data for the user ID specified in `SEED_USER_ID` (defaults to "seed-user-123" if not set). Make sure you're authenticated with the corresponding user when viewing seeded data.
 
+## Deployment
+
+When deploying Taskflow to production, ensure you complete the following steps for a secure and fully functional application.
+
+### Setting Up Clerk Webhook
+
+**Required for Production**: This webhook ensures user data is properly deleted when users delete their accounts (GDPR compliance and best practices).
+
+1. **Add Webhook Secret to Environment Variables**
+
+   Add the following to your production environment variables:
+
+   ```env
+   CLERK_WEBHOOK_SIGNING_SECRET="whsec_..."
+   ```
+
+2. **Configure Webhook in Clerk Dashboard**
+
+   - In your Clerk dashboard, go to **Webhooks**
+   - Click **Add Endpoint**
+   - Enter your production endpoint URL: `https://yourdomain.com/api/webhooks/clerk`
+   - Subscribe to the `user.deleted` event
+   - Save the endpoint
+   - Copy the **Signing Secret** (starts with `whsec_`)
+   - Add it to your production environment variables as `CLERK_WEBHOOK_SIGNING_SECRET`
+
+3. **Verify Webhook is Working**
+
+   When a user deletes their account through Clerk, all their tasks and groups will be automatically removed from the database.
+
+   **Note for Local Development**: To test webhooks locally, use a tool like [ngrok](https://ngrok.com/) to expose your local server and configure the ngrok URL in Clerk's webhook settings.
+
 ## Contributing
 
 Contributions, issues, and feature requests are welcome! Feel free to:
@@ -268,7 +349,8 @@ If you find this project helpful or interesting, consider supporting me:
 
 This project is continuously evolving, and I plan to keep improving it with new features and enhancements. Some planned additions include:
 
-- **Notifications**: Real-time notifications for task reminders, due dates, and important updates
+- **Push Notifications**: Real-time push notifications for task reminders and due dates (PWA install functionality is complete; push notifications to be added)
+- **Offline Support**: Service worker-based caching for offline access to tasks
 - More features coming soon...
 
 ## Acknowledgments
