@@ -30,6 +30,10 @@ A modern, full-stack task management application built with Next.js, featuring a
   - [Running Locally](#running-locally)
     - [Prerequisites](#prerequisites)
     - [Setup Steps](#setup-steps)
+    - [Installing as a PWA](#installing-as-a-pwa)
+      - [On Desktop (Chrome, Edge, or Brave)](#on-desktop-chrome-edge-or-brave)
+      - [On iOS (Safari)](#on-ios-safari)
+      - [On Android (Chrome or Edge)](#on-android-chrome-or-edge)
     - [Getting Environment Variables](#getting-environment-variables)
       - [Database URLs (PostgreSQL)](#database-urls-postgresql)
       - [Clerk Keys](#clerk-keys)
@@ -63,6 +67,10 @@ A modern, full-stack task management application built with Next.js, featuring a
 
 ### User Experience
 
+- **Progressive Web App (PWA)**: Install Taskflow on your device for a native app-like experience:
+  - Install to home screen on mobile and desktop
+  - Standalone mode with full-screen experience
+  - Works on iOS, Android, and desktop browsers
 - **Keyboard Shortcuts**: Power user features for faster navigation:
   - `Ctrl/Cmd + B` - Toggle sidebar
   - `Ctrl/Cmd + Alt/Option + T` - Add new task
@@ -194,7 +202,19 @@ Before you begin, ensure you have the following installed:
 
    See [Getting Environment Variables](#getting-environment-variables) below for detailed instructions on obtaining these values.
 
-4. **Set Up the Database**
+4. **Set Up PWA Icons** (Optional but recommended)
+
+   For the app to be installable, you need to add PWA icons to the `/public` directory:
+   - `icon-192x192.png` (192x192 pixels)
+   - `icon-512x512.png` (512x512 pixels)
+   - `icon-192x192-maskable.png` (192x192 pixels, with padding)
+   - `icon-512x512-maskable.png` (512x512 pixels, with padding)
+
+   See [`public/PWA-ICONS-README.md`](public/PWA-ICONS-README.md) for detailed instructions on creating these icons.
+
+   **Note**: The app will work without these icons, but users won't be able to install it to their home screen.
+
+5. **Set Up the Database**
 
    ```bash
    # Run database migrations (automatically generates Prisma Client)
@@ -204,13 +224,39 @@ Before you begin, ensure you have the following installed:
    bunx prisma studio
    ```
 
-5. **Start the Development Server**
+6. **Start the Development Server**
 
    ```bash
    bun run dev
    ```
 
    The application will be available at [http://localhost:3000](http://localhost:3000).
+
+### Installing as a PWA
+
+Taskflow can be installed as a Progressive Web App for a native app-like experience:
+
+#### On Desktop (Chrome, Edge, or Brave)
+
+1. Visit the Taskflow website
+2. Look for the install icon (⊕) in the address bar
+3. Click "Install" to add Taskflow to your applications
+
+#### On iOS (Safari)
+
+1. Open Taskflow in Safari
+2. Tap the Share button (square with arrow pointing up)
+3. Scroll down and tap "Add to Home Screen"
+4. Tap "Add" to install
+
+#### On Android (Chrome or Edge)
+
+1. Open Taskflow in your browser
+2. A banner will appear prompting you to install, or
+3. Tap the menu (three dots) → "Install app"
+4. Follow the prompts to install
+
+Once installed, Taskflow will open in its own window without browser UI, providing a cleaner, more focused experience.
 
 ### Getting Environment Variables
 
@@ -269,7 +315,8 @@ If you find this project helpful or interesting, consider supporting me:
 
 This project is continuously evolving, and I plan to keep improving it with new features and enhancements. Some planned additions include:
 
-- **Notifications**: Real-time notifications for task reminders, due dates, and important updates
+- **Push Notifications**: Real-time push notifications for task reminders and due dates (PWA install functionality is complete; push notifications to be added)
+- **Offline Support**: Service worker-based caching for offline access to tasks
 - More features coming soon...
 
 ## Acknowledgments
