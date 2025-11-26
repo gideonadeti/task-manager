@@ -8,6 +8,7 @@ import "./globals.css";
 import QCProvider from "./components/QCProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { InstallButton } from "@/components/install-button";
 import {
   generateMetadata as generateSEOMetadata,
   generateStructuredData,
@@ -75,6 +76,7 @@ export default function RootLayout({
               <SignedIn>{children}</SignedIn>
               <SignedOut>{children}</SignedOut>
               <Toaster richColors />
+              <InstallButton />
             </QCProvider>
           </ClerkProvider>
         </ThemeProvider>
