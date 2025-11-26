@@ -38,6 +38,8 @@ A modern, full-stack task management application built with Next.js, featuring a
       - [Database URLs (PostgreSQL)](#database-urls-postgresql)
       - [Clerk Keys](#clerk-keys)
     - [Seeding the Database](#seeding-the-database)
+  - [Deployment](#deployment)
+    - [Setting Up Clerk Webhook](#setting-up-clerk-webhook)
   - [Contributing](#contributing)
   - [Support](#support)
   - [Future Improvements](#future-improvements)
@@ -288,6 +290,38 @@ bun run seed
 This will create sample groups and tasks. You can optionally set the `SEED_USER_ID` environment variable to use a specific user ID for seeded data.
 
 **Note**: The seed script will create data for the user ID specified in `SEED_USER_ID` (defaults to "seed-user-123" if not set). Make sure you're authenticated with the corresponding user when viewing seeded data.
+
+## Deployment
+
+When deploying Taskflow to production, ensure you complete the following steps for a secure and fully functional application.
+
+### Setting Up Clerk Webhook
+
+**Required for Production**: This webhook ensures user data is properly deleted when users delete their accounts (GDPR compliance and best practices).
+
+1. **Add Webhook Secret to Environment Variables**
+
+   Add the following to your production environment variables:
+
+   ```env
+   CLERK_WEBHOOK_SIGNING_SECRET="whsec_..."
+   ```
+
+2. **Configure Webhook in Clerk Dashboard**
+
+   - In your Clerk dashboard, go to **Webhooks**
+   - Click **Add Endpoint**
+   - Enter your production endpoint URL: `https://yourdomain.com/api/webhooks/clerk`
+   - Subscribe to the `user.deleted` event
+   - Save the endpoint
+   - Copy the **Signing Secret** (starts with `whsec_`)
+   - Add it to your production environment variables as `CLERK_WEBHOOK_SIGNING_SECRET`
+
+3. **Verify Webhook is Working**
+
+   When a user deletes their account through Clerk, all their tasks and groups will be automatically removed from the database.
+
+   **Note for Local Development**: To test webhooks locally, use a tool like [ngrok](https://ngrok.com/) to expose your local server and configure the ngrok URL in Clerk's webhook settings.
 
 ## Contributing
 
