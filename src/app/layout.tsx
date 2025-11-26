@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
@@ -25,7 +25,27 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = generateSEOMetadata();
+const seoMetadata = generateSEOMetadata();
+
+export const metadata: Metadata = {
+  ...seoMetadata,
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Taskflow",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#18181b" },
+  ],
+};
 
 export default function RootLayout({
   children,
